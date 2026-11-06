@@ -97,5 +97,80 @@ function readWorkbook(file){
   });
 }
 
-function postForm(action,payload){return new Promise((res,rej)=>{const token='si_'+Date.now()+'_'+Math.random().toString(36).slice(2);payload._token=token;const h=e=>{if(e.data?.source!=='SmartInspectionAPI'||e.data?.token!==token)return;window.removeEventListener('message',h);e.data.ok?res(e.data):rej(new Error(e.data.error||'Import gagal'))};window.addEventListener('message',h);$('siUploadForm').action=apiUrl();$('formAction').value=action;$('formPayload').value=JSON.stringify(payload);$('siUploadForm').submit();setTimeout(()=>{window.removeEventListener('message',h);rej(new Error('Import timeout'))},60000)})}async function processImport(){if(!pendingImport)return;const{file,parsed}=pendingImport,chunk=CFG.IMPORT_CHUNK_SIZE||750,id='IMP-'+Date.now();$('processImportBtn').disabled=true;try{await postForm('beginImport',{importId:id,fileName:file.name,totalRows:parsed.rows.length,headers:parsed.headers});for(let i=0;i<parsed.rows.length;i+=chunk){await postForm('importChunk',{importId:id,offset:i,rows:parsed.rows.slice(i,i+chunk)});$('processImportBtn').textContent=`Uploading ${Math.min(i+chunk,parsed.rows.length).toLocaleString()} / ${parsed.rows.length.toLocaleString()}`}const done=await postForm('finalizeImport',{importId:id});$('importResult').classList.remove('hidden');$('importResult').innerHTML=`<div class="cardhead"><h3>✅ Import selesai: ${esc(file.name)}</h3></div><div style="padding:14px">Processed ${fmt(done.rows)} • Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Rejected ${fmt(done.rejected)}</div>`;await loadDashboard()}catch(e){toast(e.message)}finally{$('processImportBtn').disabled=false;$('processImportBtn').textContent='Process Import'}}function initImport(){const i=$('fileInput'),d=$('dropzone');$('selectFileBtn').onclick=()=>i.click();i.onchange=()=>handleFile(i.files[0]);['dragenter','dragover'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.add('drag')}));['dragleave','drop'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.remove('drag')}));d.addEventListener('drop',e=>handleFile(e.dataTransfer.files[0]));$('processImportBtn').onclick=processImport}async function handleFile(file){if(!file)return;try{const p=await readWorkbook(file),missing=p.missing;pendingImport={file,parsed:p};$('filePreview').classList.remove('hidden');$('filePreview').innerHTML=`<b>${esc(file.name)}</b><br>Sheet: ${esc(p.sheet)} • header baris ${p.headerRow}<br>${fmt(p.rows.length)} rows sah${p.skipped?' ('+fmt(p.skipped)+' baris dilangkau: tiada tarikh/No. FoSIM)':''} • ${p.headers.length} lajur digunakan • ${missing.length?'Lajur wajib tiada: '+esc(missing.join(', ')):'✓ KMM101 recognised'}`;$('processImportBtn').classList.toggle('hidden',!!missing.length)}catch(e){toast(e.message)}}function initEvents(){initNav();initImport();$('refreshBtn').onclick=loadDashboard;['stateFilter','districtFilter','gradeFilter','yearFilter','typeFilter'].forEach(id=>$(id).onchange=renderDashboard);$('searchBox').oninput=renderDashboard;document.querySelectorAll('[data-mapmode]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mapmode]').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentMapMode=b.dataset.mapmode;renderMap()})}window.addEventListener('load',()=>{initEvents();initMap();loadDashboard()});
-console.info('SmartInspection app.js PATCH v3 (KMM101 parser)');
+
+/* ===== Progress tracker ===== */
+const STEPS=[['read','Baca fail Excel'],['header','Kesan header KMM101'],['clean','Bersih & pilih lajur'],['begin','Sambung ke Google Sheets'],['upload','Upload data ke staging'],['final','Deduplicate & simpan ke History'],['refresh','Refresh dashboard']];
+let stepState={},runTimer=null,runStart=0;
+function pipeInit(){stepState={};STEPS.forEach(([k])=>stepState[k]={s:'pending',d:'',pct:null});pipeRender();$('importLog').innerHTML='';$('pipeTimer').textContent=''}
+function setStep(k,s,d,pct){const o=stepState[k]||{};stepState[k]={s,d:d===undefined?(o.d||''):d,pct:pct===undefined?(s==='active'?o.pct:null):pct};pipeRender()}
+function pipeRender(){const ic={pending:'○',active:'◔',done:'✓',error:'✗'};$('pipeline').innerHTML=STEPS.map(([k,l],i)=>{const x=stepState[k]||{s:'pending',d:'',pct:null};return`<div class="pstep ${x.s}"><span class="pic">${ic[x.s]}</span><div><b>${i+1}. ${l}</b>${x.d?`<small>${esc(x.d)}</small>`:''}${x.pct!=null?`<div class="pbar"><i style="width:${x.pct}%"></i></div>`:''}</div></div>`}).join('')}
+function logLine(m,cls){const L=$('importLog'),t=new Date().toLocaleTimeString('en-GB');L.insertAdjacentHTML('beforeend',`<div class="${cls||''}">[${t}] ${esc(m)}</div>`);L.scrollTop=L.scrollHeight}
+function startClock(){runStart=Date.now();clearInterval(runTimer);runTimer=setInterval(()=>{$('pipeTimer').textContent='⏱ '+fmtSec((Date.now()-runStart)/1000)},500)}
+function stopClock(){clearInterval(runTimer)}
+function fmtSec(s){s=Math.round(s);return s>=60?Math.floor(s/60)+'m '+String(s%60).padStart(2,'0')+'s':s+'s'}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* ===== Hantar data ke Apps Script ===== */
+function postForm(action,payload,ms){ms=ms||60000;return new Promise((res,rej)=>{const token='si_'+Date.now()+'_'+Math.random().toString(36).slice(2);payload._token=token;const h=e=>{if(e.data?.source!=='SmartInspectionAPI'||e.data?.token!==token)return;clearTimeout(tm);window.removeEventListener('message',h);e.data.ok?res(e.data):rej(new Error(e.data.error||'Import gagal'))};window.addEventListener('message',h);const tm=setTimeout(()=>{window.removeEventListener('message',h);rej(new Error('Tiada respons daripada Apps Script dalam '+Math.round(ms/1000)+' saat. Semak: API_URL (hujung /exec), deployment "Anyone", dan Code.gs versi terbaru sudah di-deploy.'))},ms);$('siUploadForm').action=apiUrl();$('formAction').value=action;$('formPayload').value=JSON.stringify(payload);$('siUploadForm').submit()})}
+async function postRetry(action,payload,ms,label){let last;for(let a=1;a<=3;a++){try{return await postForm(action,Object.assign({},payload),ms)}catch(e){last=e;logLine(`${label} gagal (percubaan ${a}/3): ${e.message}`,'err');if(a<3)await sleep(1500*a)}}throw last}
+
+async function processImport(){
+  if(!pendingImport)return;
+  if(!apiUrl()||apiUrl().includes('PASTE_')){toast('API_URL belum ditetapkan dalam config.js');return}
+  const{file,parsed}=pendingImport,chunk=CFG.IMPORT_CHUNK_SIZE||750,id='IMP-'+Date.now(),total=parsed.rows.length,n=Math.ceil(total/chunk),btn=$('processImportBtn');
+  btn.disabled=true;btn.textContent='Sedang proses…';$('importResult').classList.add('hidden');
+  ['begin','upload','final','refresh'].forEach(k=>setStep(k,'pending',''));startClock();
+  let cur='begin';
+  try{
+    setStep('begin','active','Menghubungi Apps Script…');logLine('Mula import '+id+' • '+fmt(total)+' baris • '+n+' chunk');
+    await postRetry('beginImport',{importId:id,fileName:file.name,totalRows:total,headers:parsed.headers},60000,'Sambungan');
+    setStep('begin','done','ID '+id);logLine('Sambungan OK, sheet staging sedia','ok');
+    cur='upload';const tu=Date.now();
+    for(let i=0,c=1;i<total;i+=chunk,c++){
+      const end=Math.min(i+chunk,total),pct=Math.round(i/total*100);
+      let eta='';if(c>1){const per=(Date.now()-tu)/(c-1);eta=' • baki ≈ '+fmtSec(per*(n-c+1)/1000)}
+      setStep('upload','active',`Chunk ${c}/${n} • ${fmt(i)} → ${fmt(end)} / ${fmt(total)} baris (${pct}%)${eta}`,pct);
+      const r=await postRetry('importChunk',{importId:id,offset:i,rows:parsed.rows.slice(i,end)},90000,'Chunk '+c);
+      logLine(`Chunk ${c}/${n} diterima: ${fmt(r.accepted)} baris diterima`);
+    }
+    setStep('upload','done',`${fmt(total)} baris dalam ${n} chunk (${fmtSec((Date.now()-tu)/1000)})`,100);
+    cur='final';const tf=Date.now();
+    logLine('Semua chunk dihantar. Menjalankan dedup & simpan (boleh ambil 1–5 minit; JANGAN tutup tab)…');
+    const tick=setInterval(()=>setStep('final','active','Menyemak duplicate & menulis ke INSPECTION_HISTORY… '+fmtSec((Date.now()-tf)/1000)+' berlalu (jangan tutup tab)'),1000);
+    let done;try{done=await postForm('finalizeImport',{importId:id},600000)}finally{clearInterval(tick)}
+    setStep('final','done',`Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Rejected ${fmt(done.rejected)} (${fmtSec((Date.now()-tf)/1000)})`);
+    logLine(`Siap simpan: ${fmt(done.accepted)} baru, ${fmt(done.duplicates)} duplicate, ${fmt(done.rejected)} ditolak`,'ok');
+    cur='refresh';setStep('refresh','active','Memuat semula data dashboard…');
+    $('importResult').classList.remove('hidden');
+    $('importResult').innerHTML=`<div class="cardhead"><h3>✅ Import selesai: ${esc(file.name)}</h3></div><div style="padding:14px">Processed ${fmt(done.rows)} • Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Rejected ${fmt(done.rejected)} • Masa ${fmtSec((Date.now()-runStart)/1000)}</div>`;
+    await loadDashboard();
+    if($('apiState').textContent==='online'){setStep('refresh','done',`${fmt((DB.premises||[]).length)} premis dalam dashboard`);logLine('Dashboard dikemas kini. SELESAI.','ok')}
+    else{setStep('refresh','error','Import berjaya, tetapi dashboard gagal dimuat semula. Tekan ↻ Refresh.');logLine('Dashboard gagal dimuat semula (data import sudah selamat disimpan).','err')}
+  }catch(e){
+    setStep(cur,'error',e.message);logLine('GAGAL pada langkah "'+(STEPS.find(x=>x[0]===cur)||[])[1]+'": '+e.message,'err');toast(e.message);
+    if(cur==='upload'||cur==='final')logLine('Data staging tidak ditulis ke History jika finalize tidak selesai. Boleh cuba semula (duplicate akan ditapis automatik).','err');
+  }finally{stopClock();$('pipeTimer').textContent='⏱ '+fmtSec((Date.now()-runStart)/1000);btn.disabled=false;btn.textContent='Process Import'}
+}
+function initImport(){const i=$('fileInput'),d=$('dropzone');pipeInit();$('selectFileBtn').onclick=()=>i.click();i.onchange=()=>handleFile(i.files[0]);['dragenter','dragover'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.add('drag')}));['dragleave','drop'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.remove('drag')}));d.addEventListener('drop',e=>handleFile(e.dataTransfer.files[0]));$('processImportBtn').onclick=processImport}
+async function handleFile(file){
+  if(!file)return;pendingImport=null;pipeInit();$('processImportBtn').classList.add('hidden');$('importResult').classList.add('hidden');
+  const mb=(file.size/1048576).toFixed(1);startClock();
+  setStep('read','active',`Membaca ${file.name} (${mb} MB)… fail besar boleh ambil 15–60 saat, halaman mungkin kelihatan beku seketika`);logLine('Membaca '+file.name+' ('+mb+' MB)');await sleep(80);
+  try{
+    const p=await readWorkbook(file),missing=p.missing;
+    setStep('read','done',`${p.sheet} • ${fmtSec((Date.now()-runStart)/1000)}`);
+    setStep('header','done',`Header di baris ${p.headerRow} • padanan ${p.score}/8`+(missing.length?' • TIADA: '+missing.join(', '):''));
+    if(missing.length){setStep('header','error','Lajur wajib tiada: '+missing.join(', '));logLine('Lajur wajib tiada: '+missing.join(', '),'err')}
+    else{setStep('clean','done',`${fmt(p.rows.length)} baris sah • ${fmt(p.skipped)} dilangkau (tiada tarikh/No. FoSIM) • ${p.headers.length} lajur digunakan`);logLine(`Fail sedia: ${fmt(p.rows.length)} baris sah. Tekan "Process Import".`,'ok')}
+    pendingImport={file,parsed:p};
+    $('filePreview').classList.remove('hidden');
+    $('filePreview').innerHTML=`<b>${esc(file.name)}</b><br>Sheet: ${esc(p.sheet)} • header baris ${p.headerRow}<br>${fmt(p.rows.length)} rows sah${p.skipped?' ('+fmt(p.skipped)+' baris dilangkau: tiada tarikh/No. FoSIM)':''} • ${p.headers.length} lajur digunakan • ${missing.length?'Lajur wajib tiada: '+esc(missing.join(', ')):'✓ KMM101 recognised'}`;
+    $('processImportBtn').classList.toggle('hidden',!!missing.length);
+  }catch(e){
+    const hdr=String(e.message).startsWith('Format KMM101');
+    if(hdr){setStep('read','done','Fail berjaya dibaca');setStep('header','error','Header KMM101 tidak dijumpai')}else setStep('read','error',e.message);
+    logLine(e.message,'err');toast(e.message);
+  }finally{stopClock()}
+}
+function initEvents(){initNav();initImport();$('refreshBtn').onclick=loadDashboard;['stateFilter','districtFilter','gradeFilter','yearFilter','typeFilter'].forEach(id=>$(id).onchange=renderDashboard);$('searchBox').oninput=renderDashboard;document.querySelectorAll('[data-mapmode]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mapmode]').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentMapMode=b.dataset.mapmode;renderMap()})}window.addEventListener('load',()=>{initEvents();initMap();loadDashboard()});
+console.info('SmartInspection app.js PATCH v4 (progress tracker)');
