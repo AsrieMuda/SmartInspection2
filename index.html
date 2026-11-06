@@ -217,15 +217,19 @@ async function processImport(){
     let done;try{done=await postForm('finalizeImport',{importId:id},600000)}finally{clearInterval(tick)}
     pendingImport.resume=null;setStep('final','done',`Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Rejected ${fmt(done.rejected)} (${fmtSec((Date.now()-tf)/1000)})`);
     logLine(`Siap simpan: ${fmt(done.accepted)} baru, ${fmt(done.duplicates)} duplicate, ${fmt(done.rejected)} ditolak`,'ok');
-    cur='refresh';setStep('refresh','active','Memuat semula data dashboard…');
+    cur='refresh';setStep('refresh','active','Membina snapshot dashboard daripada History… ini mungkin mengambil beberapa minit. Jangan tutup tab.');
     $('importResult').classList.remove('hidden');
     $('importResult').innerHTML=`<div class="cardhead"><h3>✅ Import selesai: ${esc(file.name)}</h3></div><div style="padding:14px">Processed ${fmt(done.rows)} • Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Rejected ${fmt(done.rejected)} • Masa ${fmtSec((Date.now()-runStart)/1000)}</div>`;
+    logLine('Membina snapshot dashboard. Import History sudah selamat; proses ini tidak mengubah rekod pemeriksaan.');
+    const rebuilt=await postForm('rebuildDashboard',{},350000);
+    logLine(rebuilt.message||'Snapshot dashboard siap','ok');
     await loadDashboard();
     if($('apiState').textContent==='online'){setStep('refresh','done',`${fmt((DB.premises||[]).length)} premis dalam dashboard`);logLine('Dashboard dikemas kini. SELESAI.','ok')}
-    else{setStep('refresh','error','Import berjaya, tetapi dashboard gagal dimuat semula. Tekan ↻ Refresh.');logLine('Dashboard gagal dimuat semula (data import sudah selamat disimpan).','err')}
+    else{setStep('refresh','error','Import berjaya tetapi bacaan dashboard gagal. Semak API/Apps Script.');logLine('Dashboard gagal dimuat semula (data import sudah selamat disimpan).','err')}
   }catch(e){
     setStep(cur,'error',e.message);logLine('GAGAL pada langkah "'+(STEPS.find(x=>x[0]===cur)||[])[1]+'": '+e.message,'err');toast(e.message);
-    if(cur==='upload'||cur==='final')logLine('Data yang sudah dihantar kekal selamat dalam staging. Tekan butang "Sambung Semula Import" untuk teruskan dari tempat terhenti.','err');
+    if(cur==='upload'||cur==='final')logLine('Data staging dikekalkan. Tekan "Sambung Semula Import" untuk meneruskan; finalisasi akan menyemak jumlah baris dahulu.','err');
+    if(cur==='refresh')logLine('Rekod History sudah disimpan. Snapshot dashboard belum siap; jalankan rebuildDashboardSnapshotV22() melalui editor Apps Script, kemudian Refresh. Jangan upload fail semula.','err');
   }finally{stopClock();$('pipeTimer').textContent='⏱ '+fmtSec((Date.now()-runStart)/1000);btn.disabled=false;btn.textContent=pendingImport&&pendingImport.resume?'Sambung Semula Import':'Process Import'}
 }
 function initImport(){const i=$('fileInput'),d=$('dropzone');pipeInit();$('selectFileBtn').onclick=()=>i.click();i.onchange=()=>handleFile(i.files[0]);['dragenter','dragover'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.add('drag')}));['dragleave','drop'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.remove('drag')}));d.addEventListener('drop',e=>handleFile(e.dataTransfer.files[0]));$('processImportBtn').onclick=processImport}
