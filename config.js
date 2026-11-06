@@ -1,5 +1,5 @@
 window.SI_CONFIG = {
-  API_URL: "https://script.google.com/macros/s/AKfycbzSMbJ23o2F8oIl3SlYb3t-FlZ0rKmOiVPaIe_mfRoS6BgHc2ILm20X2dNewNEvsi34/exec",
+  API_URL: "https://script.google.com/macros/s/AKfycbzhCh5yCdA4yaL-8Wqpxnh3Vz2xDx9YZ2EUYu3BYRQX4clzaPsi7gd0h-ipEvRkR_1eMQ/exec",
   APP_NAME: "SmartInspection",
   VERSION: "2.0.0-urgent",
   DEFAULT_THRESHOLD_DAYS: 365,
