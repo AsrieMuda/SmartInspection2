@@ -185,28 +185,32 @@ async function postRetry(action,payload,ms,label){let last;for(let a=1;a<=3;a++)
 async function processImport(){
   if(!pendingImport)return;
   if(!apiUrl()||apiUrl().includes('PASTE_')){toast('API_URL belum ditetapkan dalam config.js');return}
-  const{file,parsed}=pendingImport,chunk=CFG.IMPORT_CHUNK_SIZE||750,id='IMP-'+Date.now(),total=parsed.rows.length,n=Math.ceil(total/chunk),btn=$('processImportBtn');
+  const{file,parsed}=pendingImport,chunk=CFG.IMPORT_CHUNK_SIZE||750,R=pendingImport.resume,id=R?R.id:'IMP-'+Date.now(),startI=R?R.next:0,total=parsed.rows.length,n=Math.ceil(total/chunk),btn=$('processImportBtn');
   btn.disabled=true;btn.textContent='Sedang proses…';$('importResult').classList.add('hidden');
   ['begin','upload','final','refresh'].forEach(k=>setStep(k,'pending',''));startClock();
   let cur='begin';
   try{
-    setStep('begin','active','Menghubungi Apps Script…');logLine('Mula import '+id+' • '+fmt(total)+' baris • '+n+' chunk');
-    await postRetry('beginImport',{importId:id,fileName:file.name,totalRows:total,headers:parsed.headers},60000,'Sambungan');
-    setStep('begin','done','ID '+id);logLine('Sambungan OK, sheet staging sedia','ok');
-    cur='upload';const tu=Date.now();
-    for(let i=0,c=1;i<total;i+=chunk,c++){
+    if(R){setStep('begin','done','Sambung semula ID '+id);logLine('SAMBUNG SEMULA import '+id+' dari baris '+fmt(startI)+' / '+fmt(total),'ok')}
+    else{
+      setStep('begin','active','Menghubungi Apps Script…');logLine('Mula import '+id+' • '+fmt(total)+' baris • '+n+' chunk');
+      await postRetry('beginImport',{importId:id,fileName:file.name,totalRows:total,headers:parsed.headers},120000,'Sambungan');
+      setStep('begin','done','ID '+id);logLine('Sambungan OK, sheet staging sedia','ok');
+      pendingImport.resume={id,next:0};
+    }
+    cur='upload';const tu=Date.now(),c0=Math.floor(startI/chunk)+1;
+    for(let i=startI,c=c0;i<total;i+=chunk,c++){
       const end=Math.min(i+chunk,total),pct=Math.round(i/total*100);
-      let eta='';if(c>1){const per=(Date.now()-tu)/(c-1);eta=' • baki ≈ '+fmtSec(per*(n-c+1)/1000)}
+      let eta='';if(c>c0){const per=(Date.now()-tu)/(c-c0);eta=' • baki ≈ '+fmtSec(per*(n-c+1)/1000)}
       setStep('upload','active',`Chunk ${c}/${n} • ${fmt(i)} → ${fmt(end)} / ${fmt(total)} baris (${pct}%)${eta}`,pct);
       const r=await postRetry('importChunk',{importId:id,offset:i,rows:parsed.rows.slice(i,end)},90000,'Chunk '+c);
-      logLine(`Chunk ${c}/${n} diterima: ${fmt(r.accepted)} baris diterima`);
+      pendingImport.resume={id,next:end};logLine(`Chunk ${c}/${n} diterima: ${fmt(r.accepted)} baris diterima`);if(end<total)await sleep(150);
     }
-    setStep('upload','done',`${fmt(total)} baris dalam ${n} chunk (${fmtSec((Date.now()-tu)/1000)})`,100);
+    setStep('upload','done',`${fmt(total)} baris dalam ${n} chunk (${fmtSec((Date.now()-tu)/1000)})`,100);pendingImport.resume={id,next:total};
     cur='final';const tf=Date.now();
     logLine('Semua chunk dihantar. Menjalankan dedup & simpan (boleh ambil 1–5 minit; JANGAN tutup tab)…');
     const tick=setInterval(()=>setStep('final','active','Menyemak duplicate & menulis ke INSPECTION_HISTORY… '+fmtSec((Date.now()-tf)/1000)+' berlalu (jangan tutup tab)'),1000);
     let done;try{done=await postForm('finalizeImport',{importId:id},600000)}finally{clearInterval(tick)}
-    setStep('final','done',`Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Rejected ${fmt(done.rejected)} (${fmtSec((Date.now()-tf)/1000)})`);
+    pendingImport.resume=null;setStep('final','done',`Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Rejected ${fmt(done.rejected)} (${fmtSec((Date.now()-tf)/1000)})`);
     logLine(`Siap simpan: ${fmt(done.accepted)} baru, ${fmt(done.duplicates)} duplicate, ${fmt(done.rejected)} ditolak`,'ok');
     cur='refresh';setStep('refresh','active','Memuat semula data dashboard…');
     $('importResult').classList.remove('hidden');
@@ -216,8 +220,8 @@ async function processImport(){
     else{setStep('refresh','error','Import berjaya, tetapi dashboard gagal dimuat semula. Tekan ↻ Refresh.');logLine('Dashboard gagal dimuat semula (data import sudah selamat disimpan).','err')}
   }catch(e){
     setStep(cur,'error',e.message);logLine('GAGAL pada langkah "'+(STEPS.find(x=>x[0]===cur)||[])[1]+'": '+e.message,'err');toast(e.message);
-    if(cur==='upload'||cur==='final')logLine('Data staging tidak ditulis ke History jika finalize tidak selesai. Boleh cuba semula (duplicate akan ditapis automatik).','err');
-  }finally{stopClock();$('pipeTimer').textContent='⏱ '+fmtSec((Date.now()-runStart)/1000);btn.disabled=false;btn.textContent='Process Import'}
+    if(cur==='upload'||cur==='final')logLine('Data yang sudah dihantar kekal selamat dalam staging. Tekan butang "Sambung Semula Import" untuk teruskan dari tempat terhenti.','err');
+  }finally{stopClock();$('pipeTimer').textContent='⏱ '+fmtSec((Date.now()-runStart)/1000);btn.disabled=false;btn.textContent=pendingImport&&pendingImport.resume?'Sambung Semula Import':'Process Import'}
 }
 function initImport(){const i=$('fileInput'),d=$('dropzone');pipeInit();$('selectFileBtn').onclick=()=>i.click();i.onchange=()=>handleFile(i.files[0]);['dragenter','dragover'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.add('drag')}));['dragleave','drop'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.remove('drag')}));d.addEventListener('drop',e=>handleFile(e.dataTransfer.files[0]));$('processImportBtn').onclick=processImport}
 async function handleFile(file){
@@ -241,7 +245,7 @@ async function handleFile(file){
   }finally{stopClock()}
 }
 function initEvents(){initNav();initImport();$('refreshBtn').onclick=loadDashboard;['stateFilter','districtFilter','gradeFilter','yearFilter','typeFilter'].forEach(id=>$(id).onchange=renderDashboard);$('searchBox').oninput=renderDashboard;document.querySelectorAll('[data-mapmode]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mapmode]').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentMapMode=b.dataset.mapmode;renderMap()})}window.addEventListener('load',()=>{initEvents();loadDashboard();try{initMap()}catch(e){console.error('Peta tidak dapat dimuat (Leaflet disekat?):',e);toast('Peta tidak dapat dimuat, tetapi data masih berfungsi')}});
-console.info('SmartInspection app.js PATCH v4.1 (progress tracker)');
+console.info('SmartInspection app.js PATCH v4.2 (progress tracker)');
 
 </script>
 </body></html>
