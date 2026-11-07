@@ -35,6 +35,8 @@
 
 .fdiag{margin:0 0 24px;font-size:11px;color:var(--muted);max-width:760px}.fdiag pre{white-space:pre-wrap;word-break:break-all;background:#f7f9fc;border:1px solid var(--line);border-radius:8px;padding:8px;margin:6px 0 0}
 
+.reconly{display:block;margin-top:8px;padding:8px;background:#fff8e6;border:1px solid #f1d28a;border-radius:8px;font-size:11px;line-height:1.5}.reconly input{margin-right:6px}
+
 </style>
 </head>
 <body>
@@ -422,7 +424,7 @@ function expandDashboard(C) {
     n += g === "C" ? 30 : g === "B" ? 16 : g === "A" ? 3 : 8;
     if (fl & 2) n += 14;
     if (fl & 4) n += 22;
-    return { premiseId: a[0], premiseName: a[1], state: D.s[a[2]], district: D.d[a[3]], category: D.c[a[4]], lastGrade: g, lastScore: a[6], lastInspectionDate: ld, inspectionCount: a[8], latitude: a[9], longitude: a[10], approx: fl & 1, lq: fl & 8 ? 3 : fl & 16 ? 2 : fl & 1 ? 1 : 0, ym: a[12], tm: a[13], inspectionAgeDays: age, status: st, riskScore: Math.max(0, Math.min(99, Math.round(n))) };
+    return { premiseId: a[0], premiseName: a[1] || "(nama tidak tersedia)", state: D.s[a[2]], district: D.d[a[3]], category: D.c[a[4]], lastGrade: g, lastScore: a[6], lastInspectionDate: ld, inspectionCount: a[8], latitude: a[9], longitude: a[10], approx: fl & 1, lq: fl & 8 ? 3 : fl & 16 ? 2 : fl & 1 ? 1 : 0, ym: a[12], tm: a[13], inspectionAgeDays: age, status: st, riskScore: Math.max(0, Math.min(99, Math.round(n))) };
   });
   const bs = [["< 6 bulan", (p) => p.inspectionAgeDays != null && p.inspectionAgeDays < 183], ["6–12 bulan", (p) => p.inspectionAgeDays >= 183 && p.inspectionAgeDays < 365], ["1–2 tahun", (p) => p.inspectionAgeDays >= 365 && p.inspectionAgeDays < 730], ["2–3 tahun", (p) => p.inspectionAgeDays >= 730 && p.inspectionAgeDays < 1095], ["> 3 tahun", (p) => p.inspectionAgeDays >= 1095], ["Never inspected", (p) => p.status === "NEVER"]];
   const cnt = bs.map((b) => prem.filter(b[1]).length), mx = Math.max(1, ...cnt), dm = {};
@@ -665,7 +667,7 @@ async function loadArea() {
   if (F.areaKey !== key) return;
   F.area = data.map((a) => {
     const ld = a[6];
-    return { id: a[0], name: a[1], addr: a[2], lat: a[3], lng: a[4], q: a[5], last: ld, n: a[7], grade: a[8], score: a[9], fl: a[10], never: !ld, age: ld ? Math.floor((Date.now() - (/* @__PURE__ */ new Date(ld + "T00:00:00")).getTime()) / 864e5) : null };
+    return { id: a[0], name: a[1] || "(nama tidak tersedia)", addr: a[2], lat: a[3], lng: a[4], q: a[5], last: ld, n: a[7], grade: a[8], score: a[9], fl: a[10], never: !ld, age: ld ? Math.floor((Date.now() - (/* @__PURE__ */ new Date(ld + "T00:00:00")).getTime()) / 864e5) : null };
   });
   F.rand = null;
   F.shown = 20;
@@ -934,34 +936,101 @@ function readWorkbook(file) {
           var _a;
           const ws = wb.Sheets[sheetName];
           if (!ws || !ws["!ref"]) return;
-          const matrix = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, dateNF: "yyyy-mm-dd", defval: "", blankrows: false });
+          const matrix = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, dateNF: "yyyy-mm-dd", defval: "", blankrows: true });
           const d = detectHeader(matrix);
           const first = (matrix[d.row >= 0 ? d.row : Math.max(0, (_a = d.nearest) != null ? _a : 0)] || []).map(cellToValue).filter(Boolean).slice(0, 8);
           seen.push(`[${sheetName}] ${matrix.length} baris, padanan ${d.score}/8${first.length ? " -> " + first.join(" | ") : ""}`);
           if (d.row < 0) return;
-          if (!best || d.score > best.score) best = { sheetName, matrix, hr: d.row, score: d.score };
+          if (!best || d.score > best.score) best = { sheetName, ws, matrix, hr: d.row, score: d.score };
         });
         if (!best) {
           throw new Error("Format KMM101 tidak dikenali. Header tidak dijumpai.\n" + (seen.join("\n") || "Fail kosong.") + "\nPastikan fail ialah laporan KMM101 FoSIM asal (ada lajur Nama Negeri, Nama Daerah, Tarikh Pemeriksaan, ...).");
         }
-        const KEEP = new Set(Object.values(H)), seenH = /* @__PURE__ */ new Set();
-        const headers = (best.matrix[best.hr] || []).map((h) => {
+        const KEEP = new Set(Object.values(H)), seenH = /* @__PURE__ */ new Set(), M = best.matrix;
+        const headers = (M[best.hr] || []).map((h) => {
           const c = canonicalHeaderName(h);
           if (!KEEP.has(c) || seenH.has(c)) return "";
           seenH.add(c);
           return c;
         });
         const live = headers.filter(Boolean);
-        const all = best.matrix.slice(best.hr + 1).filter((r) => (r || []).some((v) => cellToValue(v) !== "")).map((r) => {
-          const o = {};
-          headers.forEach((h, i) => {
-            if (h) o[h] = cellToValue(r[i]);
-          });
-          return o;
+        const ID = "No. Pendaftaran Premis-FoSIM", DT = "Tarikh Pemeriksaan", colOf = {};
+        headers.forEach((h, i) => {
+          if (h && colOf[h] === void 0) colOf[h] = i;
         });
-        const rows = all.filter((o) => o["Tarikh Pemeriksaan"] && o["No. Pendaftaran Premis-FoSIM"]);
+        const idC = colOf[ID], dC = colOf[DT], rg = XLSX.utils.decode_range(best.ws["!ref"]), r0 = rg.s.r, c0 = rg.s.c;
+        const needFix = /* @__PURE__ */ new Set();
+        if (idC !== void 0 && dC !== void 0) for (let i = best.hr + 1; i < M.length; i++) {
+          const r = M[i] || [];
+          if (cellToValue(r[idC]) !== "" && cellToValue(r[dC]) === "") needFix.add(i);
+        }
+        const topOf = {};
+        (best.ws["!merges"] || []).forEach((m) => {
+          if (m.e.r <= m.s.r) return;
+          const ti = m.s.r - r0;
+          if (ti <= best.hr || !M[ti]) return;
+          if (dC !== void 0 && m.s.c - c0 === dC) for (let r = m.s.r + 1; r <= m.e.r; r++) topOf[r - r0] = ti;
+          for (let c = m.s.c; c <= m.e.c; c++) {
+            const ci = c - c0, v = M[ti][ci];
+            if (v === void 0 || v === "") continue;
+            for (let r = m.s.r + 1; r <= m.e.r; r++) {
+              const row = M[r - r0];
+              if (!row) break;
+              if (row[ci] === void 0 || row[ci] === "") row[ci] = v;
+            }
+          }
+        });
+        const objs = [];
+        for (let i = best.hr + 1; i < M.length; i++) {
+          const r = M[i] || [];
+          if (!r.some((v) => cellToValue(v) !== "")) continue;
+          const o = {};
+          headers.forEach((h, j) => {
+            if (h) o[h] = cellToValue(r[j]);
+          });
+          if (needFix.has(i)) {
+            o._rec = 1;
+            if (topOf[i] !== void 0) o._top = topOf[i];
+          }
+          objs.push(o);
+        }
+        const PREM = ["Nama Syarikat", "Alamat Syarikat", "Nama Premis", "Nama Pemilik Premis", "Alamat Premis", "Kategori Premis (P0-P4)", "Sub Kategori Premis"], idOfRow = {};
+        for (let i = best.hr + 1; i < M.length; i++) {
+          const r = M[i] || [];
+          if (idC !== void 0) idOfRow[i] = cellToValue(r[idC]);
+        }
+        let diffId = 0;
+        objs.forEach((o) => {
+          if (o._top !== void 0) {
+            if (idOfRow[o._top] && o[ID] && idOfRow[o._top] !== o[ID]) {
+              PREM.forEach((k) => {
+                o[k] = "";
+              });
+              diffId++;
+            }
+            delete o._top;
+          }
+        });
+        const INH = ["Nama Negeri", "Nama Daerah", DT, "Bulan", "Nama Pegawai yang Menjalankan Pemeriksaan", "Jawatan (PKP/PPKP/PTM)", "Jenis Pemeriksaan", "Nama Syarikat", "Alamat Syarikat", "Nama Premis", "Nama Pemilik Premis", "Alamat Premis", "Kategori Premis (P0-P4)", "Sub Kategori Premis", "Jenis Borang Pemeriksaan", "Status Pendaftaran Mengikut PPKM 2009"];
+        let prev = null;
+        objs.forEach((o) => {
+          if (o[ID] && !o[DT] && prev && prev[ID] === o[ID] && prev[DT]) INH.forEach((k) => {
+            if (!o[k] && prev[k]) o[k] = prev[k];
+          });
+          if (o[ID] && o[DT]) prev = o;
+        });
+        const rows = objs.filter((o) => o[DT] && o[ID]), bad = objs.filter((o) => !(o[DT] && o[ID]));
+        const seenK = {};
+        let recDup = 0;
+        rows.forEach((o) => {
+          const k = [o[ID], o[DT], o["Jenis Pemeriksaan"], o["Nama Pegawai yang Menjalankan Pemeriksaan"], o["Nama Premis"], o["Markah Penilaian tahap kebersihan premis (%)"], o["Gred"]].join("|").toUpperCase();
+          if (seenK[k]) {
+            if (o._rec) recDup++;
+          } else seenK[k] = 1;
+        });
+        const recovered = rows.filter((o) => o._rec);
         const missing = REQUIRED_DISPLAY.filter((h) => !live.includes(h));
-        resolve({ sheet: best.sheetName, headers: live, rows, skipped: all.length - rows.length, headerRow: best.hr + 1, score: best.score, missing });
+        resolve({ sheet: best.sheetName, headers: live, rows, recovered, recDup, diffId, skipped: bad.length, skippedSample: bad.slice(0, 5).map((o) => o[ID] || o["Nama Premis"] || "(kosong)"), headerRow: best.hr + 1, score: best.score, missing });
       } catch (err) {
         reject(err);
       }
@@ -1053,7 +1122,7 @@ async function processImport() {
     toast("API_URL belum ditetapkan dalam config.js");
     return;
   }
-  const { file, parsed } = pendingImport, chunk = CFG.IMPORT_CHUNK_SIZE || 750, R = pendingImport.resume, id = R ? R.id : "IMP-" + Date.now(), startI = R ? R.next : 0, total = parsed.rows.length, n = Math.ceil(total / chunk), btn = $("processImportBtn");
+  const { file, parsed } = pendingImport, chunk = CFG.IMPORT_CHUNK_SIZE || 750, R = pendingImport.resume, id = R ? R.id : "IMP-" + Date.now(), startI = R ? R.next : 0, RS = $("recOnly") && $("recOnly").checked ? parsed.recovered : parsed.rows, total = RS.length, n = Math.ceil(total / chunk), btn = $("processImportBtn");
   btn.disabled = true;
   btn.textContent = "Sedang proses…";
   $("importResult").classList.add("hidden");
@@ -1076,6 +1145,7 @@ async function processImport() {
       setStep("begin", "done", "ID " + id);
       logLine("Sambungan OK, sheet staging sedia", "ok");
       pendingImport.resume = { id, next: 0 };
+      pendingImport.dropped = 0;
     }
     if (!cacheOnly) {
       cur = "upload";
@@ -1088,9 +1158,10 @@ async function processImport() {
           eta = " • baki ≈ " + fmtSec(per * (n - c + 1) / 1e3);
         }
         setStep("upload", "active", `Chunk ${c}/${n} • ${fmt(i)} → ${fmt(end)} / ${fmt(total)} baris (${pct2}%)${eta}`, pct2);
-        const r = await postRetry("importChunk", { importId: id, offset: i, rows: parsed.rows.slice(i, end) }, 9e4, "Chunk " + c);
+        const r = await postRetry("importChunk", { importId: id, offset: i, rows: RS.slice(i, end) }, 9e4, "Chunk " + c);
         pendingImport.resume = { id, next: end };
-        logLine(`Chunk ${c}/${n} diterima: ${fmt(r.accepted)} baris diterima`);
+        pendingImport.dropped = (pendingImport.dropped || 0) + (r.dropped || 0);
+        logLine(`Chunk ${c}/${n} diterima: ${fmt(r.accepted)} baris diterima` + (r.dropped ? ` • ${r.dropped} DITOLAK server (tarikh/No. FoSIM tidak sah)` : ""), r.dropped ? "err" : "");
         if (end < total) await sleep(150);
       }
       setStep("upload", "done", `${fmt(total)} baris dalam ${n} chunk (${fmtSec((Date.now() - tu) / 1e3)})`, 100);
@@ -1100,7 +1171,7 @@ async function processImport() {
       logLine("Semua chunk dihantar. Menjalankan dedup & simpan (boleh ambil 1–5 minit; JANGAN tutup tab)…");
       const tick = setInterval(() => setStep("final", "active", "Menyemak duplicate & menulis ke INSPECTION_HISTORY… " + fmtSec((Date.now() - tf) / 1e3) + " berlalu (jangan tutup tab)"), 1e3);
       try {
-        done = await postForm("finalizeImport", { importId: id }, 6e5);
+        done = await postForm("finalizeImport", { importId: id, clientSkipped: RS === parsed.rows ? parsed.skipped : 0, serverDropped: pendingImport.dropped || 0 }, 6e5);
       } finally {
         clearInterval(tick);
       }
@@ -1125,7 +1196,7 @@ async function processImport() {
     cur = "refresh";
     setStep("refresh", "active", "Memuat semula data dashboard…");
     $("importResult").classList.remove("hidden");
-    $("importResult").innerHTML = `<div class="cardhead"><h3>✅ Import selesai: ${esc(file.name)}</h3></div><div style="padding:14px">Processed ${fmt(done.rows)} • Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Rejected ${fmt(done.rejected)} • Masa ${fmtSec((Date.now() - runStart) / 1e3)}</div>`;
+    $("importResult").innerHTML = `<div class="cardhead"><h3>✅ Import selesai: ${esc(file.name)}</h3></div><div style="padding:14px">Processed ${fmt(done.rows)} • Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Ditolak ${fmt(done.rejected)} (dilangkau klien ${fmt(done.clientSkipped)} • ditolak server ${fmt(done.serverDropped)}) • Masa ${fmtSec((Date.now() - runStart) / 1e3)}</div>`;
     await loadDashboard();
     if ($("apiState").textContent === "online") {
       setStep("refresh", "done", `${fmt((DB.premises || []).length)} premis dalam dashboard`);
@@ -1183,12 +1254,12 @@ async function handleFile(file) {
       setStep("header", "error", "Lajur wajib tiada: " + missing.join(", "));
       logLine("Lajur wajib tiada: " + missing.join(", "), "err");
     } else {
-      setStep("clean", "done", `${fmt(p.rows.length)} baris sah • ${fmt(p.skipped)} dilangkau (tiada tarikh/No. FoSIM) • ${p.headers.length} lajur digunakan`);
+      setStep("clean", "done", `${fmt(p.rows.length)} baris sah • ${fmt(p.recovered.length)} dipulihkan • ${fmt(p.skipped)} dilangkau • ${p.headers.length} lajur digunakan`);
       logLine(`Fail sedia: ${fmt(p.rows.length)} baris sah. Tekan "Process Import".`, "ok");
     }
     pendingImport = { file, parsed: p };
     $("filePreview").classList.remove("hidden");
-    $("filePreview").innerHTML = `<b>${esc(file.name)}</b><br>Sheet: ${esc(p.sheet)} • header baris ${p.headerRow}<br>${fmt(p.rows.length)} rows sah${p.skipped ? " (" + fmt(p.skipped) + " baris dilangkau: tiada tarikh/No. FoSIM)" : ""} • ${p.headers.length} lajur digunakan • ${missing.length ? "Lajur wajib tiada: " + esc(missing.join(", ")) : "✓ KMM101 recognised"}`;
+    $("filePreview").innerHTML = `<b>${esc(file.name)}</b><br>Sheet: ${esc(p.sheet)} • header baris ${p.headerRow}<br>${fmt(p.rows.length)} rows sah${p.recovered.length ? " (termasuk " + fmt(p.recovered.length) + " baris sambungan dipulihkan: ~" + fmt(p.recDup) + " salinan butiran tambahan yang akan ditapis sebagai duplicate, ~" + fmt(p.recovered.length - p.recDup) + " rekod baharu)" : ""}${p.skipped ? " • " + fmt(p.skipped) + " baris dilangkau (footer/tiada tarikh dan No. FoSIM)" : ""} • ${p.headers.length} lajur digunakan • ${missing.length ? "Lajur wajib tiada: " + esc(missing.join(", ")) : "✓ KMM101 recognised"}${p.recovered.length ? '<br><label class="reconly"><input type="checkbox" id="recOnly"> <b>Mod pulih:</b> hantar HANYA ' + fmt(p.recovered.length) + " baris sambungan yang dipulihkan (pilih jika fail ini <u>sudah pernah diimport</u>)</label>" : ""}`;
     $("processImportBtn").classList.toggle("hidden", !!missing.length);
   } catch (e) {
     const hdr = String(e.message).startsWith("Format KMM101");
@@ -1257,7 +1328,7 @@ window.addEventListener("load", () => {
     }
   }
 });
-console.info("SmartInspection app.js PATCH v6.2 (lapangan) (progress tracker)");
+console.info("SmartInspection app.js PATCH v6.3 (pulih) (progress tracker)");
 
 </script>
 </body></html>
