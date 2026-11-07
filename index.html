@@ -1186,13 +1186,20 @@ async function processImport() {
     const tk2 = setInterval(() => setStep("cache", "active", "Mengira premis, analitik & peta… " + fmtSec((Date.now() - tcache) / 1e3) + " berlalu (jangan tutup tab)"), 1e3);
     let cr;
     try {
-      cr = await postForm("rebuildCache", {}, 54e4);
+      cr = await postForm("rebuildCache", {}, 4e5);
+      if (cr.area && cr.area.skipped) {
+        logLine("Cache utama siap (" + fmtSec((Date.now() - tcache) / 1e3) + "). Membina cache lapangan sebagai langkah berasingan…");
+        const c2 = await postForm("rebuildArea", {}, 4e5);
+        cr.area = c2.area || {};
+        cr.phases = Object.assign({}, cr.phases, { kawasan: c2.phases });
+      }
     } finally {
       clearInterval(tk2);
     }
+    if (cr.area && cr.area.error) logLine("AMARAN: cache lapangan (telefon) gagal: " + cr.area.error + ". Dashboard PC tidak terjejas; tekan ⚙ Bina Cache untuk cuba lagi.", "err");
     pendingImport.resume = null;
     setStep("cache", "done", `${fmt(cr.premises)} premis • ${(cr.bytes / 1e6).toFixed(1)} MB • ${fmtSec((Date.now() - tcache) / 1e3)}`);
-    logLine("Cache siap: " + fmt(cr.premises) + " premis", "ok");
+    logLine("Cache siap: " + fmt(cr.premises) + " premis • masa: " + JSON.stringify(cr.phases || {}), "ok");
     cur = "refresh";
     setStep("refresh", "active", "Memuat semula data dashboard…");
     $("importResult").classList.remove("hidden");
@@ -1209,6 +1216,7 @@ async function processImport() {
     setStep(cur, "error", e.message);
     logLine('GAGAL pada langkah "' + (STEPS.find((x) => x[0] === cur) || [])[1] + '": ' + e.message, "err");
     toast(e.message);
+    if (cur === "cache" && /^Tiada respons/.test(e.message)) logLine("Kemungkinan skrip melebihi had 6 minit Apps Script. Buka Apps Script > Executions untuk melihat ralat sebenar. Cache lama masih utuh.", "err");
     if (cur === "cache") logLine('Import SUDAH selamat disimpan. Tekan "Sambung Semula Import" (atau butang ⚙ Bina Cache) untuk cuba bina cache sekali lagi.', "err");
     if (cur === "upload" || cur === "final") logLine('Data yang sudah dihantar kekal selamat dalam staging. Tekan butang "Sambung Semula Import" untuk teruskan dari tempat terhenti.', "err");
   } finally {
@@ -1285,8 +1293,13 @@ async function rebuildCacheManual() {
   const tk = setInterval(() => b.textContent = "⚙ Membina… " + fmtSec((Date.now() - t0) / 1e3), 1e3);
   toast("Membina cache dashboard… boleh ambil 1–5 minit, jangan tutup tab");
   try {
-    const c = await postForm("rebuildCache", {}, 54e4);
-    toast("Cache siap: " + fmt(c.premises) + " premis (" + fmtSec((Date.now() - t0) / 1e3) + ")");
+    let c = await postForm("rebuildCache", {}, 4e5);
+    if (c.area && c.area.skipped) {
+      toast("Cache utama siap. Membina cache lapangan…");
+      const c2 = await postForm("rebuildArea", {}, 4e5);
+      c.area = c2.area || {};
+    }
+    toast("Cache siap: " + fmt(c.premises) + " premis (" + fmtSec((Date.now() - t0) / 1e3) + ")" + (c.area && c.area.error ? " • cache lapangan gagal: " + c.area.error : ""));
     await loadDashboard();
   } catch (e) {
     toast(e.message);
@@ -1328,7 +1341,7 @@ window.addEventListener("load", () => {
     }
   }
 });
-console.info("SmartInspection app.js PATCH v6.3 (pulih) (progress tracker)");
+console.info("SmartInspection app.js PATCH v6.4 (cache selamat) (progress tracker)");
 
 </script>
 </body></html>
