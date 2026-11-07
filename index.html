@@ -4,19 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SmartInspection v2</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<style>
-:root{--bg:#f3f7fb;--panel:#fff;--ink:#102b4e;--muted:#71839a;--line:#e0e8f1;--blue:#1c6be1;--green:#0da35a;--amber:#e6a00a;--red:#e93a4c;--purple:#7259d6;--shadow:0 12px 34px rgba(28,63,104,.08)}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#edf4fa,#f7f9fc);color:var(--ink)}button,input,select{font:inherit}.hidden{display:none!important}.hiddenframe{position:absolute;width:0;height:0;border:0;left:-9999px}.shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh}aside{background:linear-gradient(180deg,#0b2d58,#0c3f77);color:#fff;padding:18px 13px;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:10px;padding:2px 7px 20px}.brand>b{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#43a1ff,#0d62d4)}.brand small{display:block;color:#bad2e9;font-size:10px}nav{display:flex;flex-direction:column;gap:6px}nav button{border:0;background:transparent;color:#ccdaea;text-align:left;padding:11px;border-radius:9px;font-weight:700;cursor:pointer}nav button.active,nav button:hover{background:rgba(255,255,255,.12);color:#fff}.api{margin-top:auto;border-top:1px solid rgba(255,255,255,.14);padding:13px 7px;font-size:10px;color:#bfd1e4}main{padding:18px;min-width:0}header{display:flex;justify-content:space-between;align-items:center;gap:15px}header h1{margin:0;font-size:27px}header p{margin:4px 0 0;color:var(--muted);font-size:11px}header button,.mapbtn,#selectFileBtn,.primary{border:1px solid #d9e4ee;background:#fff;padding:9px 12px;border-radius:9px;cursor:pointer;font-weight:750;color:#234365}.filters{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px;display:grid;grid-template-columns:repeat(5,1fr) 1.3fr;gap:7px;box-shadow:var(--shadow)}.filters select,.filters input{height:38px;border:0;background:#f7f9fc;border-radius:8px;padding:0 9px;color:#234365}.view{display:none;margin-top:12px}.view.active{display:block}.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.kpi,.card{background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}.kpi{padding:14px;min-height:100px}.kpi small{font-size:9px;font-weight:900;color:#58708a}.kpi strong{display:block;font-size:27px;margin-top:5px}.kpi em{display:block;font-size:9px;color:var(--muted);font-style:normal}.grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(320px,.8fr);gap:11px;margin-top:11px}.mapcard{grid-row:span 2}.cardhead{padding:13px 14px;border-bottom:1px solid #e8eef4;display:flex;justify-content:space-between;align-items:center;gap:10px}.cardhead h3{margin:0;font-size:14px}.mapbtn{padding:7px 9px;font-size:10px}.mapbtn.active{background:var(--blue);color:#fff;border-color:var(--blue)}#map{height:590px}#mapFull{height:73vh}#priorityList,#typeBars,#ageBuckets{padding:10px}.priority{display:grid;grid-template-columns:42px 1fr;gap:9px;border:1px solid #e5ecf3;border-radius:10px;padding:9px;margin-bottom:7px}.risk{width:42px;height:42px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:900}.priority b{font-size:10px}.priority small{display:block;color:var(--muted);font-size:9px;margin-top:3px}.barrow{margin-bottom:10px}.barlabel{display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px}.track{height:8px;background:#edf2f6;border-radius:999px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#2d76e8,#67a6ff)}.gradebar{display:flex;height:44px;margin:16px 14px 9px;border-radius:9px;overflow:hidden}.gradebar span{display:grid;place-items:center;color:#fff;font-size:9px;font-weight:900}.gradelegend{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:0 14px 15px;font-size:9px}.tablewrap{overflow:auto}.tablewrap table{width:100%;border-collapse:collapse;font-size:9px}.tablewrap th{background:#f7f9fc;text-align:left;padding:9px;position:sticky;top:0}.tablewrap td{padding:9px;border-top:1px solid #edf1f5}.importgrid{display:grid;grid-template-columns:1.5fr .6fr;gap:11px}.upload{text-align:center;padding:22px}.upload p{color:var(--muted);font-size:10px;max-width:650px;margin:0 auto}.drop{margin-top:15px;border:2px dashed #cbd9e8;border-radius:13px;padding:28px;display:flex;flex-direction:column;gap:8px;align-items:center}.drop.drag{border-color:var(--blue);background:#f4f8ff}.drop small{color:var(--muted)}.primary{background:linear-gradient(135deg,#1c6be1,#0c55bc);color:#fff;border:0;margin-top:12px}.preview{margin-top:12px;background:#f7f9fc;border:1px solid #e2e9f1;border-radius:10px;padding:11px;text-align:left;font-size:10px}.pipeline{padding:14px 28px;font-size:11px;line-height:2}.toast{position:fixed;right:20px;bottom:20px;background:#102d50;color:#fff;padding:10px 13px;border-radius:9px;font-size:10px;opacity:0;transform:translateY(10px);transition:.2s}.toast.show{opacity:1;transform:none}@media(max-width:1200px){.shell{grid-template-columns:74px 1fr}.brand span,nav button{font-size:0}.brand{justify-content:center}nav button{text-align:center}.kpis{grid-template-columns:repeat(3,1fr)}.filters{grid-template-columns:repeat(3,1fr)}}@media(max-width:820px){.shell{display:block}aside{position:relative;height:auto}nav{flex-direction:row;overflow:auto}.api{display:none}.brand{justify-content:flex-start}.brand span{display:block;font-size:14px}nav button{font-size:11px;white-space:nowrap}.kpis{grid-template-columns:1fr 1fr}.grid,.importgrid{grid-template-columns:1fr}.mapcard{grid-row:auto}.filters{grid-template-columns:1fr 1fr}#map{height:500px}main{padding:10px}}
-
-.pipe{padding:12px 14px 4px}.pstep{display:grid;grid-template-columns:26px 1fr;gap:8px;padding:7px 0;border-bottom:1px dashed #e5ecf3;font-size:11px}.pstep:last-child{border-bottom:0}.pstep b{display:block;font-size:11px}.pstep small{display:block;color:var(--muted);font-size:10px;margin-top:2px;line-height:1.5;word-break:break-word}
-.pic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:900;background:#edf2f6;color:#9aa8b8}
-.pstep.active .pic{background:#e8f1ff;color:var(--blue);animation:spin 1s linear infinite}.pstep.active b{color:var(--blue)}
-.pstep.done .pic{background:var(--green);color:#fff}.pstep.error .pic{background:var(--red);color:#fff}.pstep.error b,.pstep.error small{color:var(--red)}
-.pbar{height:7px;background:#edf2f6;border-radius:999px;overflow:hidden;margin-top:5px}.pbar i{display:block;height:100%;background:linear-gradient(90deg,#2d76e8,#67a6ff);transition:width .3s}
-.importlog{margin:8px 14px 14px;background:#0f2742;color:#cfe0f3;border-radius:9px;padding:9px 10px;font:10px/1.6 ui-monospace,Consolas,monospace;max-height:190px;overflow:auto;min-height:40px}.importlog .err{color:#ff8b97}.importlog .ok{color:#6fe0a4}
-.pipetimer{font-size:10px;color:var(--muted);font-weight:700}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-</style>
+<link rel="stylesheet" href="./app.css">
 </head>
 <body>
 <div class="shell">
@@ -48,8 +36,7 @@
 <div class="kpi"><small>ARAHAN PENUTUPAN</small><strong id="kClosure">0</strong><em>rekod pemeriksaan</em></div>
 <div class="kpi"><small>NOTIS 32B</small><strong id="kNotice">0</strong><em>rekod pemeriksaan</em></div>
 </div>
-<div id="dataNotice" style="margin-top:10px;padding:10px 14px;border-radius:10px;background:#fff7e5;color:#78571b;font-size:12px">Memuatkan ringkasan dashboard…</div>
-<div class="grid"><article class="card mapcard"><div class="cardhead"><h3>Peta Pinpoint & Heatmap</h3><div><button class="mapbtn active" data-mapmode="pins">Pinpoint</button><button class="mapbtn" data-mapmode="heat">Heatmap</button><button class="mapbtn" data-mapmode="high">High Risk</button></div></div><div id="map"></div><div id="mapCoverage" style="padding:10px 14px;font-size:12px;color:#526b86" aria-live="polite">Memuatkan status koordinat…</div></article>
+<div class="grid"><article class="card mapcard"><div class="cardhead"><h3>Peta Pinpoint & Heatmap</h3><div><button class="mapbtn active" data-mapmode="pins">Pinpoint</button><button class="mapbtn" data-mapmode="heat">Heatmap</button><button class="mapbtn" data-mapmode="high">High Risk</button></div></div><div id="map"></div></article>
 <article class="card"><div class="cardhead"><h3>Prioriti Tindakan</h3><span id="priorityCount">0</span></div><div id="priorityList"></div></article>
 <article class="card"><div class="cardhead"><h3>Jenis Pemeriksaan</h3></div><div id="typeBars"></div></article>
 <article class="card"><div class="cardhead"><h3>Agihan Gred</h3></div><div id="gradeBar" class="gradebar"></div><div id="gradeLegend" class="gradelegend"></div></article></div>
@@ -57,7 +44,7 @@
 <section class="view" id="view-analytics"><article class="card"><div class="cardhead"><h3>Inspection Age Buckets</h3></div><div id="ageBuckets"></div></article><article class="card"><div class="cardhead"><h3>Ranking Daerah</h3></div><div class="tablewrap"><table id="districtTable"><thead><tr><th>Daerah</th><th>Premis</th><th>Diperiksa</th><th>Coverage</th><th>Overdue</th><th>Penutupan</th></tr></thead><tbody></tbody></table></div></article></section>
 <section class="view" id="view-map"><article class="card"><div class="cardhead"><h3>Map Intelligence</h3></div><div id="mapFull"></div></article></section>
 <section class="view" id="view-premises"><article class="card"><div class="cardhead"><h3>Senarai Premis</h3><span id="premiseCount"></span></div><div class="tablewrap"><table id="premiseTable"><thead><tr><th>No. FoSIM</th><th>Nama Premis</th><th>Daerah</th><th>Kategori</th><th>Pemeriksaan Akhir</th><th>Gred</th><th>Status</th></tr></thead><tbody></tbody></table></div></article></section>
-<section class="view" id="view-import"><div class="importgrid"><article class="card"><div class="upload"><h2>Import Data FoSIM</h2><p>Download KMM101 dari FoSIM → upload di sini → SmartInspection cleaning, mapping, dedup dan update dashboard.</p><div id="dropzone" class="drop"><input id="fileInput" type="file" accept=".xlsx,.xls,.csv" hidden><b>Drop fail KMM101 di sini</b><button id="selectFileBtn">Select File</button><small>.xlsx / .xls / .csv</small></div><div id="filePreview" class="preview hidden"></div><button id="processImportBtn" class="primary hidden">Process Import</button></div></article><article class="card"><div class="cardhead"><h3>Progress Import</h3><span id="pipeTimer" class="pipetimer"></span></div><div id="pipeline" class="pipe"></div><div id="importLog" class="importlog"></div></article></div><article id="importResult" class="card hidden"></article></section>
+<section class="view" id="view-import"><div class="importgrid"><article class="card"><div class="upload"><h2>Import Data FoSIM</h2><p>Download KMM101 dari FoSIM → upload di sini → SmartInspection cleaning, mapping, dedup dan update dashboard.</p><div id="dropzone" class="drop"><input id="fileInput" type="file" accept=".xlsx,.xls,.csv" hidden><b>Drop fail KMM101 di sini</b><button id="selectFileBtn">Select File</button><small>.xlsx / .xls / .csv</small></div><div id="filePreview" class="preview hidden"></div><button id="processImportBtn" class="primary hidden">Process Import</button></div></article><article class="card"><div class="cardhead"><h3>Zero Coding Pipeline</h3></div><ol class="pipeline"><li>Read file</li><li>Detect KMM101 headers</li><li>Clean & canonical map</li><li>Deduplicate</li><li>Update Google Sheets</li><li>Refresh analytics</li></ol></article></div><article id="importResult" class="card hidden"></article></section>
 <section class="view" id="view-history"><article class="card"><div class="cardhead"><h3>Import History</h3></div><div class="tablewrap"><table id="importTable"><thead><tr><th>Masa</th><th>Fail</th><th>Rows</th><th>Accepted</th><th>Duplicate</th><th>Status</th></tr></thead><tbody></tbody></table></div></article></section>
 <div id="toast" class="toast"></div>
 </main></div>
@@ -65,197 +52,6 @@
 <form id="siUploadForm" method="POST" target="siUploadFrame" class="hidden"><input name="action" id="formAction"><input name="payload" id="formPayload"></form>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
-<script src="./config.js"></script><script>
-const CFG=window.SI_CONFIG||{};let DB={premises:[],summary:{},analytics:{},imports:[]},GEO_PREVIEW=[],map=null,markerLayer=null,heatLayer=null,currentMapMode='pins',pendingImport=null;const $=id=>document.getElementById(id),fmt=n=>Number(n||0).toLocaleString('en-MY'),pct=(n,d)=>d?Math.round(n/d*100):0,apiUrl=()=>CFG.API_URL,esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));function toast(m){const t=$('toast');t.textContent=m;t.style.whiteSpace='pre-line';t.style.maxWidth='460px';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),Math.max(2500,String(m).length*45))}
-function jsonp(action,params={}){return new Promise((resolve,reject)=>{if(!apiUrl()||apiUrl().includes('PASTE_'))return reject(new Error('API_URL belum ditetapkan dalam config.js'));const cb='si_'+Date.now()+'_'+Math.random().toString(36).slice(2),s=document.createElement('script'),q=new URLSearchParams({action,callback:cb,...params});const timer=setTimeout(()=>{cleanup();reject(new Error('API timeout selepas 120 saat. Semak Executions Apps Script dan saiz History.'))},120000);function cleanup(){clearTimeout(timer);delete window[cb];s.remove()}window[cb]=d=>{cleanup();d&&d.ok===false?reject(new Error(d.error||'API error')):resolve(d)};s.onerror=()=>{cleanup();reject(new Error('Tidak dapat hubungi API'))};s.src=apiUrl()+'?'+q;document.body.appendChild(s)})}
-function initNav(){document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('view-'+b.dataset.view).classList.add('active');$('filters').style.display=['dashboard','analytics','map','premises'].includes(b.dataset.view)?'grid':'none';$('pageTitle').textContent={dashboard:'Dashboard Pemantauan Premis',analytics:'Advanced Analytics',map:'Map Intelligence',premises:'Senarai Premis',import:'Import Data FoSIM',history:'Import History'}[b.dataset.view];if(b.dataset.view==='history')renderImportHistory();if(b.dataset.view==='map')setTimeout(()=>initFullMap(),80)})}
-function initMap(){map=L.map('map',{preferCanvas:true}).setView([4.2,102.2],6);const g=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxZoom:16,attribution:'Tiles © Esri'}),s=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles © Esri'}),sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles © Esri'});g.addTo(map);L.control.layers({'Peta Ringkas':g,'Peta Jalan':s,'Satelit':sat}).addTo(map);markerLayer=L.layerGroup().addTo(map)}
-let fullMap=null,fullMarkers=null;const hasCoord=p=>p.latitude!==null&&p.latitude!==undefined&&p.longitude!==null&&p.longitude!==undefined&&Number.isFinite(Number(p.latitude))&&Number.isFinite(Number(p.longitude))&&Number(p.latitude)>=0.8&&Number(p.latitude)<=7.5&&Number(p.longitude)>=99&&Number(p.longitude)<=120;
-function initFullMap(){if(typeof L==='undefined')return;if(!fullMap){fullMap=L.map('mapFull').setView([4.2,102.2],6);L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxZoom:16,attribution:'Tiles © Esri'}).addTo(fullMap);fullMarkers=L.layerGroup().addTo(fullMap)}fullMap.invalidateSize();fullMarkers.clearLayers();const rows=GEO_PREVIEW.filter(hasCoord);rows.forEach(p=>L.circleMarker([p.latitude,p.longitude],{radius:6,color:p.status==='REVIEW'?'#ba7b16':'#087d46',fillColor:p.status==='REVIEW'?'#f7bf57':'#1bc47a',fillOpacity:.45}).bindPopup(`<b>${esc(p.premiseName)}</b><br>${esc(p.status)} — ${esc(p.matchedAddress)}`).addTo(fullMarkers));fitMap(fullMap,rows)}function statusColor(s){return s==='CURRENT'?'#0da35a':s==='DUE'?'#e6a00a':s==='OVERDUE'?'#e93a4c':'#7259d6'}function addMarker(target,p){if(!hasCoord(p))return;L.circleMarker([+p.latitude,+p.longitude],{radius:6,color:'#fff',weight:2,fillColor:statusColor(p.status),fillOpacity:.95}).bindPopup(`<b>${esc(p.premiseName)}</b><br><small>${esc(p.premiseId)} • ${esc(p.district)}</small><br><small>${esc(p.status)} • Risk ${p.riskScore||0}</small>`).addTo(target)}function fitMap(target,rows){const pts=rows.filter(hasCoord).map(p=>[+p.latitude,+p.longitude]);if(pts.length)target.fitBounds(L.latLngBounds(pts).pad(.08))}
-function filters(){return{year:$('yearFilter').value,state:$('stateFilter').value,district:$('districtFilter').value,type:$('typeFilter').value,grade:$('gradeFilter').value,q:$('searchBox').value.trim().toLowerCase()}}
-function filteredPremises(){const f=filters();return(DB.premises||[]).filter(p=>{if(f.state!=='ALL'&&p.state!==f.state)return false;if(f.district!=='ALL'&&p.district!==f.district)return false;if(f.year!=='ALL'&&!(p.inspectionYears||[]).includes(f.year))return false;if(f.type!=='ALL'&&!(p.inspectionTypes||[]).includes(f.type))return false;if(f.grade!=='ALL'&&p.lastGrade!==f.grade)return false;if(f.q&&!(`${p.premiseName} ${p.premiseId} ${p.address}`.toLowerCase().includes(f.q)))return false;return true})}
-function fillSelect(id,vals,label){const s=$(id),old=s.value;s.innerHTML=`<option value="ALL">${label}</option>`;[...new Set(vals.filter(Boolean))].sort().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;s.appendChild(o)});if([...s.options].some(o=>o.value===old))s.value=old;else s.value='ALL'}
-function populateDistrictFilter(){const state=$('stateFilter').value;const list=(DB.premises||[]).filter(p=>state==='ALL'||p.state===state);fillSelect('districtFilter',list.map(p=>p.district),'Semua Daerah')}
-function populateFilters(){fillSelect('stateFilter',(DB.premises||[]).map(x=>x.state),'Semua Negeri');populateDistrictFilter();fillSelect('yearFilter',DB.analytics?.years||[],'Semua Tahun');fillSelect('typeFilter',(DB.analytics?.inspectionTypes||[]).map(x=>x.name),'Semua Jenis Pemeriksaan')}
-function renderMap(){if(!map||!markerLayer)return;markerLayer.clearLayers();if(heatLayer){map.removeLayer(heatLayer);heatLayer=null}const state=$('stateFilter').value,district=$('districtFilter').value;const rows=GEO_PREVIEW.filter(p=>hasCoord(p)&&(state==='ALL'||p.state===state)&&(district==='ALL'||p.district===district));const verified=rows.filter(p=>p.status==='VERIFIED');const review=rows.filter(p=>p.status==='REVIEW');const text=`Pratonton ${fmt(rows.length)} lokasi GeoEngine (${fmt(verified.length)} disahkan, ${fmt(review.length)} anggaran/perlu semakan). Bukan peta penuh 134 ribu premis.`;$('mapCoverage').textContent=text;if(currentMapMode==='high'){$('mapCoverage').textContent+=' Risk Map premis belum boleh dinilai sehingga lokasi disahkan.';return}if(currentMapMode==='heat'&&L.heatLayer)heatLayer=L.heatLayer(rows.map(p=>[p.latitude,p.longitude,p.status==='VERIFIED'?1:.25]),{radius:25,blur:20,minOpacity:.15}).addTo(map);else rows.forEach(p=>{const review=p.status==='REVIEW';L.circleMarker([p.latitude,p.longitude],{radius:review?5:7,color:review?'#ba7b16':'#087d46',weight:2,fillColor:review?'#f7bf57':'#1bc47a',fillOpacity:review?.35:.85}).bindPopup(`<b>${esc(p.premiseName)}</b><br>${esc(p.premiseId)}<br><b>${review?'ANGGARAN — PERLU SEMAKAN':'DISAHKAN'}</b><br>Padanan: ${esc(p.matchedAddress)}<br>Jenis: ${esc(p.resultType)} • Confidence ${Number(p.confidence||0).toFixed(2)}`).addTo(markerLayer)});fitMap(map,rows)}
-function renderDashboard(){const s=DB.summary||{},rows=filteredPremises(),total=rows.length||s.premises||0,ins=rows.filter(p=>p.inspectionCount>0).length,nev=rows.filter(p=>p.status==='NEVER').length,ov=rows.filter(p=>p.status==='OVERDUE').length;$('kPremises').textContent=fmt(total);$('kInspected').textContent=fmt(ins);$('kInspectedPct').textContent=pct(ins,total)+'% coverage';$('kNever').textContent=fmt(nev);$('kNeverPct').textContent=pct(nev,total)+'% premis';$('kOverdue').textContent=fmt(ov);$('kClosure').textContent=fmt(s.closures||0);$('kNotice').textContent=fmt(s.notice32b||0);const pri=[...rows].sort((a,b)=>(b.riskScore||0)-(a.riskScore||0)).slice(0,12);$('priorityCount').textContent=rows.filter(p=>(p.riskScore||0)>=65).length;$('priorityList').innerHTML=pri.map(p=>`<div class="priority"><div class="risk" style="background:${statusColor(p.status)}">${p.riskScore||0}</div><div><b>${esc(p.premiseName)}</b><small>${esc(p.premiseId)} • ${esc(p.district)}<br>${esc(p.status)} • ${p.inspectionAgeDays??'-'} hari</small></div></div>`).join('');renderTypeBars();renderGrade();renderPremises();renderAnalytics();renderMap()}
-function renderTypeBars(){const a=DB.analytics?.inspectionTypes||[],m=Math.max(1,...a.map(x=>x.count));$('typeBars').innerHTML=a.slice(0,10).map(x=>`<div class="barrow"><div class="barlabel"><span>${esc(x.name)}</span><b>${fmt(x.count)}</b></div><div class="track"><div class="fill" style="width:${x.count/m*100}%"></div></div></div>`).join('')}function renderGrade(){const g=DB.analytics?.grades||{A:0,B:0,C:0,U:0},t=Math.max(1,g.A+g.B+g.C+g.U),a=[['A',g.A,'#0da35a'],['B',g.B,'#e6a00a'],['C',g.C,'#e93a4c'],['Tiada',g.U,'#9aa8b8']];$('gradeBar').innerHTML=a.map(x=>`<span style="width:${x[1]/t*100}%;background:${x[2]}">${x[1]?pct(x[1],t)+'%':''}</span>`).join('');$('gradeLegend').innerHTML=a.map(x=>`<div><b style="color:${x[2]}">${x[0]}</b><br>${fmt(x[1])}</div>`).join('')}function renderAnalytics(){const a=DB.analytics||{},b=a.ageBuckets||[];$('ageBuckets').innerHTML=b.map(x=>`<div class="barrow"><div class="barlabel"><span>${esc(x.label)}</span><b>${fmt(x.count)}</b></div><div class="track"><div class="fill" style="width:${x.pct||0}%"></div></div></div>`).join('');$('districtTable').querySelector('tbody').innerHTML=(a.districts||[]).map(x=>`<tr><td>${esc(x.district)}</td><td>${fmt(x.premises)}</td><td>${fmt(x.inspected)}</td><td>${x.coverage||0}%</td><td>${fmt(x.overdue)}</td><td>${fmt(x.closures)}</td></tr>`).join('')}function renderPremises(){const r=filteredPremises();$('premiseCount').textContent=fmt(r.length)+' premis';$('premiseTable').querySelector('tbody').innerHTML=r.slice(0,500).map(p=>`<tr><td>${esc(p.premiseId)}</td><td>${esc(p.premiseName)}</td><td>${esc(p.district)}</td><td>${esc(p.category)}</td><td>${esc(p.lastInspectionDate||'-')}</td><td>${esc(p.lastGrade||'-')}</td><td>${esc(p.status||'-')}</td></tr>`).join('')}function renderImportHistory(){$('importTable').querySelector('tbody').innerHTML=(DB.imports||[]).map(x=>`<tr><td>${esc(x.timestamp)}</td><td>${esc(x.fileName)}</td><td>${fmt(x.rows)}</td><td>${fmt(x.accepted)}</td><td>${fmt(x.duplicates)}</td><td>${esc(x.status)}</td></tr>`).join('')}
-async function loadDashboard(){try{$('apiState').textContent='loading';const [a,b]=await Promise.all([jsonp('dashboardSummary'),jsonp('geoPreview',{limit:80})]);const meta=a.data||a,geo=b.data||b;if(!meta.summary)throw new Error('Ringkasan dashboard tidak sah');DB.summary=meta.summary;DB.locationStats=meta.locationStats||{};GEO_PREVIEW=geo.points||[];$('apiState').textContent='online';const s=DB.summary;$('kPremises').textContent=fmt(s.premises);$('kInspected').textContent=fmt(s.inspected);$('kInspectedPct').textContent=pct(s.inspected,s.premises)+'% coverage rekod';$('kNever').textContent=fmt(s.never);$('kNeverPct').textContent=pct(s.never,s.premises)+'% rekod';$('kOverdue').textContent=fmt(s.overdue);$('kClosure').textContent=fmt(s.closures);$('kNotice').textContent=fmt(s.notice32b);fillSelect('stateFilter',GEO_PREVIEW.map(p=>p.state),'Semua Negeri');fillSelect('districtFilter',GEO_PREVIEW.map(p=>p.district),'Semua Daerah');$('dataNotice').textContent='KPI nasional daripada snapshot. Peta hanya pratonton koordinat GeoEngine; data senarai/analitik penuh memerlukan API berhalaman.';renderMap()}catch(e){$('apiState').textContent='offline';$('dataNotice').textContent='Dashboard gagal: '+e.message;$('mapCoverage').textContent=e.message;toast(e.message);console.error(e)}}
-/* ===== KMM101 parser (robust header detection) ===== */
-const squash=v=>String(v??"").toUpperCase().replace(/[^A-Z0-9]/g,"");
-const H={
-  NEGERI:"Nama Negeri",DAERAH:"Nama Daerah",
-  TARIKHPEMERIKSAAN:"Tarikh Pemeriksaan",JENISPEMERIKSAAN:"Jenis Pemeriksaan",
-  NAMAPREMIS:"Nama Premis",NOPENDAFTARANPREMISFOSIM:"No. Pendaftaran Premis-FoSIM",
-  NOPENDAFTARANPREMIS:"No. Pendaftaran Premis-FoSIM",
-  NAMANEGERI:"Nama Negeri",NAMADAERAH:"Nama Daerah",
-  NAMAPEGAWAIYANGMENJALANKANPEMERIKSAAN:"Nama Pegawai yang Menjalankan Pemeriksaan",
-  JAWATANPKPPPKPPTM:"Jawatan (PKP/PPKP/PTM)",NAMASYARIKAT:"Nama Syarikat",ALAMATSYARIKAT:"Alamat Syarikat",
-  NAMAPEMILIKPREMIS:"Nama Pemilik Premis",ALAMATPREMIS:"Alamat Premis",
-  KATEGORIPREMISP0P4:"Kategori Premis (P0-P4)",KATEGORIPREMIS:"Kategori Premis (P0-P4)",
-  SUBKATEGORIPREMIS:"Sub Kategori Premis",JENISBORANGPEMERIKSAAN:"Jenis Borang Pemeriksaan",
-  STATUSPENDAFTARANMENGIKUTPPKM2009:"Status Pendaftaran Mengikut PPKM 2009",
-  MARKAHPENILAIANTAHAPKEBERSIHANPREMIS:"Markah Penilaian tahap kebersihan premis (%)",
-  GRED:"Gred",ARAHANPENUTUPAN:"Arahan Penutupan",SEBABPENUTUPAN:"Sebab Penutupan",
-  PENGELUARANNOTISSEKSYEN32B:"Pengeluaran Notis Seksyen 32B",BULAN:"Bulan"
-};
-const HKEYS=Object.keys(H).sort((a,b)=>b.length-a.length);
-const ANCHORS=["Nama Negeri","Nama Daerah","Tarikh Pemeriksaan","Jenis Pemeriksaan","Nama Premis","No. Pendaftaran Premis-FoSIM","Markah Penilaian tahap kebersihan premis (%)","Gred"];
-const REQUIRED_DISPLAY=["Nama Negeri","Nama Daerah","Tarikh Pemeriksaan","Jenis Pemeriksaan","Nama Premis","No. Pendaftaran Premis-FoSIM"];
-
-// Padan tepat dahulu; jika tiada, padan "mengandungi" (cth. "Nama Premis *", "1. Nama Negeri")
-function canonicalHeaderName(h){
-  const s=squash(h);
-  if(!s) return "";
-  if(H[s]) return H[s];
-  for(const k of HKEYS){ if(k.length>=8 && s.length<=k.length+20 && s.includes(k)) return H[k]; }
-  return String(h??"").replace(/\s+/g," ").trim();
-}
-function headerScore(row){
-  const found=new Set((row||[]).map(canonicalHeaderName));
-  return ANCHORS.filter(a=>found.has(a)).length;
-}
-function detectHeader(matrix){
-  let best={row:-1,score:0};
-  const limit=Math.min(100,matrix.length);
-  for(let r=0;r<limit;r++){
-    const sc=headerScore(matrix[r]||[]);
-    if(sc>best.score) best={row:r,score:sc};
-  }
-  return best.score>=3?best:{row:-1,score:best.score,nearest:best.row};
-}
-function cellToValue(v){
-  if(v instanceof Date && !isNaN(v)){
-    // +12 jam supaya ralat saat/zon masa SheetJS tidak menukar hari
-    const d=new Date(v.getTime()+12*3600*1000);
-    return d.getUTCFullYear()+"-"+String(d.getUTCMonth()+1).padStart(2,"0")+"-"+String(d.getUTCDate()).padStart(2,"0");
-  }
-  return v==null?"":String(v).replace(/ /g," ").trim();
-}
-
-function readWorkbook(file){
-  return new Promise((resolve,reject)=>{
-    const fr=new FileReader();
-    fr.onload=e=>{
-      try{
-        const wb=XLSX.read(e.target.result,{type:"array",cellDates:true,cellText:true,dateNF:"yyyy-mm-dd"});
-        let best=null; const seen=[];
-        wb.SheetNames.forEach(sheetName=>{
-          const ws=wb.Sheets[sheetName];
-          if(!ws||!ws["!ref"]) return;
-          const matrix=XLSX.utils.sheet_to_json(ws,{header:1,raw:false,dateNF:"yyyy-mm-dd",defval:"",blankrows:false});
-          const d=detectHeader(matrix);
-          const first=(matrix[d.row>=0?d.row:Math.max(0,d.nearest??0)]||[]).map(cellToValue).filter(Boolean).slice(0,8);
-          seen.push(`[${sheetName}] ${matrix.length} baris, padanan ${d.score}/8${first.length?" -> "+first.join(" | "):""}`);
-          if(d.row<0) return;
-          if(!best||d.score>best.score) best={sheetName,matrix,hr:d.row,score:d.score};
-        });
-        if(!best){
-          throw new Error("Format KMM101 tidak dikenali. Header tidak dijumpai.\n"+(seen.join("\n")||"Fail kosong.")+"\nPastikan fail ialah laporan KMM101 FoSIM asal (ada lajur Nama Negeri, Nama Daerah, Tarikh Pemeriksaan, ...).");
-        }
-        // Hanya simpan lajur yang dikenali (KMM101 ada ~56 lajur; backend cuma guna ~22)
-        const KEEP=new Set(Object.values(H)),seenH=new Set();
-        const headers=(best.matrix[best.hr]||[]).map(h=>{const c=canonicalHeaderName(h);if(!KEEP.has(c)||seenH.has(c))return "";seenH.add(c);return c});
-        const live=headers.filter(Boolean);
-        const all=best.matrix.slice(best.hr+1).filter(r=>(r||[]).some(v=>cellToValue(v)!==""))
-          .map(r=>{const o={};headers.forEach((h,i)=>{if(h)o[h]=cellToValue(r[i])});return o});
-        // Baris tanpa tarikh / No. FoSIM (baris sambungan atau footer) akan ditolak backend; langkau di sini
-        const rows=all.filter(o=>o["Tarikh Pemeriksaan"]&&o["No. Pendaftaran Premis-FoSIM"]);
-        const missing=REQUIRED_DISPLAY.filter(h=>!live.includes(h));
-        resolve({sheet:best.sheetName,headers:live,rows,skipped:all.length-rows.length,headerRow:best.hr+1,score:best.score,missing});
-      }catch(err){reject(err)}
-    };
-    fr.onerror=()=>reject(new Error("Fail Excel tidak dapat dibaca."));
-    fr.readAsArrayBuffer(file);
-  });
-}
-
-
-/* ===== Progress tracker ===== */
-const STEPS=[['read','Baca fail Excel'],['header','Kesan header KMM101'],['clean','Bersih & pilih lajur'],['begin','Sambung ke Google Sheets'],['upload','Upload data ke staging'],['final','Deduplicate & simpan ke History'],['refresh','Refresh dashboard']];
-let stepState={},runTimer=null,runStart=0;
-function pipeInit(){stepState={};STEPS.forEach(([k])=>stepState[k]={s:'pending',d:'',pct:null});pipeRender();$('importLog').innerHTML='';$('pipeTimer').textContent=''}
-function setStep(k,s,d,pct){const o=stepState[k]||{};stepState[k]={s,d:d===undefined?(o.d||''):d,pct:pct===undefined?(s==='active'?o.pct:null):pct};pipeRender()}
-function pipeRender(){const ic={pending:'○',active:'◔',done:'✓',error:'✗'};$('pipeline').innerHTML=STEPS.map(([k,l],i)=>{const x=stepState[k]||{s:'pending',d:'',pct:null};return`<div class="pstep ${x.s}"><span class="pic">${ic[x.s]}</span><div><b>${i+1}. ${l}</b>${x.d?`<small>${esc(x.d)}</small>`:''}${x.pct!=null?`<div class="pbar"><i style="width:${x.pct}%"></i></div>`:''}</div></div>`}).join('')}
-function logLine(m,cls){const L=$('importLog'),t=new Date().toLocaleTimeString('en-GB');L.insertAdjacentHTML('beforeend',`<div class="${cls||''}">[${t}] ${esc(m)}</div>`);L.scrollTop=L.scrollHeight}
-function startClock(){runStart=Date.now();clearInterval(runTimer);runTimer=setInterval(()=>{$('pipeTimer').textContent='⏱ '+fmtSec((Date.now()-runStart)/1000)},500)}
-function stopClock(){clearInterval(runTimer)}
-function fmtSec(s){s=Math.round(s);return s>=60?Math.floor(s/60)+'m '+String(s%60).padStart(2,'0')+'s':s+'s'}
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-
-/* ===== Hantar data ke Apps Script ===== */
-function postForm(action,payload,ms){ms=ms||60000;return new Promise((res,rej)=>{const token='si_'+Date.now()+'_'+Math.random().toString(36).slice(2);payload._token=token;const h=e=>{if(e.data?.source!=='SmartInspectionAPI'||e.data?.token!==token)return;clearTimeout(tm);window.removeEventListener('message',h);e.data.ok?res(e.data):rej(new Error(e.data.error||'Import gagal'))};window.addEventListener('message',h);const tm=setTimeout(()=>{window.removeEventListener('message',h);rej(new Error('Tiada respons daripada Apps Script dalam '+Math.round(ms/1000)+' saat. Semak: API_URL (hujung /exec), deployment "Anyone", dan Code.gs versi terbaru sudah di-deploy.'))},ms);$('siUploadForm').action=apiUrl();$('formAction').value=action;$('formPayload').value=JSON.stringify(payload);$('siUploadForm').submit()})}
-async function postRetry(action,payload,ms,label){let last;for(let a=1;a<=3;a++){try{return await postForm(action,Object.assign({},payload),ms)}catch(e){last=e;logLine(`${label} gagal (percubaan ${a}/3): ${e.message}`,'err');if(a<3)await sleep(1500*a)}}throw last}
-
-async function processImport(){
-  if(!pendingImport)return;
-  if(!apiUrl()||apiUrl().includes('PASTE_')){toast('API_URL belum ditetapkan dalam config.js');return}
-  const{file,parsed}=pendingImport,chunk=CFG.IMPORT_CHUNK_SIZE||750,R=pendingImport.resume,id=R?R.id:'IMP-'+Date.now(),startI=R?R.next:0,total=parsed.rows.length,n=Math.ceil(total/chunk),btn=$('processImportBtn');
-  btn.disabled=true;btn.textContent='Sedang proses…';$('importResult').classList.add('hidden');
-  ['begin','upload','final','refresh'].forEach(k=>setStep(k,'pending',''));startClock();
-  let cur='begin';
-  try{
-    if(R){setStep('begin','done','Sambung semula ID '+id);logLine('SAMBUNG SEMULA import '+id+' dari baris '+fmt(startI)+' / '+fmt(total),'ok')}
-    else{
-      setStep('begin','active','Menghubungi Apps Script…');logLine('Mula import '+id+' • '+fmt(total)+' baris • '+n+' chunk');
-      await postRetry('beginImport',{importId:id,fileName:file.name,totalRows:total,headers:parsed.headers},120000,'Sambungan');
-      setStep('begin','done','ID '+id);logLine('Sambungan OK, sheet staging sedia','ok');
-      pendingImport.resume={id,next:0};
-    }
-    cur='upload';const tu=Date.now(),c0=Math.floor(startI/chunk)+1;
-    for(let i=startI,c=c0;i<total;i+=chunk,c++){
-      const end=Math.min(i+chunk,total),pct=Math.round(i/total*100);
-      let eta='';if(c>c0){const per=(Date.now()-tu)/(c-c0);eta=' • baki ≈ '+fmtSec(per*(n-c+1)/1000)}
-      setStep('upload','active',`Chunk ${c}/${n} • ${fmt(i)} → ${fmt(end)} / ${fmt(total)} baris (${pct}%)${eta}`,pct);
-      const r=await postRetry('importChunk',{importId:id,offset:i,rows:parsed.rows.slice(i,end)},90000,'Chunk '+c);
-      pendingImport.resume={id,next:end};logLine(`Chunk ${c}/${n} diterima: ${fmt(r.accepted)} baris diterima`);if(end<total)await sleep(150);
-    }
-    setStep('upload','done',`${fmt(total)} baris dalam ${n} chunk (${fmtSec((Date.now()-tu)/1000)})`,100);pendingImport.resume={id,next:total};
-    cur='final';const tf=Date.now();
-    logLine('Semua chunk dihantar. Menjalankan dedup & simpan (boleh ambil 1–5 minit; JANGAN tutup tab)…');
-    const tick=setInterval(()=>setStep('final','active','Menyemak duplicate & menulis ke INSPECTION_HISTORY… '+fmtSec((Date.now()-tf)/1000)+' berlalu (jangan tutup tab)'),1000);
-    let done;try{done=await postForm('finalizeImport',{importId:id},600000)}finally{clearInterval(tick)}
-    pendingImport.resume=null;setStep('final','done',`Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Rejected ${fmt(done.rejected)} (${fmtSec((Date.now()-tf)/1000)})`);
-    logLine(`Siap simpan: ${fmt(done.accepted)} baru, ${fmt(done.duplicates)} duplicate, ${fmt(done.rejected)} ditolak`,'ok');
-    cur='refresh';setStep('refresh','active','Membina snapshot dashboard daripada History… ini mungkin mengambil beberapa minit. Jangan tutup tab.');
-    $('importResult').classList.remove('hidden');
-    $('importResult').innerHTML=`<div class="cardhead"><h3>✅ Import selesai: ${esc(file.name)}</h3></div><div style="padding:14px">Processed ${fmt(done.rows)} • Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Rejected ${fmt(done.rejected)} • Masa ${fmtSec((Date.now()-runStart)/1000)}</div>`;
-    logLine('Membina snapshot dashboard. Import History sudah selamat; proses ini tidak mengubah rekod pemeriksaan.');
-    const rebuilt=await postForm('rebuildDashboard',{},350000);
-    logLine(rebuilt.message||'Snapshot dashboard siap','ok');
-    await loadDashboard();
-    if($('apiState').textContent==='online'){setStep('refresh','done',`${fmt((DB.premises||[]).length)} premis dalam dashboard`);logLine('Dashboard dikemas kini. SELESAI.','ok')}
-    else{setStep('refresh','error','Import berjaya tetapi bacaan dashboard gagal. Semak API/Apps Script.');logLine('Dashboard gagal dimuat semula (data import sudah selamat disimpan).','err')}
-  }catch(e){
-    setStep(cur,'error',e.message);logLine('GAGAL pada langkah "'+(STEPS.find(x=>x[0]===cur)||[])[1]+'": '+e.message,'err');toast(e.message);
-    if(cur==='upload'||cur==='final')logLine('Data staging dikekalkan. Tekan "Sambung Semula Import" untuk meneruskan; finalisasi akan menyemak jumlah baris dahulu.','err');
-    if(cur==='refresh')logLine('Rekod History sudah disimpan. Snapshot dashboard belum siap; jalankan rebuildDashboardSnapshotV22() melalui editor Apps Script, kemudian Refresh. Jangan upload fail semula.','err');
-  }finally{stopClock();$('pipeTimer').textContent='⏱ '+fmtSec((Date.now()-runStart)/1000);btn.disabled=false;btn.textContent=pendingImport&&pendingImport.resume?'Sambung Semula Import':'Process Import'}
-}
-function initImport(){const i=$('fileInput'),d=$('dropzone');pipeInit();$('selectFileBtn').onclick=()=>i.click();i.onchange=()=>handleFile(i.files[0]);['dragenter','dragover'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.add('drag')}));['dragleave','drop'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.remove('drag')}));d.addEventListener('drop',e=>handleFile(e.dataTransfer.files[0]));$('processImportBtn').onclick=processImport}
-async function handleFile(file){
-  if(!file)return;pendingImport=null;pipeInit();$('processImportBtn').classList.add('hidden');$('importResult').classList.add('hidden');
-  const mb=(file.size/1048576).toFixed(1);startClock();
-  setStep('read','active',`Membaca ${file.name} (${mb} MB)… fail besar boleh ambil 15–60 saat, halaman mungkin kelihatan beku seketika`);logLine('Membaca '+file.name+' ('+mb+' MB)');await sleep(80);
-  try{
-    const p=await readWorkbook(file),missing=p.missing;
-    setStep('read','done',`${p.sheet} • ${fmtSec((Date.now()-runStart)/1000)}`);
-    setStep('header','done',`Header di baris ${p.headerRow} • padanan ${p.score}/8`+(missing.length?' • TIADA: '+missing.join(', '):''));
-    if(missing.length){setStep('header','error','Lajur wajib tiada: '+missing.join(', '));logLine('Lajur wajib tiada: '+missing.join(', '),'err')}
-    else{setStep('clean','done',`${fmt(p.rows.length)} baris sah • ${fmt(p.skipped)} dilangkau (tiada tarikh/No. FoSIM) • ${p.headers.length} lajur digunakan`);logLine(`Fail sedia: ${fmt(p.rows.length)} baris sah. Tekan "Process Import".`,'ok')}
-    pendingImport={file,parsed:p};
-    $('filePreview').classList.remove('hidden');
-    $('filePreview').innerHTML=`<b>${esc(file.name)}</b><br>Sheet: ${esc(p.sheet)} • header baris ${p.headerRow}<br>${fmt(p.rows.length)} rows sah${p.skipped?' ('+fmt(p.skipped)+' baris dilangkau: tiada tarikh/No. FoSIM)':''} • ${p.headers.length} lajur digunakan • ${missing.length?'Lajur wajib tiada: '+esc(missing.join(', ')):'✓ KMM101 recognised'}`;
-    $('processImportBtn').classList.toggle('hidden',!!missing.length);
-  }catch(e){
-    const hdr=String(e.message).startsWith('Format KMM101');
-    if(hdr){setStep('read','done','Fail berjaya dibaca');setStep('header','error','Header KMM101 tidak dijumpai')}else setStep('read','error',e.message);
-    logLine(e.message,'err');toast(e.message);
-  }finally{stopClock()}
-}
-function initEvents(){initNav();initImport();$('refreshBtn').onclick=loadDashboard;$('stateFilter').onchange=()=>{const state=$('stateFilter').value;fillSelect('districtFilter',GEO_PREVIEW.filter(p=>state==='ALL'||p.state===state).map(p=>p.district),'Semua Daerah');renderMap()};$('districtFilter').onchange=renderMap;['gradeFilter','yearFilter','typeFilter'].forEach(id=>$(id).disabled=true);$('searchBox').disabled=true;document.querySelectorAll('[data-mapmode]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mapmode]').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentMapMode=b.dataset.mapmode;renderMap()})}window.addEventListener('load',()=>{initEvents();loadDashboard();try{initMap()}catch(e){console.error('Peta tidak dapat dimuat (Leaflet disekat?):',e);toast('Peta tidak dapat dimuat, tetapi data masih berfungsi')}});
-console.info('SmartInspection app.js PATCH v4.2 (progress tracker)');
-
-</script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+<script src="./config.js?v=20261106-2125"></script><script src="./app.js?v=20261106-2125"></script>
 </body></html>
