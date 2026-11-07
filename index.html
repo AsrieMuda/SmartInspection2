@@ -22,12 +22,25 @@
 
 .maplegend{background:#fff;padding:7px 9px;border-radius:9px;box-shadow:0 2px 10px rgba(16,43,78,.18);font-size:10px;line-height:1.8;color:#234365}.maplegend hr{border:0;border-top:1px solid #e5ecf3;margin:4px 0}.maplegend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin:0 4px 0 8px;vertical-align:middle}.maplegend i:first-of-type{margin-left:0}.maplegend i.big{width:12px;height:12px;background:#64748b}.maplegend i.sm{width:8px;height:8px;background:#64748b;opacity:.55}
 
+.fcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;box-shadow:var(--shadow);max-width:760px}
+#view-field{max-width:760px}.frow{display:flex;gap:8px;margin-top:8px}.frow:first-child{margin-top:0}
+.frow select,.frow input{flex:1;min-width:0;height:44px;border:1px solid #dbe5ef;background:#f7f9fc;border-radius:10px;padding:0 10px;font-size:14px;color:#234365}
+.frow button,.fbtn{flex:1;height:44px;border:1px solid #d9e4ee;background:#fff;border-radius:10px;font-weight:700;color:#234365;font-size:13px;display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer}
+.fsum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.fsum .fname{grid-column:1/-1;font-weight:800;font-size:14px}.fsum div:not(.fname){background:#f7f9fc;border-radius:10px;padding:9px}.fsum b{display:block;font-size:20px}.fsum small{font-size:10px;color:var(--muted)}
+.fchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.fchips:first-child{margin-top:0}.chip{border:1px solid #d9e4ee;background:#fff;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:700;color:#234365;cursor:pointer;user-select:none}.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.fstatus{margin-top:9px;font-size:12px;color:var(--muted)}.fstatus.err{color:var(--red)}.fempty{padding:18px;text-align:center;color:var(--muted);font-size:13px}
+.pcard{background:#fff;border:1px solid var(--line);border-left:5px solid #e93a4c;border-radius:12px;padding:11px;margin-bottom:9px;max-width:760px}.ptop{display:flex;justify-content:space-between;gap:8px;font-size:14px}.tick{color:var(--green);font-size:11px;font-weight:800;white-space:nowrap}
+.paddr{font-size:12px;color:#456;margin-top:3px}.pmeta{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.6}.pmeta .red{color:var(--red)}
+.pact{display:flex;gap:6px;margin-top:9px}.pact button,.pact a{flex:1;height:40px;border:1px solid #d9e4ee;background:#fff;border-radius:9px;font-size:12px;font-weight:700;color:#234365;display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer}
+.pdet{margin-top:6px}.fmore{width:100%;height:44px;border:1px solid #d9e4ee;background:#fff;border-radius:10px;font-weight:700;color:var(--blue);margin-bottom:10px}.fclear{text-align:center;font-size:11px;margin:6px 0 18px}.fclear a{color:var(--muted)}
+
 </style>
 </head>
 <body>
 <div class="shell">
 <aside><div class="brand"><b>SI</b><span>SmartInspection<small>FoSIM Intelligence</small></span></div>
 <nav>
+<button data-view="field">📍 Lapangan</button>
 <button data-view="dashboard" class="active">▦ Dashboard</button>
 <button data-view="analytics">◫ Analytics</button>
 <button data-view="map">⌖ Map Intelligence</button>
@@ -44,6 +57,22 @@
 <select id="typeFilter"><option value="ALL">Semua Jenis Pemeriksaan</option></select>
 <select id="gradeFilter"><option value="ALL">Semua Gred</option><option>A</option><option>B</option><option>C</option></select>
 <input id="searchBox" placeholder="Cari premis / No. FoSIM">
+</section>
+<section class="view" id="view-field">
+<div class="fcard">
+ <div class="frow"><select id="fState"><option value="">— Pilih negeri —</option></select><select id="fDist" disabled><option value="">—</option></select></div>
+ <div class="fsum" id="fSum"></div>
+ <div class="frow"><button id="fCopy">📋 Salin ringkasan</button><a id="fWA" target="_blank" rel="noopener" class="fbtn">💬 WhatsApp</a></div>
+</div>
+<div class="fcard">
+ <div class="fchips" id="fAge"><span class="chip on" data-age="365">&gt; 12 bulan</span><span class="chip" data-age="730">&gt; 24 bulan</span><span class="chip" data-age="1095">&gt; 36 bulan</span><span class="chip" data-age="0">Semua</span></div>
+ <div class="fchips"><span class="chip" id="fGC">Gred C</span><span class="chip" id="fFlag">Ada tutup / 32B</span><span class="chip on" id="fHide">Sembunyi yang disemak</span></div>
+ <div class="frow"><input id="fSearch" placeholder="Cari premis…"><select id="fSort"><option value="old">Paling lama</option><option value="near">Paling dekat</option><option value="risk">Risiko tinggi</option></select></div>
+ <div class="frow"><button id="fRandom">🎲 Pilih rawak (10)</button><button id="fGPS">📍 Lokasi saya</button></div>
+ <div id="fStatus" class="fstatus">Memuat…</div>
+</div>
+<div id="fList"></div>
+<div class="fclear"><a href="#" id="fClear" onclick="return false">Kosongkan tanda "disemak"</a></div>
 </section>
 <section class="view active" id="view-dashboard">
 <div class="kpis">
@@ -68,13 +97,12 @@
 </main></div>
 <iframe name="siUploadFrame" id="siUploadFrame" class="hiddenframe"></iframe>
 <form id="siUploadForm" method="POST" target="siUploadFrame" class="hidden"><input name="action" id="formAction"><input name="payload" id="formPayload"></form>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 <script src="./config.js"></script><script>
 const CFG=window.SI_CONFIG||{};let DB={premises:[],summary:{},analytics:{},imports:[]},map=null,markerLayer=null,heatLayer=null,currentMapMode='pins',pendingImport=null;const $=id=>document.getElementById(id),fmt=n=>Number(n||0).toLocaleString('en-MY'),pct=(n,d)=>d?Math.round(n/d*100):0,apiUrl=()=>CFG.API_URL,esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));function toast(m){const t=$('toast');t.textContent=m;t.style.whiteSpace='pre-line';t.style.maxWidth='460px';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),Math.max(2500,String(m).length*45))}
 function jsonp(action,params={}){return new Promise((resolve,reject)=>{if(!apiUrl()||apiUrl().includes('PASTE_'))return reject(new Error('API_URL belum ditetapkan dalam config.js'));const cb='si_'+Date.now()+'_'+Math.random().toString(36).slice(2),s=document.createElement('script'),q=new URLSearchParams({action,callback:cb,...params});const timer=setTimeout(()=>{cleanup();reject(new Error('API timeout'))},120000);function cleanup(){clearTimeout(timer);delete window[cb];s.remove()}window[cb]=d=>{cleanup();d&&d.ok===false?reject(new Error(d.error||'API error')):resolve(d)};s.onerror=()=>{cleanup();reject(new Error('Tidak dapat hubungi API'))};s.src=apiUrl()+'?'+q;document.body.appendChild(s)})}
-function initNav(){document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('view-'+b.dataset.view).classList.add('active');$('filters').style.display=['dashboard','analytics','map','premises'].includes(b.dataset.view)?'grid':'none';$('pageTitle').textContent={dashboard:'Dashboard Pemantauan Premis',analytics:'Advanced Analytics',map:'Map Intelligence',premises:'Senarai Premis',import:'Import Data FoSIM',history:'Import History'}[b.dataset.view];if(b.dataset.view==='history')renderImportHistory();if(b.dataset.view==='map')setTimeout(()=>initFullMap(),80)})}
+function initNav(){document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('view-'+b.dataset.view).classList.add('active');$('filters').style.display=['dashboard','analytics','map','premises'].includes(b.dataset.view)?'grid':'none';$('pageTitle').textContent={dashboard:'Dashboard Pemantauan Premis',analytics:'Advanced Analytics',map:'Map Intelligence',premises:'Senarai Premis',import:'Import Data FoSIM',history:'Import History',field:'Semakan Lapangan'}[b.dataset.view];if(b.dataset.view==='field')initField();if(['dashboard','analytics','map','premises'].includes(b.dataset.view))ensureFull();if(b.dataset.view==='history')renderImportHistory();if(b.dataset.view==='map')setTimeout(()=>initFullMap(),80)})}
 function initMap(){map=L.map('map',{preferCanvas:true}).setView([4.2,102.2],6);const g=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxZoom:16,attribution:'Tiles © Esri'}),s=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles © Esri'}),sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles © Esri'});g.addTo(map);L.control.layers({'Peta Ringkas':g,'Peta Jalan':s,'Satelit':sat}).addTo(map);markerLayer=L.featureGroup().addTo(map);attachPremiseEvents(markerLayer,map);addLegend(map)}
 let fullMap=null,fullLayer=null;function initFullMap(){if(typeof L==='undefined')return;if(fullMap){fullMap.invalidateSize();return}fullMap=L.map('mapFull',{preferCanvas:true}).setView([4.2,102.2],6);L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxZoom:16,attribution:'Tiles © Esri'}).addTo(fullMap);fullLayer=L.featureGroup().addTo(fullMap);attachPremiseEvents(fullLayer,fullMap);addLegend(fullMap);renderFullMap()}function renderFullMap(){if(!fullMap||!fullLayer)return;fullLayer.clearLayers();const rows=filteredPremises().filter(hasXY);capPins(rows).list.forEach(p=>addMarker(fullLayer,p));fitMap(fullMap,rows)}function statusColor(s){return s==='CURRENT'?'#0da35a':s==='DUE'?'#e6a00a':s==='OVERDUE'?'#e93a4c':'#7259d6'}const hasXY=p=>p.latitude!=null&&p.latitude!==''&&p.longitude!=null&&p.longitude!==''&&Number.isFinite(+p.latitude)&&Number.isFinite(+p.longitude);function addMarker(target,p){if(!hasXY(p))return;const m=L.circleMarker([+p.latitude,+p.longitude],{radius:p.lq===3?6:4,color:'#fff',weight:1.5,fillColor:statusColor(p.status),fillOpacity:p.lq===3?.95:.6});m._p=p;m.addTo(target)}
 const STATUS_MS={CURRENT:'Terkini',DUE:'Hampir tamat tempoh',OVERDUE:'Lama tak diperiksa',NEVER:'Belum pernah diperiksa'};
@@ -100,6 +128,79 @@ function expandDashboard(C){
   return{premises:prem,summary:C.summary,analytics:{years:C.years,inspectionTypes:C.types,grades:C.grades,districts,ageBuckets:bs.map((b,i)=>({label:b[0],count:cnt[i],pct:Math.round(cnt[i]/mx*100)}))},imports:C.imports||[],generatedAt:C.generatedAt}
 }
 
+
+/* ===== MOD LAPANGAN: ringan untuk telefon (KPI tepat daripada cache kecil; senarai premis dimuat ikut daerah) ===== */
+const IS_MOBILE=matchMedia('(max-width:820px)').matches;let fullLoaded=!IS_MOBILE;
+function ensureFull(){if(fullLoaded)return;fullLoaded=true;toast('Memuat data penuh (besar). Guna Wi-Fi jika boleh…');try{initMap()}catch(e){console.error(e)}loadDashboard()}
+function ensureXLSX(){return window.XLSX?Promise.resolve():new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';s.onload=res;s.onerror=()=>rej(new Error('Pustaka Excel gagal dimuat. Semak sambungan internet.'));document.head.appendChild(s)})}
+const BASE_DAY=Math.floor(Date.UTC(2015,0,1)/864e5),todayDay=()=>Math.floor(Date.now()/864e5)-BASE_DAY;
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const idb={open(){return new Promise((res,rej)=>{const r=indexedDB.open('si_cache',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})},
+  async get(k){try{const db=await this.open();return await new Promise((res,rej)=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}catch(e){return null}},
+  async set(k,v){try{const db=await this.open();await new Promise((res,rej)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}catch(e){}}};
+const F={lite:null,idx:{},area:null,areaKey:'',age:365,gredC:false,flag:false,hideDone:true,gps:null,rand:null,shown:20,booted:false},DONE=LS.get('si_done',{});
+function fStatus(m,err){const e=$('fStatus');if(e){e.textContent=m||'';e.className='fstatus'+(err?' err':'')}}
+function ageText(d){if(d==null)return'';if(d<31)return d+' hari lalu';if(d<730)return Math.round(d/30.4)+' bulan lalu';return(d/365).toFixed(1)+' tahun lalu'}
+function distKm(a,b,c,d){const R=6371,r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+async function loadLite(){
+  const cached=await idb.get('lite');if(cached&&cached.data&&!F.lite)setLite(cached.data);
+  try{const r=await jsonp('lite'),d=r.data||r;if(!cached||!cached.data||cached.data.gen!==d.gen)await idb.set('lite',{data:d});if(!F.lite||F.lite.gen!==d.gen)setLite(d);$('apiState').textContent='online';fStatus(F.areaKey?'':'Pilih negeri dan daerah.')}
+  catch(e){if(F.lite){$('apiState').textContent='luar talian';fStatus('Mod luar talian: guna data tersimpan ('+String(F.lite.gen).slice(0,10)+').')}else{$('apiState').textContent='offline';fStatus('Gagal memuat: '+e.message,true)}}
+}
+function setLite(d){F.lite=d;F.idx={};d.areas.forEach(x=>{(F.idx[x[0]]||(F.idx[x[0]]={}))[x[1]]=x[2]});fillFieldSelects();renderFieldSummary();if($('fDist').value)loadArea()}
+function fillFieldSelects(){const cur=LS.get('si_area',{}),st=$('fState'),states=Object.keys(F.idx).sort();st.innerHTML='<option value="">— Pilih negeri —</option><option value="*">SELURUH NEGARA</option>'+states.map(s=>`<option>${esc(s)}</option>`).join('');if(cur.s&&(cur.s==='*'||F.idx[cur.s]))st.value=cur.s;fillDistricts(cur.d)}
+function fillDistricts(sel){const s=$('fState').value,dd=$('fDist'),list=s&&s!=='*'&&F.idx[s]?Object.keys(F.idx[s]).sort():[];dd.innerHTML='<option value="">'+(list.length?'— Semua daerah —':'—')+'</option>'+list.map(x=>`<option>${esc(x)}</option>`).join('');dd.disabled=!list.length;if(sel&&list.includes(sel))dd.value=sel}
+function valsOf(s,d){const out=[];const add=a=>{for(let i=0;i<a.length;i++)out.push(a[i])};if(!s||s==='*'){for(const st in F.idx)for(const dd in F.idx[st])add(F.idx[st][dd])}else if(!d){for(const dd in F.idx[s])add(F.idx[s][dd])}else if(F.idx[s]&&F.idx[s][d])add(F.idx[s][d]);return out}
+function statsOf(vals){const t=todayDay(),th=CFG.DEFAULT_THRESHOLD_DAYS||(F.lite&&F.lite.th)||365,o={n:vals.length,over:0,ok:0,never:0,nt:0,clo:0,gc:0};vals.forEach(v=>{const f=v&15;if(f&8){o.never++;return}if(t-(v>>4)>th)o.over++;else o.ok++;if(f&1)o.nt++;if(f&2)o.clo++;if(f&4)o.gc++});return o}
+const pc=(a,b)=>b?Math.round(a/b*100)+'%':'-';
+function areaName(){const s=$('fState').value,d=$('fDist').value;return!s?'':s==='*'?'SELURUH NEGARA':d?s+' › '+d:s}
+function summaryText(){
+  const s=$('fState').value,d=$('fDist').value;if(!F.lite||!s)return'';const st=statsOf(valsOf(s,d)),th=CFG.DEFAULT_THRESHOLD_DAYS||F.lite.th||365;
+  let t=`📍 ${areaName()}\nData: ${String(F.lite.gen).slice(0,10)} • Ambang: ${th} hari\n\nPremis: ${fmt(st.n)}\nDiperiksa ≤12 bulan: ${fmt(st.ok)} (${pc(st.ok,st.n)})\nLama tak diperiksa (>12 bulan): ${fmt(st.over)} (${pc(st.over,st.n)})\nBelum pernah diperiksa: ${fmt(st.never)}\nPernah arahan tutup: ${fmt(st.clo)} • Notis 32B: ${fmt(st.nt)} • Gred C: ${fmt(st.gc)}`;
+  if(s&&!d){const rk=s==='*'?Object.keys(F.idx).map(x=>[x,statsOf(valsOf(x,''))]):Object.keys(F.idx[s]).map(x=>[x,statsOf(F.idx[s][x])]);const top=rk.filter(x=>x[1].n>=20).sort((a,b)=>b[1].over/b[1].n-a[1].over/a[1].n).slice(0,5);if(top.length)t+=`\n\nTertinggal (peratus lama tak diperiksa):\n`+top.map((x,i)=>`${i+1}. ${x[0]} – ${pc(x[1].over,x[1].n)} (${fmt(x[1].over)}/${fmt(x[1].n)})`).join('\n')}
+  return t}
+function renderFieldSummary(){
+  const s=$('fState').value,d=$('fDist').value,box=$('fSum');if(!F.lite||!s){box.innerHTML='';$('fWA').removeAttribute('href');return}
+  const st=statsOf(valsOf(s,d));box.innerHTML=`<div class="fname">${esc(areaName())}</div>`+[['Premis',fmt(st.n),''],['Lama tak diperiksa',fmt(st.over),pc(st.over,st.n)],['Diperiksa ≤12 bln',fmt(st.ok),pc(st.ok,st.n)],['Arahan tutup',fmt(st.clo),'premis'],['Notis 32B',fmt(st.nt),'premis'],['Gred C',fmt(st.gc),'premis']].map(x=>`<div><b>${x[1]}</b><small>${x[0]}${x[2]?' • '+x[2]:''}</small></div>`).join('');
+  $('fWA').href='https://wa.me/?text='+encodeURIComponent(summaryText())}
+async function loadArea(){
+  const s=$('fState').value,d=$('fDist').value;if(!s||s==='*'||!d){F.area=null;F.areaKey='';renderList();return}
+  const key=s+'|'+d;F.areaKey=key;fStatus('Memuat senarai premis '+d+'…');const rec=await idb.get('area:'+key);let data=null;
+  if(rec&&F.lite&&rec.gen===F.lite.gen)data=rec.data;
+  else{try{const r=await jsonp('area',{k:key});data=r.data||r;await idb.set('area:'+key,{gen:F.lite&&F.lite.gen,data})}catch(e){if(rec)data=rec.data;else{fStatus('Gagal memuat kawasan: '+e.message,true);return}}}
+  if(F.areaKey!==key)return;F.area=data.map(a=>{const ld=a[6];return{id:a[0],name:a[1],addr:a[2],lat:a[3],lng:a[4],q:a[5],last:ld,n:a[7],grade:a[8],score:a[9],fl:a[10],never:!ld,age:ld?Math.floor((Date.now()-new Date(ld+'T00:00:00').getTime())/864e5):null}});F.rand=null;F.shown=20;renderList()}
+function visibleList(){const q=($('fSearch').value||'').trim().toLowerCase();return(F.area||[]).filter(p=>{if(F.age&&!(p.never||p.age>F.age))return false;if(F.gredC&&p.grade!=='C')return false;if(F.flag&&!p.fl)return false;if(F.hideDone&&DONE[p.id])return false;if(q&&!(p.name.toLowerCase().includes(q)||p.id.toLowerCase().includes(q)||(p.addr||'').toLowerCase().includes(q)))return false;return true})}
+function sortList(L){const m=$('fSort').value,g=F.gps,dist=p=>g&&p.lat!=null?distKm(g.lat,g.lng,p.lat,p.lng):1e9,risk=p=>(p.never?1500:p.age)+(p.fl&2?400:0)+(p.fl&1?200:0)+(p.grade==='C'?300:0);return[...L].sort(m==='near'?(a,b)=>dist(a)-dist(b):m==='risk'?(a,b)=>risk(b)-risk(a):(a,b)=>(b.never?99999:b.age)-(a.never?99999:a.age))}
+function navUrl(p){return'https://www.google.com/maps/search/?api=1&query='+(p.q===3&&p.lat!=null?p.lat+','+p.lng:encodeURIComponent(p.name+', '+(p.addr||'')))}
+function cardHtml(p){const done=DONE[p.id],col=p.never?'#7259d6':p.age>730?'#e93a4c':p.age>365?'#e6a00a':'#0da35a',g=F.gps&&p.lat!=null?distKm(F.gps.lat,F.gps.lng,p.lat,p.lng):null;
+  return`<div class="pcard" style="border-left-color:${col}" data-id="${esc(p.id)}"><div class="ptop"><b>${esc(p.name)}</b>${done?'<span class="tick">✓ disemak</span>':''}</div><div class="paddr">${esc(p.addr||'-')}</div><div class="pmeta">${p.never?'Belum pernah diperiksa':'Terakhir '+esc(p.last)+' • '+ageText(p.age)}${p.grade?' • Gred '+esc(p.grade)+(p.score!=null?' ('+p.score+'%)':''):''} • ${p.n}×${p.fl&2?' • <b class="red">Arahan tutup</b>':''}${p.fl&1?' • <b class="red">Notis 32B</b>':''}${g!=null?' • ~'+g.toFixed(1)+' km'+(p.q<3?' (anggaran)':''):''}</div><div class="pact"><a data-act="nav" href="${navUrl(p)}" target="_blank" rel="noopener">🧭 Navigasi</a><button data-act="det">📄 Butiran</button><button data-act="done">${done?'↩︎ Batal':'✓ Disemak'}</button></div><div class="pdet"></div></div>`}
+function renderList(){
+  const box=$('fList');if(!F.areaKey||!F.area){box.innerHTML=$('fState').value&&!$('fDist').value&&$('fState').value!=='*'?'<div class="fempty">Pilih <b>daerah</b> untuk melihat senarai premis.</div>':'';return}
+  const all=sortList(visibleList());let L,more='';
+  if(F.rand){const set=new Set(F.rand);L=sortList(F.area.filter(p=>set.has(p.id)));fStatus('Pilihan rawak: '+L.length+' premis daripada '+fmt(all.length)+' yang layak. Tekan 🎲 lagi untuk set baru.')}
+  else{L=all.slice(0,F.shown);fStatus(fmt(all.length)+' premis padan'+(F.gps&&$('fSort').value==='near'?' • disusun ikut jarak (anggaran)':''));if(all.length>F.shown)more=`<button class="fmore" id="fMore">Papar lagi (${fmt(all.length-F.shown)})</button>`}
+  box.innerHTML=(L.map(cardHtml).join('')||'<div class="fempty">Tiada premis padan penapis ini.</div>')+more}
+function pickRandom(){const pool=visibleList();if(!pool.length){fStatus('Tiada premis layak untuk dipilih.',true);return}const a=[...pool];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}F.rand=a.slice(0,10).map(p=>p.id);renderList()}
+function getGPS(){if(!navigator.geolocation){fStatus('Peranti tidak menyokong lokasi.',true);return}fStatus('Mendapatkan lokasi…');navigator.geolocation.getCurrentPosition(p=>{F.gps={lat:p.coords.latitude,lng:p.coords.longitude};$('fSort').value='near';F.rand=null;renderList()},e=>fStatus('Tidak dapat lokasi: '+e.message,true),{enableHighAccuracy:true,timeout:15000})}
+function copyText(t){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t);const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();document.execCommand('copy');x.remove();return Promise.resolve()}
+function initField(){
+  if(F.booted)return;F.booted=true;
+  $('fState').onchange=()=>{LS.set('si_area',{s:$('fState').value,d:''});fillDistricts('');F.area=null;F.areaKey='';F.rand=null;renderFieldSummary();renderList()};
+  $('fDist').onchange=()=>{LS.set('si_area',{s:$('fState').value,d:$('fDist').value});F.rand=null;renderFieldSummary();loadArea()};
+  document.querySelectorAll('#fAge .chip').forEach(c=>c.onclick=()=>{F.age=Number(c.dataset.age);document.querySelectorAll('#fAge .chip').forEach(x=>x.classList.toggle('on',x===c));F.rand=null;F.shown=20;renderList()});
+  [['fGC','gredC'],['fFlag','flag'],['fHide','hideDone']].forEach(([id,k])=>$(id).onclick=()=>{F[k]=!F[k];$(id).classList.toggle('on',F[k]);F.rand=null;F.shown=20;renderList()});
+  $('fSearch').oninput=()=>{F.rand=null;F.shown=20;renderList()};$('fSort').onchange=()=>{if($('fSort').value==='near'&&!F.gps)getGPS();else{F.rand=null;renderList()}};
+  $('fRandom').onclick=pickRandom;$('fGPS').onclick=getGPS;
+  $('fCopy').onclick=()=>copyText(summaryText()).then(()=>toast('Ringkasan disalin. Tampal di WhatsApp/e-mel.'));
+  $('fClear').onclick=()=>{Object.keys(DONE).forEach(k=>delete DONE[k]);LS.set('si_done',DONE);F.rand=null;renderList();toast('Tanda "disemak" dikosongkan.')};
+  $('fList').onclick=async e=>{
+    if(e.target.id==='fMore'){F.shown+=20;renderList();return}
+    const b=e.target.closest('button[data-act]');if(!b)return;const card=b.closest('.pcard'),id=card.dataset.id,act=b.dataset.act;
+    if(act==='done'){if(DONE[id])delete DONE[id];else DONE[id]=new Date().toISOString().slice(0,10);LS.set('si_done',DONE);const keep=F.rand;renderList();F.rand=keep;return}
+    if(act==='det'){const box=card.querySelector('.pdet');if(box.dataset.open){box.innerHTML='';delete box.dataset.open;return}box.dataset.open=1;box.innerHTML='<small>Memuat butiran…</small>';try{const r=await jsonp('premise',{id});box.innerHTML=detailHtml(r.data)}catch(err){box.innerHTML='<small>Gagal: '+esc(err.message)+'</small>'}}
+  };
+  loadLite();
+}
 async function loadDashboard(){try{$('apiState').textContent='loading';const d=await jsonp('dashboard',{thresholdDays:CFG.DEFAULT_THRESHOLD_DAYS||365});const raw=d.data||d;DB=raw.P?expandDashboard(raw):raw;$('apiState').textContent='online';populateFilters();renderDashboard();renderImportHistory()}catch(e){$('apiState').textContent='offline';toast(e.message);console.error(e)}}
 /* ===== KMM101 parser (robust header detection) ===== */
 const squash=v=>String(v??"").toUpperCase().replace(/[^A-Z0-9]/g,"");
@@ -262,7 +363,7 @@ async function handleFile(file){
   const mb=(file.size/1048576).toFixed(1);startClock();
   setStep('read','active',`Membaca ${file.name} (${mb} MB)… fail besar boleh ambil 15–60 saat, halaman mungkin kelihatan beku seketika`);logLine('Membaca '+file.name+' ('+mb+' MB)');await sleep(80);
   try{
-    const p=await readWorkbook(file),missing=p.missing;
+    await ensureXLSX();const p=await readWorkbook(file),missing=p.missing;
     setStep('read','done',`${p.sheet} • ${fmtSec((Date.now()-runStart)/1000)}`);
     setStep('header','done',`Header di baris ${p.headerRow} • padanan ${p.score}/8`+(missing.length?' • TIADA: '+missing.join(', '):''));
     if(missing.length){setStep('header','error','Lajur wajib tiada: '+missing.join(', '));logLine('Lajur wajib tiada: '+missing.join(', '),'err')}
@@ -278,8 +379,8 @@ async function handleFile(file){
   }finally{stopClock()}
 }
 async function rebuildCacheManual(){const b=$('rebuildBtn');if(b.disabled)return;if(!apiUrl()||apiUrl().includes('PASTE_')){toast('API_URL belum ditetapkan dalam config.js');return}const t=b.textContent,t0=Date.now();b.disabled=true;const tk=setInterval(()=>b.textContent='⚙ Membina… '+fmtSec((Date.now()-t0)/1000),1000);toast('Membina cache dashboard… boleh ambil 1–5 minit, jangan tutup tab');try{const c=await postForm('rebuildCache',{},540000);toast('Cache siap: '+fmt(c.premises)+' premis ('+fmtSec((Date.now()-t0)/1000)+')');await loadDashboard()}catch(e){toast(e.message)}finally{clearInterval(tk);b.disabled=false;b.textContent=t}}
-function initEvents(){initNav();initImport();$('refreshBtn').onclick=loadDashboard;$('rebuildBtn').onclick=rebuildCacheManual;['districtFilter','gradeFilter','yearFilter','typeFilter'].forEach(id=>$(id).onchange=renderDashboard);$('stateFilter').onchange=()=>{refreshDistricts();renderDashboard()};$('searchBox').oninput=renderDashboard;document.querySelectorAll('[data-mapmode]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mapmode]').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentMapMode=b.dataset.mapmode;renderMap()})}window.addEventListener('load',()=>{initEvents();loadDashboard();try{initMap()}catch(e){console.error('Peta tidak dapat dimuat (Leaflet disekat?):',e);toast('Peta tidak dapat dimuat, tetapi data masih berfungsi')}});
-console.info('SmartInspection app.js PATCH v5.3 (geo) (progress tracker)');
+function initEvents(){initNav();initImport();$('refreshBtn').onclick=loadDashboard;$('rebuildBtn').onclick=rebuildCacheManual;['districtFilter','gradeFilter','yearFilter','typeFilter'].forEach(id=>$(id).onchange=renderDashboard);$('stateFilter').onchange=()=>{refreshDistricts();renderDashboard()};$('searchBox').oninput=renderDashboard;document.querySelectorAll('[data-mapmode]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mapmode]').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentMapMode=b.dataset.mapmode;renderMap()})}window.addEventListener('load',()=>{initEvents();if(IS_MOBILE){document.querySelector('nav button[data-view=field]').click()}else{loadDashboard();try{initMap()}catch(e){console.error('Peta tidak dapat dimuat (Leaflet disekat?):',e);toast('Peta tidak dapat dimuat, tetapi data masih berfungsi')}}});
+console.info('SmartInspection app.js PATCH v6.0 (lapangan) (progress tracker)');
 
 </script>
 </body></html>
