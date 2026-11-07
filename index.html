@@ -37,6 +37,8 @@
 
 .reconly{display:block;margin-top:8px;padding:8px;background:#fff8e6;border:1px solid #f1d28a;border-radius:8px;font-size:11px;line-height:1.5}.reconly input{margin-right:6px}
 
+.flabel{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#234365;white-space:nowrap}.flabel input{width:70px;flex:none}.fexp button{height:42px;font-size:12px}
+
 </style>
 </head>
 <body>
@@ -70,11 +72,15 @@
  <div class="frow"><button id="fCopy">📋 Salin ringkasan</button><a id="fWA" target="_blank" rel="noopener" class="fbtn">💬 WhatsApp</a></div>
 </div>
 <div class="fcard">
+ <div class="frow"><select id="fMode"><option value="old">Senarai: Lama tak diperiksa</option><option value="low">Senarai: Markah rendah</option><option value="noyr">Senarai: Tidak diperiksa pada tahun</option></select></div>
+ <div class="frow" id="fLowBox" style="display:none"><label class="flabel">Markah &lt; <input id="fMax" type="number" min="1" max="100" value="65" inputmode="numeric"> %</label><select id="fLowYear"><option value="">Markah terkini</option></select></div>
+ <div class="frow" id="fNoYrBox" style="display:none"><label class="flabel">Tahun</label><select id="fNoYear"></select></div>
  <div class="fchips" id="fAge"><span class="chip on" data-age="365">&gt; 12 bulan</span><span class="chip" data-age="730">&gt; 24 bulan</span><span class="chip" data-age="1095">&gt; 36 bulan</span><span class="chip" data-age="0">Semua</span></div>
  <div class="fchips"><span class="chip" id="fGC">Gred C</span><span class="chip" id="fFlag">Ada tutup / 32B</span><span class="chip on" id="fHide">Sembunyi yang disemak</span></div>
- <div class="frow"><input id="fSearch" placeholder="Cari premis…"><select id="fSort"><option value="old">Paling lama</option><option value="near">Paling dekat</option><option value="risk">Risiko tinggi</option></select></div>
+ <div class="frow"><input id="fSearch" placeholder="Cari premis…"><select id="fSort"><option value="auto">Susun: Auto</option><option value="old">Paling lama</option><option value="low">Markah terendah</option><option value="near">Paling dekat</option><option value="risk">Risiko tinggi</option></select></div>
  <div class="frow"><button id="fRandom">🎲 Pilih rawak (10)</button><button id="fGPS">📍 Lokasi saya</button></div>
  <div id="fStatus" class="fstatus">Memuat…</div>
+ <div class="frow fexp" id="fExp" style="display:none"><button id="fExCopy">📋 Salin</button><button id="fExShare">📤 Kongsi</button><button id="fExPdf">📄 PDF</button><button id="fExCsv">⬇ CSV</button></div>
 </div>
 <div id="fList"></div>
 <div class="fclear"><a href="#" id="fClear" onclick="return false">Kosongkan tanda "disemak"</a></div>
@@ -507,7 +513,7 @@ const idb = {
     }
   }
 };
-const F = { lite: null, idx: {}, area: null, areaKey: "", age: 365, gredC: false, flag: false, hideDone: true, gps: null, rand: null, shown: 20, booted: false }, DONE = LS.get("si_done", {});
+const F = { mode: "old", max: 65, lowYear: "", noYear: 0, hasYears: true, lite: null, idx: {}, area: null, areaKey: "", age: 365, gredC: false, flag: false, hideDone: true, gps: null, rand: null, shown: 20, booted: false }, DONE = LS.get("si_done", {});
 function diag() {
   const e = $("fDiag");
   if (e) e.textContent = ["Versi: v6.1", "Pelayar: " + navigator.userAgent, "Atas talian: " + navigator.onLine, "Skrin: " + innerWidth + "x" + innerHeight, "API: " + String(apiUrl() || "-").replace(/\/macros\/s\/[^/]+/, "/macros/s/..."), "Data lite: " + (F.lite ? "ada (" + String(F.lite.gen).slice(0, 10) + ")" : "tiada"), "Kawasan: " + (F.areaKey || "-"), "Ralat: " + ((window.__siErr || []).join(" | ") || "tiada")].join("\n");
@@ -549,12 +555,20 @@ async function loadLite() {
     }
   }
 }
+function fillYearSelects() {
+  const ys = (F.lite && F.lite.years || []).slice().sort((a, b) => b - a);
+  $("fLowYear").innerHTML = '<option value="">Markah terkini</option>' + ys.map((y) => `<option value="${y}">Tahun ${y}</option>`).join("");
+  $("fNoYear").innerHTML = ys.map((y) => `<option value="${y}">${y}</option>`).join("");
+  if (!F.noYear || !ys.includes(F.noYear)) F.noYear = ys[0] || (/* @__PURE__ */ new Date()).getFullYear();
+  $("fNoYear").value = String(F.noYear);
+}
 function setLite(d) {
   F.lite = d;
   F.idx = {};
   d.areas.forEach((x) => {
     (F.idx[x[0]] || (F.idx[x[0]] = {}))[x[1]] = x[2];
   });
+  fillYearSelects();
   fillFieldSelects();
   renderFieldSummary();
   if ($("fDist").value) loadArea();
@@ -667,16 +681,30 @@ async function loadArea() {
   if (F.areaKey !== key) return;
   F.area = data.map((a) => {
     const ld = a[6];
-    return { id: a[0], name: a[1] || "(nama tidak tersedia)", addr: a[2], lat: a[3], lng: a[4], q: a[5], last: ld, n: a[7], grade: a[8], score: a[9], fl: a[10], never: !ld, age: ld ? Math.floor((Date.now() - (/* @__PURE__ */ new Date(ld + "T00:00:00")).getTime()) / 864e5) : null };
+    return { id: a[0], name: a[1] || "(nama tidak tersedia)", addr: a[2], lat: a[3], lng: a[4], q: a[5], last: ld, n: a[7], grade: a[8], score: a[9], fl: a[10], never: !ld, ys: a[11] || 0, sy: (() => {
+      const m = {}, f = a[12] || [];
+      for (let i = 0; i + 1 < f.length; i += 2) m[f[i]] = f[i + 1];
+      return m;
+    })(), age: ld ? Math.floor((Date.now() - (/* @__PURE__ */ new Date(ld + "T00:00:00")).getTime()) / 864e5) : null };
   });
+  F.hasYears = !data.length || data[0].length >= 12;
   F.rand = null;
   F.shown = 20;
   renderList();
 }
+const inYear = (p, y) => y >= 2015 && y <= 2045 && (p.ys >> y - 2015 & 1) === 1, scoreFor = (p) => F.lowYear ? p.sy[F.lowYear] !== void 0 ? p.sy[F.lowYear] : null : p.score;
 function visibleList() {
   const q = ($("fSearch").value || "").trim().toLowerCase();
+  if (!F.hasYears && F.mode !== "old") return [];
   return (F.area || []).filter((p) => {
-    if (F.age && !(p.never || p.age > F.age)) return false;
+    if (F.mode === "old") {
+      if (F.age && !(p.never || p.age > F.age)) return false;
+    } else if (F.mode === "low") {
+      const s = scoreFor(p);
+      if (s == null || !(s < F.max)) return false;
+    } else if (F.mode === "noyr") {
+      if (inYear(p, F.noYear)) return false;
+    }
     if (F.gredC && p.grade !== "C") return false;
     if (F.flag && !p.fl) return false;
     if (F.hideDone && DONE[p.id]) return false;
@@ -685,20 +713,37 @@ function visibleList() {
   });
 }
 function sortList(L2) {
-  const m = $("fSort").value, g = F.gps, dist = (p) => g && p.lat != null ? distKm(g.lat, g.lng, p.lat, p.lng) : 1e9, risk = (p) => (p.never ? 1500 : p.age) + (p.fl & 2 ? 400 : 0) + (p.fl & 1 ? 200 : 0) + (p.grade === "C" ? 300 : 0);
-  return [...L2].sort(m === "near" ? (a, b) => dist(a) - dist(b) : m === "risk" ? (a, b) => risk(b) - risk(a) : (a, b) => (b.never ? 99999 : b.age) - (a.never ? 99999 : a.age));
+  let m = $("fSort").value;
+  if (m === "auto") m = F.mode === "low" ? "low" : "old";
+  const g = F.gps, dist = (p) => g && p.lat != null ? distKm(g.lat, g.lng, p.lat, p.lng) : 1e9, risk = (p) => (p.never ? 1500 : p.age) + (p.fl & 2 ? 400 : 0) + (p.fl & 1 ? 200 : 0) + (p.grade === "C" ? 300 : 0);
+  return [...L2].sort(m === "near" ? (a, b) => dist(a) - dist(b) : m === "risk" ? (a, b) => risk(b) - risk(a) : m === "low" ? (a, b) => (scoreFor(a) == null ? 999 : scoreFor(a)) - (scoreFor(b) == null ? 999 : scoreFor(b)) : (a, b) => (b.never ? 99999 : b.age) - (a.never ? 99999 : a.age));
 }
 function navUrl(p) {
   return "https://www.google.com/maps/search/?api=1&query=" + (p.q === 3 && p.lat != null ? p.lat + "," + p.lng : encodeURIComponent(p.name + ", " + (p.addr || "")));
 }
 function cardHtml(p) {
   const done = DONE[p.id], col = p.never ? "#7259d6" : p.age > 730 ? "#e93a4c" : p.age > 365 ? "#e6a00a" : "#0da35a", g = F.gps && p.lat != null ? distKm(F.gps.lat, F.gps.lng, p.lat, p.lng) : null;
-  return `<div class="pcard" style="border-left-color:${col}" data-id="${esc(p.id)}"><div class="ptop"><b>${esc(p.name)}</b>${done ? '<span class="tick">✓ disemak</span>' : ""}</div><div class="paddr">${esc(p.addr || "-")}</div><div class="pmeta">${p.never ? "Belum pernah diperiksa" : "Terakhir " + esc(p.last) + " • " + ageText(p.age)}${p.grade ? " • Gred " + esc(p.grade) + (p.score != null ? " (" + p.score + "%)" : "") : ""} • ${p.n}×${p.fl & 2 ? ' • <b class="red">Arahan tutup</b>' : ""}${p.fl & 1 ? ' • <b class="red">Notis 32B</b>' : ""}${g != null ? " • ~" + g.toFixed(1) + " km" + (p.q < 3 ? " (anggaran)" : "") : ""}</div><div class="pact"><a data-act="nav" href="${navUrl(p)}" target="_blank" rel="noopener">🧭 Navigasi</a><button data-act="det">📄 Butiran</button><button data-act="done">${done ? "↩︎ Batal" : "✓ Disemak"}</button></div><div class="pdet"></div></div>`;
+  return `<div class="pcard" style="border-left-color:${col}" data-id="${esc(p.id)}"><div class="ptop"><b>${esc(p.name)}</b>${done ? '<span class="tick">✓ disemak</span>' : ""}</div><div class="paddr">${esc(p.addr || "-")}</div><div class="pmeta">${p.never ? "Belum pernah diperiksa" : "Terakhir " + esc(p.last) + " • " + ageText(p.age)}${F.mode === "low" ? ' • <b class="red">Markah ' + scoreFor(p) + "%" + (F.lowYear ? " (" + F.lowYear + ")" : "") + "</b>" + (p.grade ? " • Gred " + esc(p.grade) : "") : F.mode === "noyr" ? ' • <b class="red">Tidak diperiksa ' + F.noYear + "</b>" + (p.score != null ? " • Markah akhir " + p.score + "%" : "") : p.grade ? " • Gred " + esc(p.grade) + (p.score != null ? " (" + p.score + "%)" : "") : ""} • ${p.n}×${p.fl & 2 ? ' • <b class="red">Arahan tutup</b>' : ""}${p.fl & 1 ? ' • <b class="red">Notis 32B</b>' : ""}${g != null ? " • ~" + g.toFixed(1) + " km" + (p.q < 3 ? " (anggaran)" : "") : ""}</div><div class="pact"><a data-act="nav" href="${navUrl(p)}" target="_blank" rel="noopener">🧭 Navigasi</a><button data-act="det">📄 Butiran</button><button data-act="done">${done ? "↩︎ Batal" : "✓ Disemak"}</button></div><div class="pdet"></div></div>`;
+}
+function modeSummary(n, total) {
+  if (F.mode === "low") return `Markah < ${F.max}% ${F.lowYear ? "(tahun " + F.lowYear + ")" : "(markah terkini)"}: ${fmt(n)} premis daripada ${fmt(total)}`;
+  if (F.mode === "noyr") {
+    const done = (F.area || []).filter((p) => inYear(p, F.noYear)).length;
+    return `Tidak diperiksa pada ${F.noYear}: ${fmt(n)} premis • diperiksa ${F.noYear}: ${fmt(done)} • jumlah dalam rekod: ${fmt(total)}`;
+  }
+  return fmt(n) + " premis padan";
 }
 function renderList() {
-  const box = $("fList");
+  const box = $("fList"), ex = $("fExp");
   if (!F.areaKey || !F.area) {
+    ex.style.display = "none";
     box.innerHTML = $("fState").value && !$("fDist").value && $("fState").value !== "*" ? '<div class="fempty">Pilih <b>daerah</b> untuk melihat senarai premis.</div>' : "";
+    return;
+  }
+  if (!F.hasYears && F.mode !== "old") {
+    ex.style.display = "none";
+    fStatus("");
+    box.innerHTML = '<div class="fempty">Cache lama tidak mempunyai data tahun/markah. Tekan <b>⚙ Bina Cache</b> sekali untuk mengaktifkan ciri ini.</div>';
     return;
   }
   const all = sortList(visibleList());
@@ -709,10 +754,133 @@ function renderList() {
     fStatus("Pilihan rawak: " + L2.length + " premis daripada " + fmt(all.length) + " yang layak. Tekan 🎲 lagi untuk set baru.");
   } else {
     L2 = all.slice(0, F.shown);
-    fStatus(fmt(all.length) + " premis padan" + (F.gps && $("fSort").value === "near" ? " • disusun ikut jarak (anggaran)" : ""));
+    fStatus(modeSummary(all.length, F.area.length) + (F.gps && $("fSort").value === "near" ? " • disusun ikut jarak (anggaran)" : ""));
     if (all.length > F.shown) more = `<button class="fmore" id="fMore">Papar lagi (${fmt(all.length - F.shown)})</button>`;
   }
   box.innerHTML = (L2.map(cardHtml).join("") || '<div class="fempty">Tiada premis padan penapis ini.</div>') + more;
+  ex.style.display = L2.length ? "flex" : "none";
+}
+function exportItems() {
+  if (F.rand) {
+    const set = new Set(F.rand);
+    return sortList(F.area.filter((p) => set.has(p.id)));
+  }
+  return sortList(visibleList());
+}
+function criteriaText() {
+  const ex = [F.gredC ? "Gred C" : "", F.flag ? "ada tutup/32B" : ""].filter(Boolean).join(", ");
+  let c = F.mode === "low" ? `Markah < ${F.max}% ${F.lowYear ? "(tahun " + F.lowYear + ")" : "(markah terkini)"}` : F.mode === "noyr" ? `Tidak diperiksa pada tahun ${F.noYear}` : `Lama tak diperiksa${F.age ? " > " + Math.round(F.age / 30.4) + " bulan" : ""}`;
+  if (F.rand) c = "Pilihan rawak • " + c;
+  const q = ($("fSearch").value || "").trim();
+  return c + (ex ? " • " + ex : "") + (q ? ' • carian: "' + q + '"' : "");
+}
+function itemScore(p) {
+  return F.mode === "low" ? scoreFor(p) : p.score;
+}
+function itemMeta(p) {
+  const s = itemScore(p);
+  return (p.never ? "Belum diperiksa" : "Terakhir " + p.last + " (" + ageText(p.age) + ")") + (s != null ? " • Markah " + s + "%" + (F.mode === "low" && F.lowYear ? " (" + F.lowYear + ")" : "") : "") + (p.grade ? " • Gred " + p.grade : "") + (p.fl & 2 ? " • Arahan tutup" : "") + (p.fl & 1 ? " • Notis 32B" : "");
+}
+function listText(limit) {
+  const L2 = exportItems(), n = L2.length, sh = L2.slice(0, limit), dt = (/* @__PURE__ */ new Date()).toLocaleDateString("ms-MY", { day: "numeric", month: "long", year: "numeric" });
+  let t = `📋 SENARAI SEMAKAN PREMIS
+Kawasan: ${areaName()}
+Kriteria: ${criteriaText()}
+Tarikh: ${dt} • Data: ${String(F.lite && F.lite.gen || "").slice(0, 10)}
+Jumlah: ${fmt(n)} premis
+`;
+  sh.forEach((p, i) => {
+    t += `
+${i + 1}. ${p.name}
+   ${p.id}${p.addr ? "\n   " + p.addr : ""}
+   ${itemMeta(p)}`;
+  });
+  if (n > sh.length) t += `
+
+(Dipaparkan ${sh.length} daripada ${fmt(n)}. Gunakan PDF/CSV untuk senarai penuh.)`;
+  return t;
+}
+async function shareList() {
+  const t = listText(40);
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: "Senarai Semakan Premis", text: t });
+      return;
+    } catch (e) {
+      if (e && e.name === "AbortError") return;
+    }
+  }
+  window.open("https://wa.me/?text=" + encodeURIComponent(listText(20)), "_blank");
+}
+function csvCell(v) {
+  let s = String(v == null ? "" : v);
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+  return '"' + s.replace(/"/g, '""') + '"';
+}
+function downloadCsv() {
+  const L2 = exportItems(), st = $("fState").value, di = $("fDist").value, rows = [["Bil", "No. FoSIM", "Nama Premis", "Alamat", "Negeri", "Daerah", "Pemeriksaan Akhir", "Bil. Pemeriksaan", "Markah", "Gred", "Arahan Tutup", "Notis 32B"]];
+  L2.forEach((p, i) => {
+    const s = itemScore(p);
+    rows.push([i + 1, p.id, p.name, p.addr, st, di, p.last || "", p.n, s == null ? "" : s, p.grade, p.fl & 2 ? "Ya" : "", p.fl & 1 ? "Ya" : ""]);
+  });
+  const csv = "\uFEFF" + rows.map((r) => r.map(csvCell).join(",")).join("\r\n"), a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  a.download = `semakan_${(st + "_" + di).replace(/[^A-Za-z0-9]+/g, "_")}_${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    URL.revokeObjectURL(a.href);
+    a.remove();
+  }, 1500);
+}
+function reportHtml() {
+  const L2 = exportItems().slice(0, 1500), all = exportItems().length, dt = (/* @__PURE__ */ new Date()).toLocaleString("ms-MY"), gen = String(F.lite && F.lite.gen || "").slice(0, 10);
+  const rows = L2.map((p, i) => {
+    const s = itemScore(p);
+    return `<tr><td>${i + 1}</td><td><b>${esc(p.name)}</b><br><small>${esc(p.id)}</small></td><td>${esc(p.addr || "-")}</td><td>${p.never ? "Belum" : esc(p.last) + "<br><small>" + esc(ageText(p.age)) + "</small>"}</td><td>${s == null ? "-" : esc(s) + "%"}${p.grade ? "<br><small>Gred " + esc(p.grade) + "</small>" : ""}</td><td>${p.fl & 2 ? "Tutup<br>" : ""}${p.fl & 1 ? "Notis 32B" : ""}</td><td class="nt"></td></tr>`;
+  }).join("");
+  return `<!doctype html><html lang="ms"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Senarai Semakan Premis - ${esc(areaName())}</title><style>
+@page{size:A4 landscape;margin:10mm}*{box-sizing:border-box}body{font:12px/1.4 Arial,sans-serif;color:#111;margin:0;padding:12px}h1{font-size:18px;margin:0 0 4px}.meta{font-size:12px;margin-bottom:10px;line-height:1.6}
+table{width:100%;border-collapse:collapse}th,td{border:1px solid #777;padding:5px 6px;vertical-align:top;text-align:left}th{background:#e8eef5}thead{display:table-header-group}tr{page-break-inside:avoid}small{color:#555}.nt{width:24%}
+.bar{margin-bottom:12px;padding:8px;background:#eef4fb;border:1px solid #c8d7e8;border-radius:6px}.bar button{font-size:14px;padding:8px 14px;margin-right:8px}.foot{margin-top:14px;font-size:11px;color:#444}.sign{margin-top:26px;display:flex;gap:60px;font-size:12px}.sign div{flex:1;border-top:1px solid #333;padding-top:4px}
+@media print{.no-print{display:none}body{padding:0}}</style></head><body>
+<div class="bar no-print"><button onclick="window.print()">🖨 Cetak / Simpan PDF</button>Pada dialog cetak, pilih <b>Save as PDF</b> (Simpan sebagai PDF).</div>
+<h1>Senarai Semakan Premis</h1><div class="meta"><b>Kawasan:</b> ${esc(areaName())}<br><b>Kriteria:</b> ${esc(criteriaText())}<br><b>Jumlah:</b> ${fmt(all)} premis${all > L2.length ? " (dipaparkan " + fmt(L2.length) + " pertama)" : ""} &nbsp;•&nbsp; <b>Dijana:</b> ${esc(dt)} &nbsp;•&nbsp; <b>Data cache:</b> ${esc(gen)}</div>
+<table><thead><tr><th>Bil</th><th>Premis / No. FoSIM</th><th>Alamat</th><th>Pemeriksaan akhir</th><th>Markah</th><th>Isyarat</th><th>Catatan / tindakan pegawai</th></tr></thead><tbody>${rows || '<tr><td colspan="7">Tiada premis.</td></tr>'}</tbody></table>
+<div class="sign"><div>Disediakan oleh (nama &amp; jawatan)</div><div>Tarikh semakan</div><div>Disahkan oleh</div></div>
+<div class="foot">Sumber: SmartInspection (data KMM101 FoSIM yang diimport). Hanya premis yang wujud dalam rekod pemeriksaan disenaraikan.</div></body></html>`;
+}
+function openReport() {
+  const html = reportHtml(), w = window.open("", "_blank");
+  if (w) {
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    setTimeout(() => {
+      try {
+        w.focus();
+        w.print();
+      } catch (e) {
+      }
+    }, 500);
+    return;
+  }
+  let f = $("printFrame");
+  if (!f) {
+    f = document.createElement("iframe");
+    f.id = "printFrame";
+    f.style.cssText = "position:fixed;left:-9999px;top:0;width:900px;height:600px;border:0";
+    document.body.appendChild(f);
+  }
+  f.onload = () => {
+    try {
+      f.contentWindow.focus();
+      f.contentWindow.print();
+    } catch (e) {
+      toast("Tidak dapat membuka cetakan. Benarkan pop-up untuk laman ini.");
+    }
+  };
+  f.srcdoc = html;
 }
 function pickRandom() {
   const pool = visibleList();
@@ -795,6 +963,39 @@ function initField() {
       renderList();
     }
   };
+  const setMode = (m) => {
+    F.mode = m;
+    LS.set("si_mode", m);
+    $("fMode").value = m;
+    $("fLowBox").style.display = m === "low" ? "flex" : "none";
+    $("fNoYrBox").style.display = m === "noyr" ? "flex" : "none";
+    $("fAge").style.display = m === "old" ? "flex" : "none";
+    F.rand = null;
+    F.shown = 20;
+    renderList();
+  }, reset = () => {
+    F.rand = null;
+    F.shown = 20;
+    renderList();
+  };
+  $("fMode").onchange = () => setMode($("fMode").value);
+  $("fMax").oninput = () => {
+    F.max = Math.max(1, Math.min(100, Number($("fMax").value) || 65));
+    reset();
+  };
+  $("fLowYear").onchange = () => {
+    F.lowYear = $("fLowYear").value ? Number($("fLowYear").value) : "";
+    reset();
+  };
+  $("fNoYear").onchange = () => {
+    F.noYear = Number($("fNoYear").value);
+    reset();
+  };
+  $("fExCopy").onclick = () => copyText(listText(300)).then(() => toast("Senarai disalin. Tampal di WhatsApp/e-mel."));
+  $("fExShare").onclick = shareList;
+  $("fExPdf").onclick = openReport;
+  $("fExCsv").onclick = downloadCsv;
+  setMode(LS.get("si_mode", "old"));
   $("fRandom").onclick = pickRandom;
   $("fGPS").onclick = getGPS;
   $("fCopy").onclick = () => copyText(summaryText()).then(() => toast("Ringkasan disalin. Tampal di WhatsApp/e-mel."));
@@ -1341,7 +1542,7 @@ window.addEventListener("load", () => {
     }
   }
 });
-console.info("SmartInspection app.js PATCH v6.4 (cache selamat) (progress tracker)");
+console.info("SmartInspection app.js PATCH v6.5 (senarai operasi) (progress tracker)");
 
 </script>
 </body></html>
