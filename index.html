@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SmartInspection v2</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--bg:#f3f7fb;--panel:#fff;--ink:#102b4e;--muted:#71839a;--line:#e0e8f1;--blue:#1c6be1;--green:#0da35a;--amber:#e6a00a;--red:#e93a4c;--purple:#7259d6;--shadow:0 12px 34px rgba(28,63,104,.08)}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#edf4fa,#f7f9fc);color:var(--ink)}button,input,select{font:inherit}.hidden{display:none!important}.hiddenframe{position:absolute;width:0;height:0;border:0;left:-9999px}.shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh}aside{background:linear-gradient(180deg,#0b2d58,#0c3f77);color:#fff;padding:18px 13px;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:10px;padding:2px 7px 20px}.brand>b{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#43a1ff,#0d62d4)}.brand small{display:block;color:#bad2e9;font-size:10px}nav{display:flex;flex-direction:column;gap:6px}nav button{border:0;background:transparent;color:#ccdaea;text-align:left;padding:11px;border-radius:9px;font-weight:700;cursor:pointer}nav button.active,nav button:hover{background:rgba(255,255,255,.12);color:#fff}.api{margin-top:auto;border-top:1px solid rgba(255,255,255,.14);padding:13px 7px;font-size:10px;color:#bfd1e4}main{padding:18px;min-width:0}header{display:flex;justify-content:space-between;align-items:center;gap:15px}header h1{margin:0;font-size:27px}header p{margin:4px 0 0;color:var(--muted);font-size:11px}header button,.mapbtn,#selectFileBtn,.primary{border:1px solid #d9e4ee;background:#fff;padding:9px 12px;border-radius:9px;cursor:pointer;font-weight:750;color:#234365}.filters{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px;display:grid;grid-template-columns:repeat(5,1fr) 1.3fr;gap:7px;box-shadow:var(--shadow)}.filters select,.filters input{height:38px;border:0;background:#f7f9fc;border-radius:8px;padding:0 9px;color:#234365}.view{display:none;margin-top:12px}.view.active{display:block}.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.kpi,.card{background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}.kpi{padding:14px;min-height:100px}.kpi small{font-size:9px;font-weight:900;color:#58708a}.kpi strong{display:block;font-size:27px;margin-top:5px}.kpi em{display:block;font-size:9px;color:var(--muted);font-style:normal}.grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(320px,.8fr);gap:11px;margin-top:11px}.mapcard{grid-row:span 2}.cardhead{padding:13px 14px;border-bottom:1px solid #e8eef4;display:flex;justify-content:space-between;align-items:center;gap:10px}.cardhead h3{margin:0;font-size:14px}.mapbtn{padding:7px 9px;font-size:10px}.mapbtn.active{background:var(--blue);color:#fff;border-color:var(--blue)}#map{height:590px}#mapFull{height:73vh}#priorityList,#typeBars,#ageBuckets{padding:10px}.priority{display:grid;grid-template-columns:42px 1fr;gap:9px;border:1px solid #e5ecf3;border-radius:10px;padding:9px;margin-bottom:7px}.risk{width:42px;height:42px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:900}.priority b{font-size:10px}.priority small{display:block;color:var(--muted);font-size:9px;margin-top:3px}.barrow{margin-bottom:10px}.barlabel{display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px}.track{height:8px;background:#edf2f6;border-radius:999px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#2d76e8,#67a6ff)}.gradebar{display:flex;height:44px;margin:16px 14px 9px;border-radius:9px;overflow:hidden}.gradebar span{display:grid;place-items:center;color:#fff;font-size:9px;font-weight:900}.gradelegend{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:0 14px 15px;font-size:9px}.tablewrap{overflow:auto}.tablewrap table{width:100%;border-collapse:collapse;font-size:9px}.tablewrap th{background:#f7f9fc;text-align:left;padding:9px;position:sticky;top:0}.tablewrap td{padding:9px;border-top:1px solid #edf1f5}.importgrid{display:grid;grid-template-columns:1.5fr .6fr;gap:11px}.upload{text-align:center;padding:22px}.upload p{color:var(--muted);font-size:10px;max-width:650px;margin:0 auto}.drop{margin-top:15px;border:2px dashed #cbd9e8;border-radius:13px;padding:28px;display:flex;flex-direction:column;gap:8px;align-items:center}.drop.drag{border-color:var(--blue);background:#f4f8ff}.drop small{color:var(--muted)}.primary{background:linear-gradient(135deg,#1c6be1,#0c55bc);color:#fff;border:0;margin-top:12px}.preview{margin-top:12px;background:#f7f9fc;border:1px solid #e2e9f1;border-radius:10px;padding:11px;text-align:left;font-size:10px}.pipeline{padding:14px 28px;font-size:11px;line-height:2}.toast{position:fixed;right:20px;bottom:20px;background:#102d50;color:#fff;padding:10px 13px;border-radius:9px;font-size:10px;opacity:0;transform:translateY(10px);transition:.2s}.toast.show{opacity:1;transform:none}@media(max-width:1200px){.shell{grid-template-columns:74px 1fr}.brand span,nav button{font-size:0}.brand{justify-content:center}nav button{text-align:center}.kpis{grid-template-columns:repeat(3,1fr)}.filters{grid-template-columns:repeat(3,1fr)}}@media(max-width:820px){.shell{display:block}aside{position:relative;height:auto}nav{flex-direction:row;overflow:auto}.api{display:none}.brand{justify-content:flex-start}.brand span{display:block;font-size:14px}nav button{font-size:11px;white-space:nowrap}.kpis{grid-template-columns:1fr 1fr}.grid,.importgrid{grid-template-columns:1fr}.mapcard{grid-row:auto}.filters{grid-template-columns:1fr 1fr}#map{height:500px}main{padding:10px}}
 
@@ -34,9 +33,13 @@
 .pact{display:flex;gap:6px;margin-top:9px}.pact button,.pact a{flex:1;height:40px;border:1px solid #d9e4ee;background:#fff;border-radius:9px;font-size:12px;font-weight:700;color:#234365;display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer}
 .pdet{margin-top:6px}.fmore{width:100%;height:44px;border:1px solid #d9e4ee;background:#fff;border-radius:10px;font-weight:700;color:var(--blue);margin-bottom:10px}.fclear{text-align:center;font-size:11px;margin:6px 0 18px}.fclear a{color:var(--muted)}
 
+.fdiag{margin:0 0 24px;font-size:11px;color:var(--muted);max-width:760px}.fdiag pre{white-space:pre-wrap;word-break:break-all;background:#f7f9fc;border:1px solid var(--line);border-radius:8px;padding:8px;margin:6px 0 0}
+
 </style>
 </head>
 <body>
+<div id="errbar" style="display:none;position:fixed;left:0;right:0;top:0;z-index:99999;background:#b00020;color:#fff;font:12px/1.4 sans-serif;padding:8px 10px"></div>
+<script>(function(){window.__siErr=[];function show(m){window.__siErr.push(String(m));var b=document.getElementById('errbar');if(b){b.style.display='block';b.textContent='Ralat halaman: '+m+' - tangkap skrin ini dan hantar kepada pentadbir.'}}window.onerror=function(m,s,l){show(m+' (baris '+l+')');};window.addEventListener('unhandledrejection',function(e){show('Janji gagal: '+((e.reason&&e.reason.message)||e.reason))});})();</script>
 <div class="shell">
 <aside><div class="brand"><b>SI</b><span>SmartInspection<small>FoSIM Intelligence</small></span></div>
 <nav>
@@ -73,6 +76,7 @@
 </div>
 <div id="fList"></div>
 <div class="fclear"><a href="#" id="fClear" onclick="return false">Kosongkan tanda "disemak"</a></div>
+<details class="fdiag"><summary>Diagnostik</summary><pre id="fDiag"></pre></details>
 </section>
 <section class="view active" id="view-dashboard">
 <div class="kpis">
@@ -97,290 +101,1163 @@
 </main></div>
 <iframe name="siUploadFrame" id="siUploadFrame" class="hiddenframe"></iframe>
 <form id="siUploadForm" method="POST" target="siUploadFrame" class="hidden"><input name="action" id="formAction"><input name="payload" id="formPayload"></form>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 <script src="./config.js"></script><script>
-const CFG=window.SI_CONFIG||{};let DB={premises:[],summary:{},analytics:{},imports:[]},map=null,markerLayer=null,heatLayer=null,currentMapMode='pins',pendingImport=null;const $=id=>document.getElementById(id),fmt=n=>Number(n||0).toLocaleString('en-MY'),pct=(n,d)=>d?Math.round(n/d*100):0,apiUrl=()=>CFG.API_URL,esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));function toast(m){const t=$('toast');t.textContent=m;t.style.whiteSpace='pre-line';t.style.maxWidth='460px';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),Math.max(2500,String(m).length*45))}
-function jsonp(action,params={}){return new Promise((resolve,reject)=>{if(!apiUrl()||apiUrl().includes('PASTE_'))return reject(new Error('API_URL belum ditetapkan dalam config.js'));const cb='si_'+Date.now()+'_'+Math.random().toString(36).slice(2),s=document.createElement('script'),q=new URLSearchParams({action,callback:cb,...params});const timer=setTimeout(()=>{cleanup();reject(new Error('API timeout'))},120000);function cleanup(){clearTimeout(timer);delete window[cb];s.remove()}window[cb]=d=>{cleanup();d&&d.ok===false?reject(new Error(d.error||'API error')):resolve(d)};s.onerror=()=>{cleanup();reject(new Error('Tidak dapat hubungi API'))};s.src=apiUrl()+'?'+q;document.body.appendChild(s)})}
-function initNav(){document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('view-'+b.dataset.view).classList.add('active');$('filters').style.display=['dashboard','analytics','map','premises'].includes(b.dataset.view)?'grid':'none';$('pageTitle').textContent={dashboard:'Dashboard Pemantauan Premis',analytics:'Advanced Analytics',map:'Map Intelligence',premises:'Senarai Premis',import:'Import Data FoSIM',history:'Import History',field:'Semakan Lapangan'}[b.dataset.view];if(b.dataset.view==='field')initField();if(['dashboard','analytics','map','premises'].includes(b.dataset.view))ensureFull();if(b.dataset.view==='history')renderImportHistory();if(b.dataset.view==='map')setTimeout(()=>initFullMap(),80)})}
-function initMap(){map=L.map('map',{preferCanvas:true}).setView([4.2,102.2],6);const g=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxZoom:16,attribution:'Tiles © Esri'}),s=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles © Esri'}),sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles © Esri'});g.addTo(map);L.control.layers({'Peta Ringkas':g,'Peta Jalan':s,'Satelit':sat}).addTo(map);markerLayer=L.featureGroup().addTo(map);attachPremiseEvents(markerLayer,map);addLegend(map)}
-let fullMap=null,fullLayer=null;function initFullMap(){if(typeof L==='undefined')return;if(fullMap){fullMap.invalidateSize();return}fullMap=L.map('mapFull',{preferCanvas:true}).setView([4.2,102.2],6);L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxZoom:16,attribution:'Tiles © Esri'}).addTo(fullMap);fullLayer=L.featureGroup().addTo(fullMap);attachPremiseEvents(fullLayer,fullMap);addLegend(fullMap);renderFullMap()}function renderFullMap(){if(!fullMap||!fullLayer)return;fullLayer.clearLayers();const rows=filteredPremises().filter(hasXY);capPins(rows).list.forEach(p=>addMarker(fullLayer,p));fitMap(fullMap,rows)}function statusColor(s){return s==='CURRENT'?'#0da35a':s==='DUE'?'#e6a00a':s==='OVERDUE'?'#e93a4c':'#7259d6'}const hasXY=p=>p.latitude!=null&&p.latitude!==''&&p.longitude!=null&&p.longitude!==''&&Number.isFinite(+p.latitude)&&Number.isFinite(+p.longitude);function addMarker(target,p){if(!hasXY(p))return;const m=L.circleMarker([+p.latitude,+p.longitude],{radius:p.lq===3?6:4,color:'#fff',weight:1.5,fillColor:statusColor(p.status),fillOpacity:p.lq===3?.95:.6});m._p=p;m.addTo(target)}
-const STATUS_MS={CURRENT:'Terkini',DUE:'Hampir tamat tempoh',OVERDUE:'Lama tak diperiksa',NEVER:'Belum pernah diperiksa'};
-function tipHtml(p){return`<div style="font-size:11px;line-height:1.5"><b>${esc(p.premiseName)}</b><br>${esc(p.premiseId)} • ${esc(p.district)}, ${esc(p.state)}<br>${esc(p.category||'-')} • Status: ${esc(STATUS_MS[p.status]||p.status)}<br>Gred terakhir: ${esc(p.lastGrade||'-')}${p.lastScore!=null?' ('+p.lastScore+'%)':''} • Risiko ${p.riskScore||0}<br>Pemeriksaan akhir: ${esc(p.lastInspectionDate||'-')} (${p.inspectionCount||0} kali)${p.lq===3?'<br><i style="color:#0da35a">Lokasi tepat (geocode alamat)</i>':p.lq===2?'<br><i style="color:#71839a">Lokasi anggaran (aras jalan)</i>':p.lq===1?'<br><i style="color:#71839a">Lokasi anggaran (ikut poskod)</i>':''}</div>`}
-function detailHtml(d){if(!d||!d.inspections||!d.inspections.length)return'<small>Tiada butiran.</small>';const rows=d.inspections.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.type)}</td><td>${x.score==null||x.score===''?'':esc(x.score)}</td><td>${esc(x.grade||'-')}</td><td>${esc(x.closure||'')}${x.notice==='YA'?' 32B':''}</td></tr>`).join('');return`<div style="font-size:11px;line-height:1.5"><b>Alamat:</b> ${esc(d.address||'-')}<br>${d.company?'<b>Syarikat:</b> '+esc(d.company)+'<br>':''}${d.owner?'<b>Pemilik:</b> '+esc(d.owner)+'<br>':''}<b>Kategori:</b> ${esc(d.category||'-')} • ${esc(d.subcategory||'-')}</div><div class="pdscroll"><table class="pdtab"><tr><th>Tarikh</th><th>Jenis</th><th>Markah</th><th>Gred</th><th>Tutup/32B</th></tr>${rows}</table></div>`}
-function attachPremiseEvents(group,mapRef){const tip=L.tooltip({direction:'top',offset:[0,-6],opacity:.97});group.on('mouseover',e=>{const p=e.layer._p;if(!p)return;tip.setContent(tipHtml(p)).setLatLng(e.layer.getLatLng());tip.addTo(mapRef)});group.on('mouseout',()=>{mapRef.removeLayer(tip)});group.on('click',async e=>{const p=e.layer._p;if(!p)return;mapRef.removeLayer(tip);const pop=L.popup({maxWidth:420}).setLatLng(e.latlng).setContent(tipHtml(p)+'<hr style="margin:6px 0"><small>Memuatkan alamat & sejarah pemeriksaan…</small>').openOn(mapRef);try{const r=await jsonp('premise',{id:p.premiseId});pop.setContent(tipHtml(p)+'<hr style="margin:6px 0">'+detailHtml(r.data))}catch(err){pop.setContent(tipHtml(p)+'<hr style="margin:6px 0"><small>Gagal memuat butiran: '+esc(err.message)+'</small>')}})}function fitMap(target,rows){const pts=rows.filter(hasXY).map(p=>[+p.latitude,+p.longitude]);if(pts.length)target.fitBounds(L.latLngBounds(pts).pad(.08))}
-function filters(){return{year:$('yearFilter').value,state:$('stateFilter').value,district:$('districtFilter').value,type:$('typeFilter').value,grade:$('gradeFilter').value,q:$('searchBox').value.trim().toLowerCase()}}function typeIndex(name){return(DB.analytics?.inspectionTypes||[]).findIndex(x=>x.name===name)}function filteredPremises(){const f=filters(),yb=f.year==='ALL'?-1:Number(f.year)-2015,tb=f.type==='ALL'?-1:typeIndex(f.type);return(DB.premises||[]).filter(p=>{if(f.state!=='ALL'&&p.state!==f.state)return false;if(f.district!=='ALL'&&p.district!==f.district)return false;if(f.grade!=='ALL'&&p.lastGrade!==f.grade)return false;if(yb>=0&&!((p.ym>>yb)&1))return false;if(tb>=0&&!((p.tm>>tb)&1))return false;if(f.q&&!(`${p.premiseName} ${p.premiseId} ${p.address||''}`.toLowerCase().includes(f.q)))return false;return true})}function fillSelect(id,vals,label){const s=$(id),old=s.value;s.innerHTML=`<option value="ALL">${label}</option>`;[...new Set(vals.filter(Boolean))].sort().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;s.appendChild(o)});if([...s.options].some(o=>o.value===old))s.value=old}function refreshDistricts(){const st=$('stateFilter').value;fillSelect('districtFilter',(DB.premises||[]).filter(p=>st==='ALL'||p.state===st).map(p=>p.district),'Semua Daerah')}function populateFilters(){fillSelect('stateFilter',(DB.premises||[]).map(x=>x.state),'Semua Negeri');refreshDistricts();fillSelect('yearFilter',DB.analytics?.years||[],'Semua Tahun');fillSelect('typeFilter',(DB.analytics?.inspectionTypes||[]).map(x=>x.name),'Semua Jenis Pemeriksaan')}
-function addLegend(m){const c=L.control({position:'bottomleft'});c.onAdd=()=>{const d=L.DomUtil.create('div','maplegend');d.innerHTML='<b>Status pemeriksaan</b><br><i style="background:#0da35a"></i>Terkini<i style="background:#e6a00a"></i>Hampir tamat<i style="background:#e93a4c"></i>Lama tak diperiksa<i style="background:#7259d6"></i>Belum diperiksa<hr><b>Ketepatan lokasi</b><br><i class="big"></i>Tepat (alamat)<i class="sm"></i>Anggaran (jalan / poskod)';L.DomEvent.disableClickPropagation(d);return d};c.addTo(m)}
-const MAXPIN=40000;function capPins(rows){return rows.length>MAXPIN?{list:[...rows].sort((a,b)=>(b.riskScore||0)-(a.riskScore||0)).slice(0,MAXPIN),cut:true}:{list:rows,cut:false}}function renderMap(){if(!map||!markerLayer)return;markerLayer.clearLayers();if(heatLayer){map.removeLayer(heatLayer);heatLayer=null}const all=filteredPremises(),rows=all.filter(hasXY),mc=$('mapCount');if(mc)mc.textContent=rows.length?' • '+fmt(rows.length)+' premis berkoordinat'+(()=>{const c=[0,0,0,0];rows.forEach(p=>c[p.lq||0]++);return' (tepat '+fmt(c[3])+' • jalan '+fmt(c[2])+' • poskod '+fmt(c[1])+')'})():(all.length?' • tiada koordinat — jalankan geocodePostcodes di Apps Script':'');if(currentMapMode==='heat'&&L.heatLayer)heatLayer=L.heatLayer(rows.map(p=>[+p.latitude,+p.longitude,Math.max(.15,(p.riskScore||0)/100)]),{radius:32,blur:27,minOpacity:.25,maxZoom:12,gradient:{.15:'#24c56a',.45:'#ffd33d',.72:'#ff8234',1:'#e92542'}}).addTo(map);else{const pins=capPins(rows.filter(p=>currentMapMode!=='high'||(p.riskScore||0)>=65));pins.list.forEach(p=>addMarker(markerLayer,p));if(mc&&pins.cut)mc.textContent+=' • dipaparkan '+fmt(pins.list.length)+' pin berisiko tertinggi (tapis negeri/daerah untuk lihat semua)'}fitMap(map,rows)}
-function renderDashboard(){const s=DB.summary||{},rows=filteredPremises(),total=rows.length||s.premises||0,ins=rows.filter(p=>p.inspectionCount>0).length,nev=rows.filter(p=>p.status==='NEVER').length,ov=rows.filter(p=>p.status==='OVERDUE').length;$('kPremises').textContent=fmt(total);$('kInspected').textContent=fmt(ins);$('kInspectedPct').textContent=pct(ins,total)+'% coverage';$('kNever').textContent=fmt(nev);$('kNeverPct').textContent=pct(nev,total)+'% premis';$('kOverdue').textContent=fmt(ov);$('kClosure').textContent=fmt(s.closures||0);$('kNotice').textContent=fmt(s.notice32b||0);const pri=[...rows].sort((a,b)=>(b.riskScore||0)-(a.riskScore||0)).slice(0,12);$('priorityCount').textContent=rows.filter(p=>(p.riskScore||0)>=65).length;$('priorityList').innerHTML=pri.map(p=>`<div class="priority"><div class="risk" style="background:${statusColor(p.status)}">${p.riskScore||0}</div><div><b>${esc(p.premiseName)}</b><small>${esc(p.premiseId)} • ${esc(p.district)}<br>${esc(p.status)} • ${p.inspectionAgeDays??'-'} hari</small></div></div>`).join('');renderTypeBars();renderGrade();renderPremises();renderAnalytics();renderMap();renderFullMap()}
-function renderTypeBars(){const a=DB.analytics?.inspectionTypes||[],m=Math.max(1,...a.map(x=>x.count));$('typeBars').innerHTML=a.slice(0,10).map(x=>`<div class="barrow"><div class="barlabel"><span>${esc(x.name)}</span><b>${fmt(x.count)}</b></div><div class="track"><div class="fill" style="width:${x.count/m*100}%"></div></div></div>`).join('')}function renderGrade(){const g=DB.analytics?.grades||{A:0,B:0,C:0,U:0},t=Math.max(1,g.A+g.B+g.C+g.U),a=[['A',g.A,'#0da35a'],['B',g.B,'#e6a00a'],['C',g.C,'#e93a4c'],['Tiada',g.U,'#9aa8b8']];$('gradeBar').innerHTML=a.map(x=>`<span style="width:${x[1]/t*100}%;background:${x[2]}">${x[1]?pct(x[1],t)+'%':''}</span>`).join('');$('gradeLegend').innerHTML=a.map(x=>`<div><b style="color:${x[2]}">${x[0]}</b><br>${fmt(x[1])}</div>`).join('')}function renderAnalytics(){const a=DB.analytics||{},b=a.ageBuckets||[];$('ageBuckets').innerHTML=b.map(x=>`<div class="barrow"><div class="barlabel"><span>${esc(x.label)}</span><b>${fmt(x.count)}</b></div><div class="track"><div class="fill" style="width:${x.pct||0}%"></div></div></div>`).join('');$('districtTable').querySelector('tbody').innerHTML=(a.districts||[]).map(x=>`<tr><td>${esc(x.district)}</td><td>${fmt(x.premises)}</td><td>${fmt(x.inspected)}</td><td>${x.coverage||0}%</td><td>${fmt(x.overdue)}</td><td>${fmt(x.closures)}</td></tr>`).join('')}function renderPremises(){const r=filteredPremises();$('premiseCount').textContent=fmt(r.length)+' premis';$('premiseTable').querySelector('tbody').innerHTML=r.slice(0,500).map(p=>`<tr><td>${esc(p.premiseId)}</td><td>${esc(p.premiseName)}</td><td>${esc(p.district)}</td><td>${esc(p.category)}</td><td>${esc(p.lastInspectionDate||'-')}</td><td>${esc(p.lastGrade||'-')}</td><td>${esc(p.status||'-')}</td></tr>`).join('')}function renderImportHistory(){$('importTable').querySelector('tbody').innerHTML=(DB.imports||[]).map(x=>`<tr><td>${esc(x.timestamp)}</td><td>${esc(x.fileName)}</td><td>${fmt(x.rows)}</td><td>${fmt(x.accepted)}</td><td>${fmt(x.duplicates)}</td><td>${esc(x.status)}</td></tr>`).join('')}
-
-/* ===== Dekod payload padat daripada cache Apps Script (status/risiko dikira di sini mengikut tarikh hari ini) ===== */
-function expandDashboard(C){
-  const th=CFG.DEFAULT_THRESHOLD_DAYS||C.th||365,t0=new Date();t0.setHours(0,0,0,0);const T0=t0.getTime(),D=C.dict,dc={},ageOf=ld=>{if(!ld)return null;let v=dc[ld];if(v===undefined){v=Math.floor((T0-new Date(ld+'T00:00:00').getTime())/864e5);dc[ld]=v}return v};
-  const prem=C.P.map(a=>{const ld=a[7],age=ageOf(ld),st=!a[8]?'NEVER':age>th?'OVERDUE':age>=Math.round(th*.8)?'DUE':'CURRENT',g=a[5]>=0?D.g[a[5]]:'',fl=a[11];
-    let n=st==='NEVER'?78:Math.min(42,((age||0)/Math.max(1,th))*42);n+=g==='C'?30:g==='B'?16:g==='A'?3:8;if(fl&2)n+=14;if(fl&4)n+=22;
-    return{premiseId:a[0],premiseName:a[1],state:D.s[a[2]],district:D.d[a[3]],category:D.c[a[4]],lastGrade:g,lastScore:a[6],lastInspectionDate:ld,inspectionCount:a[8],latitude:a[9],longitude:a[10],approx:fl&1,lq:fl&8?3:fl&16?2:fl&1?1:0,ym:a[12],tm:a[13],inspectionAgeDays:age,status:st,riskScore:Math.max(0,Math.min(99,Math.round(n)))}});
-  const bs=[['< 6 bulan',p=>p.inspectionAgeDays!=null&&p.inspectionAgeDays<183],['6–12 bulan',p=>p.inspectionAgeDays>=183&&p.inspectionAgeDays<365],['1–2 tahun',p=>p.inspectionAgeDays>=365&&p.inspectionAgeDays<730],['2–3 tahun',p=>p.inspectionAgeDays>=730&&p.inspectionAgeDays<1095],['> 3 tahun',p=>p.inspectionAgeDays>=1095],['Never inspected',p=>p.status==='NEVER']];
-  const cnt=bs.map(b=>prem.filter(b[1]).length),mx=Math.max(1,...cnt),dm={};
-  prem.forEach(p=>{const k=p.district||'TIDAK DINYATAKAN',o=dm[k]||(dm[k]={district:k,premises:0,inspected:0,overdue:0,closures:C.closD[k]||0});o.premises++;if(p.inspectionCount)o.inspected++;if(p.status==='OVERDUE')o.overdue++});
-  const districts=Object.values(dm).map(x=>Object.assign(x,{coverage:x.premises?Math.round(x.inspected/x.premises*100):0})).sort((a,b)=>b.premises-a.premises);
-  return{premises:prem,summary:C.summary,analytics:{years:C.years,inspectionTypes:C.types,grades:C.grades,districts,ageBuckets:bs.map((b,i)=>({label:b[0],count:cnt[i],pct:Math.round(cnt[i]/mx*100)}))},imports:C.imports||[],generatedAt:C.generatedAt}
+function wt(p, ms, msg) {
+  return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error(msg || "tamat masa")), ms))]);
 }
-
-
-/* ===== MOD LAPANGAN: ringan untuk telefon (KPI tepat daripada cache kecil; senarai premis dimuat ikut daerah) ===== */
-const IS_MOBILE=matchMedia('(max-width:820px)').matches;let fullLoaded=!IS_MOBILE;
-function ensureFull(){if(fullLoaded)return;fullLoaded=true;toast('Memuat data penuh (besar). Guna Wi-Fi jika boleh…');try{initMap()}catch(e){console.error(e)}loadDashboard()}
-function ensureXLSX(){return window.XLSX?Promise.resolve():new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';s.onload=res;s.onerror=()=>rej(new Error('Pustaka Excel gagal dimuat. Semak sambungan internet.'));document.head.appendChild(s)})}
-const BASE_DAY=Math.floor(Date.UTC(2015,0,1)/864e5),todayDay=()=>Math.floor(Date.now()/864e5)-BASE_DAY;
-const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-const idb={open(){return new Promise((res,rej)=>{const r=indexedDB.open('si_cache',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})},
-  async get(k){try{const db=await this.open();return await new Promise((res,rej)=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}catch(e){return null}},
-  async set(k,v){try{const db=await this.open();await new Promise((res,rej)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}catch(e){}}};
-const F={lite:null,idx:{},area:null,areaKey:'',age:365,gredC:false,flag:false,hideDone:true,gps:null,rand:null,shown:20,booted:false},DONE=LS.get('si_done',{});
-function fStatus(m,err){const e=$('fStatus');if(e){e.textContent=m||'';e.className='fstatus'+(err?' err':'')}}
-function ageText(d){if(d==null)return'';if(d<31)return d+' hari lalu';if(d<730)return Math.round(d/30.4)+' bulan lalu';return(d/365).toFixed(1)+' tahun lalu'}
-function distKm(a,b,c,d){const R=6371,r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
-async function loadLite(){
-  const cached=await idb.get('lite');if(cached&&cached.data&&!F.lite)setLite(cached.data);
-  try{const r=await jsonp('lite'),d=r.data||r;if(!cached||!cached.data||cached.data.gen!==d.gen)await idb.set('lite',{data:d});if(!F.lite||F.lite.gen!==d.gen)setLite(d);$('apiState').textContent='online';fStatus(F.areaKey?'':'Pilih negeri dan daerah.')}
-  catch(e){if(F.lite){$('apiState').textContent='luar talian';fStatus('Mod luar talian: guna data tersimpan ('+String(F.lite.gen).slice(0,10)+').')}else{$('apiState').textContent='offline';fStatus('Gagal memuat: '+e.message,true)}}
+function loadScript(u) {
+  return new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = u;
+    s.onload = res;
+    s.onerror = () => rej(new Error("gagal " + u));
+    document.head.appendChild(s);
+  });
 }
-function setLite(d){F.lite=d;F.idx={};d.areas.forEach(x=>{(F.idx[x[0]]||(F.idx[x[0]]={}))[x[1]]=x[2]});fillFieldSelects();renderFieldSummary();if($('fDist').value)loadArea()}
-function fillFieldSelects(){const cur=LS.get('si_area',{}),st=$('fState'),states=Object.keys(F.idx).sort();st.innerHTML='<option value="">— Pilih negeri —</option><option value="*">SELURUH NEGARA</option>'+states.map(s=>`<option>${esc(s)}</option>`).join('');if(cur.s&&(cur.s==='*'||F.idx[cur.s]))st.value=cur.s;fillDistricts(cur.d)}
-function fillDistricts(sel){const s=$('fState').value,dd=$('fDist'),list=s&&s!=='*'&&F.idx[s]?Object.keys(F.idx[s]).sort():[];dd.innerHTML='<option value="">'+(list.length?'— Semua daerah —':'—')+'</option>'+list.map(x=>`<option>${esc(x)}</option>`).join('');dd.disabled=!list.length;if(sel&&list.includes(sel))dd.value=sel}
-function valsOf(s,d){const out=[];const add=a=>{for(let i=0;i<a.length;i++)out.push(a[i])};if(!s||s==='*'){for(const st in F.idx)for(const dd in F.idx[st])add(F.idx[st][dd])}else if(!d){for(const dd in F.idx[s])add(F.idx[s][dd])}else if(F.idx[s]&&F.idx[s][d])add(F.idx[s][d]);return out}
-function statsOf(vals){const t=todayDay(),th=CFG.DEFAULT_THRESHOLD_DAYS||(F.lite&&F.lite.th)||365,o={n:vals.length,over:0,ok:0,never:0,nt:0,clo:0,gc:0};vals.forEach(v=>{const f=v&15;if(f&8){o.never++;return}if(t-(v>>4)>th)o.over++;else o.ok++;if(f&1)o.nt++;if(f&2)o.clo++;if(f&4)o.gc++});return o}
-const pc=(a,b)=>b?Math.round(a/b*100)+'%':'-';
-function areaName(){const s=$('fState').value,d=$('fDist').value;return!s?'':s==='*'?'SELURUH NEGARA':d?s+' › '+d:s}
-function summaryText(){
-  const s=$('fState').value,d=$('fDist').value;if(!F.lite||!s)return'';const st=statsOf(valsOf(s,d)),th=CFG.DEFAULT_THRESHOLD_DAYS||F.lite.th||365;
-  let t=`📍 ${areaName()}\nData: ${String(F.lite.gen).slice(0,10)} • Ambang: ${th} hari\n\nPremis: ${fmt(st.n)}\nDiperiksa ≤12 bulan: ${fmt(st.ok)} (${pc(st.ok,st.n)})\nLama tak diperiksa (>12 bulan): ${fmt(st.over)} (${pc(st.over,st.n)})\nBelum pernah diperiksa: ${fmt(st.never)}\nPernah arahan tutup: ${fmt(st.clo)} • Notis 32B: ${fmt(st.nt)} • Gred C: ${fmt(st.gc)}`;
-  if(s&&!d){const rk=s==='*'?Object.keys(F.idx).map(x=>[x,statsOf(valsOf(x,''))]):Object.keys(F.idx[s]).map(x=>[x,statsOf(F.idx[s][x])]);const top=rk.filter(x=>x[1].n>=20).sort((a,b)=>b[1].over/b[1].n-a[1].over/a[1].n).slice(0,5);if(top.length)t+=`\n\nTertinggal (peratus lama tak diperiksa):\n`+top.map((x,i)=>`${i+1}. ${x[0]} – ${pc(x[1].over,x[1].n)} (${fmt(x[1].over)}/${fmt(x[1].n)})`).join('\n')}
-  return t}
-function renderFieldSummary(){
-  const s=$('fState').value,d=$('fDist').value,box=$('fSum');if(!F.lite||!s){box.innerHTML='';$('fWA').removeAttribute('href');return}
-  const st=statsOf(valsOf(s,d));box.innerHTML=`<div class="fname">${esc(areaName())}</div>`+[['Premis',fmt(st.n),''],['Lama tak diperiksa',fmt(st.over),pc(st.over,st.n)],['Diperiksa ≤12 bln',fmt(st.ok),pc(st.ok,st.n)],['Arahan tutup',fmt(st.clo),'premis'],['Notis 32B',fmt(st.nt),'premis'],['Gred C',fmt(st.gc),'premis']].map(x=>`<div><b>${x[1]}</b><small>${x[0]}${x[2]?' • '+x[2]:''}</small></div>`).join('');
-  $('fWA').href='https://wa.me/?text='+encodeURIComponent(summaryText())}
-async function loadArea(){
-  const s=$('fState').value,d=$('fDist').value;if(!s||s==='*'||!d){F.area=null;F.areaKey='';renderList();return}
-  const key=s+'|'+d;F.areaKey=key;fStatus('Memuat senarai premis '+d+'…');const rec=await idb.get('area:'+key);let data=null;
-  if(rec&&F.lite&&rec.gen===F.lite.gen)data=rec.data;
-  else{try{const r=await jsonp('area',{k:key});data=r.data||r;await idb.set('area:'+key,{gen:F.lite&&F.lite.gen,data})}catch(e){if(rec)data=rec.data;else{fStatus('Gagal memuat kawasan: '+e.message,true);return}}}
-  if(F.areaKey!==key)return;F.area=data.map(a=>{const ld=a[6];return{id:a[0],name:a[1],addr:a[2],lat:a[3],lng:a[4],q:a[5],last:ld,n:a[7],grade:a[8],score:a[9],fl:a[10],never:!ld,age:ld?Math.floor((Date.now()-new Date(ld+'T00:00:00').getTime())/864e5):null}});F.rand=null;F.shown=20;renderList()}
-function visibleList(){const q=($('fSearch').value||'').trim().toLowerCase();return(F.area||[]).filter(p=>{if(F.age&&!(p.never||p.age>F.age))return false;if(F.gredC&&p.grade!=='C')return false;if(F.flag&&!p.fl)return false;if(F.hideDone&&DONE[p.id])return false;if(q&&!(p.name.toLowerCase().includes(q)||p.id.toLowerCase().includes(q)||(p.addr||'').toLowerCase().includes(q)))return false;return true})}
-function sortList(L){const m=$('fSort').value,g=F.gps,dist=p=>g&&p.lat!=null?distKm(g.lat,g.lng,p.lat,p.lng):1e9,risk=p=>(p.never?1500:p.age)+(p.fl&2?400:0)+(p.fl&1?200:0)+(p.grade==='C'?300:0);return[...L].sort(m==='near'?(a,b)=>dist(a)-dist(b):m==='risk'?(a,b)=>risk(b)-risk(a):(a,b)=>(b.never?99999:b.age)-(a.never?99999:a.age))}
-function navUrl(p){return'https://www.google.com/maps/search/?api=1&query='+(p.q===3&&p.lat!=null?p.lat+','+p.lng:encodeURIComponent(p.name+', '+(p.addr||'')))}
-function cardHtml(p){const done=DONE[p.id],col=p.never?'#7259d6':p.age>730?'#e93a4c':p.age>365?'#e6a00a':'#0da35a',g=F.gps&&p.lat!=null?distKm(F.gps.lat,F.gps.lng,p.lat,p.lng):null;
-  return`<div class="pcard" style="border-left-color:${col}" data-id="${esc(p.id)}"><div class="ptop"><b>${esc(p.name)}</b>${done?'<span class="tick">✓ disemak</span>':''}</div><div class="paddr">${esc(p.addr||'-')}</div><div class="pmeta">${p.never?'Belum pernah diperiksa':'Terakhir '+esc(p.last)+' • '+ageText(p.age)}${p.grade?' • Gred '+esc(p.grade)+(p.score!=null?' ('+p.score+'%)':''):''} • ${p.n}×${p.fl&2?' • <b class="red">Arahan tutup</b>':''}${p.fl&1?' • <b class="red">Notis 32B</b>':''}${g!=null?' • ~'+g.toFixed(1)+' km'+(p.q<3?' (anggaran)':''):''}</div><div class="pact"><a data-act="nav" href="${navUrl(p)}" target="_blank" rel="noopener">🧭 Navigasi</a><button data-act="det">📄 Butiran</button><button data-act="done">${done?'↩︎ Batal':'✓ Disemak'}</button></div><div class="pdet"></div></div>`}
-function renderList(){
-  const box=$('fList');if(!F.areaKey||!F.area){box.innerHTML=$('fState').value&&!$('fDist').value&&$('fState').value!=='*'?'<div class="fempty">Pilih <b>daerah</b> untuk melihat senarai premis.</div>':'';return}
-  const all=sortList(visibleList());let L,more='';
-  if(F.rand){const set=new Set(F.rand);L=sortList(F.area.filter(p=>set.has(p.id)));fStatus('Pilihan rawak: '+L.length+' premis daripada '+fmt(all.length)+' yang layak. Tekan 🎲 lagi untuk set baru.')}
-  else{L=all.slice(0,F.shown);fStatus(fmt(all.length)+' premis padan'+(F.gps&&$('fSort').value==='near'?' • disusun ikut jarak (anggaran)':''));if(all.length>F.shown)more=`<button class="fmore" id="fMore">Papar lagi (${fmt(all.length-F.shown)})</button>`}
-  box.innerHTML=(L.map(cardHtml).join('')||'<div class="fempty">Tiada premis padan penapis ini.</div>')+more}
-function pickRandom(){const pool=visibleList();if(!pool.length){fStatus('Tiada premis layak untuk dipilih.',true);return}const a=[...pool];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}F.rand=a.slice(0,10).map(p=>p.id);renderList()}
-function getGPS(){if(!navigator.geolocation){fStatus('Peranti tidak menyokong lokasi.',true);return}fStatus('Mendapatkan lokasi…');navigator.geolocation.getCurrentPosition(p=>{F.gps={lat:p.coords.latitude,lng:p.coords.longitude};$('fSort').value='near';F.rand=null;renderList()},e=>fStatus('Tidak dapat lokasi: '+e.message,true),{enableHighAccuracy:true,timeout:15000})}
-function copyText(t){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t);const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();document.execCommand('copy');x.remove();return Promise.resolve()}
-function initField(){
-  if(F.booted)return;F.booted=true;
-  $('fState').onchange=()=>{LS.set('si_area',{s:$('fState').value,d:''});fillDistricts('');F.area=null;F.areaKey='';F.rand=null;renderFieldSummary();renderList()};
-  $('fDist').onchange=()=>{LS.set('si_area',{s:$('fState').value,d:$('fDist').value});F.rand=null;renderFieldSummary();loadArea()};
-  document.querySelectorAll('#fAge .chip').forEach(c=>c.onclick=()=>{F.age=Number(c.dataset.age);document.querySelectorAll('#fAge .chip').forEach(x=>x.classList.toggle('on',x===c));F.rand=null;F.shown=20;renderList()});
-  [['fGC','gredC'],['fFlag','flag'],['fHide','hideDone']].forEach(([id,k])=>$(id).onclick=()=>{F[k]=!F[k];$(id).classList.toggle('on',F[k]);F.rand=null;F.shown=20;renderList()});
-  $('fSearch').oninput=()=>{F.rand=null;F.shown=20;renderList()};$('fSort').onchange=()=>{if($('fSort').value==='near'&&!F.gps)getGPS();else{F.rand=null;renderList()}};
-  $('fRandom').onclick=pickRandom;$('fGPS').onclick=getGPS;
-  $('fCopy').onclick=()=>copyText(summaryText()).then(()=>toast('Ringkasan disalin. Tampal di WhatsApp/e-mel.'));
-  $('fClear').onclick=()=>{Object.keys(DONE).forEach(k=>delete DONE[k]);LS.set('si_done',DONE);F.rand=null;renderList();toast('Tanda "disemak" dikosongkan.')};
-  $('fList').onclick=async e=>{
-    if(e.target.id==='fMore'){F.shown+=20;renderList();return}
-    const b=e.target.closest('button[data-act]');if(!b)return;const card=b.closest('.pcard'),id=card.dataset.id,act=b.dataset.act;
-    if(act==='done'){if(DONE[id])delete DONE[id];else DONE[id]=new Date().toISOString().slice(0,10);LS.set('si_done',DONE);const keep=F.rand;renderList();F.rand=keep;return}
-    if(act==='det'){const box=card.querySelector('.pdet');if(box.dataset.open){box.innerHTML='';delete box.dataset.open;return}box.dataset.open=1;box.innerHTML='<small>Memuat butiran…</small>';try{const r=await jsonp('premise',{id});box.innerHTML=detailHtml(r.data)}catch(err){box.innerHTML='<small>Gagal: '+esc(err.message)+'</small>'}}
+function loadCss(u) {
+  const l = document.createElement("link");
+  l.rel = "stylesheet";
+  l.href = u;
+  document.head.appendChild(l);
+}
+let leafletP = null;
+function ensureLeaflet() {
+  if (window.L && L.map) return Promise.resolve();
+  if (leafletP) return leafletP;
+  const srcs = [["https://unpkg.com/leaflet@1.9.4/dist/", "https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"], ["https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/", "https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"]];
+  leafletP = (async () => {
+    for (const [base, heat] of srcs) {
+      try {
+        loadCss(base + "leaflet.css");
+        await wt(loadScript(base + "leaflet.js"), 12e3, "Leaflet tamat masa");
+        try {
+          await wt(loadScript(heat), 8e3);
+        } catch (e) {
+        }
+        return;
+      } catch (e) {
+      }
+    }
+    throw new Error("Pustaka peta tidak dapat dimuat (rangkaian menyekat CDN?)");
+  })();
+  leafletP.catch(() => {
+    leafletP = null;
+  });
+  return leafletP;
+}
+const CFG = window.SI_CONFIG || {};
+let DB = { premises: [], summary: {}, analytics: {}, imports: [] }, map = null, markerLayer = null, heatLayer = null, currentMapMode = "pins", pendingImport = null;
+const $ = (id) => document.getElementById(id), fmt = (n) => Number(n || 0).toLocaleString("en-MY"), pct = (n, d) => d ? Math.round(n / d * 100) : 0, apiUrl = () => CFG.API_URL, esc = (s) => String(s != null ? s : "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[m]);
+function toast(m) {
+  const t = $("toast");
+  t.textContent = m;
+  t.style.whiteSpace = "pre-line";
+  t.style.maxWidth = "460px";
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), Math.max(2500, String(m).length * 45));
+}
+function jsonp(action, params = {}) {
+  return new Promise((resolve, reject) => {
+    if (!apiUrl() || apiUrl().includes("PASTE_")) return reject(new Error("API_URL belum ditetapkan dalam config.js"));
+    const cb = "si_" + Date.now() + "_" + Math.random().toString(36).slice(2), s = document.createElement("script"), q = new URLSearchParams({ action, callback: cb, ...params });
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error("API timeout"));
+    }, 12e4);
+    function cleanup() {
+      clearTimeout(timer);
+      delete window[cb];
+      s.remove();
+    }
+    window[cb] = (d) => {
+      cleanup();
+      d && d.ok === false ? reject(new Error(d.error || "API error")) : resolve(d);
+    };
+    s.onerror = () => {
+      cleanup();
+      reject(new Error("Tidak dapat hubungi API"));
+    };
+    s.src = apiUrl() + "?" + q;
+    document.body.appendChild(s);
+  });
+}
+function initNav() {
+  document.querySelectorAll("nav button").forEach((b) => b.onclick = () => {
+    document.querySelectorAll("nav button").forEach((x) => x.classList.remove("active"));
+    b.classList.add("active");
+    document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
+    $("view-" + b.dataset.view).classList.add("active");
+    $("filters").style.display = ["dashboard", "analytics", "map", "premises"].includes(b.dataset.view) ? "grid" : "none";
+    $("pageTitle").textContent = { dashboard: "Dashboard Pemantauan Premis", analytics: "Advanced Analytics", map: "Map Intelligence", premises: "Senarai Premis", import: "Import Data FoSIM", history: "Import History", field: "Semakan Lapangan" }[b.dataset.view];
+    if (b.dataset.view === "field") initField();
+    if (["dashboard", "analytics", "map", "premises"].includes(b.dataset.view)) ensureFull();
+    if (b.dataset.view === "history") renderImportHistory();
+    if (b.dataset.view === "map") setTimeout(() => initFullMap(), 80);
+  });
+}
+function initMapNow() {
+  map = L.map("map", { preferCanvas: true }).setView([4.2, 102.2], 6);
+  const g = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}", { maxZoom: 16, attribution: "Tiles © Esri" }), s = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, attribution: "Tiles © Esri" }), sat = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, attribution: "Tiles © Esri" });
+  g.addTo(map);
+  L.control.layers({ "Peta Ringkas": g, "Peta Jalan": s, "Satelit": sat }).addTo(map);
+  markerLayer = L.featureGroup().addTo(map);
+  attachPremiseEvents(markerLayer, map);
+  addLegend(map);
+}
+let fullMap = null, fullLayer = null;
+function initMap() {
+  return ensureLeaflet().then(() => {
+    if (!map) initMapNow();
+    renderMap();
+  }).catch((e) => toast("Peta tidak dapat dimuat: " + e.message));
+}
+function initFullMap() {
+  return ensureLeaflet().then(initFullMapNow).catch((e) => toast("Peta tidak dapat dimuat: " + e.message));
+}
+function initFullMapNow() {
+  if (typeof L === "undefined") return;
+  if (fullMap) {
+    fullMap.invalidateSize();
+    return;
+  }
+  fullMap = L.map("mapFull", { preferCanvas: true }).setView([4.2, 102.2], 6);
+  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}", { maxZoom: 16, attribution: "Tiles © Esri" }).addTo(fullMap);
+  fullLayer = L.featureGroup().addTo(fullMap);
+  attachPremiseEvents(fullLayer, fullMap);
+  addLegend(fullMap);
+  renderFullMap();
+}
+function renderFullMap() {
+  if (!fullMap || !fullLayer) return;
+  fullLayer.clearLayers();
+  const rows = filteredPremises().filter(hasXY);
+  capPins(rows).list.forEach((p) => addMarker(fullLayer, p));
+  fitMap(fullMap, rows);
+}
+function statusColor(s) {
+  return s === "CURRENT" ? "#0da35a" : s === "DUE" ? "#e6a00a" : s === "OVERDUE" ? "#e93a4c" : "#7259d6";
+}
+const hasXY = (p) => p.latitude != null && p.latitude !== "" && p.longitude != null && p.longitude !== "" && Number.isFinite(+p.latitude) && Number.isFinite(+p.longitude);
+function addMarker(target, p) {
+  if (!hasXY(p)) return;
+  const m = L.circleMarker([+p.latitude, +p.longitude], { radius: p.lq === 3 ? 6 : 4, color: "#fff", weight: 1.5, fillColor: statusColor(p.status), fillOpacity: p.lq === 3 ? 0.95 : 0.6 });
+  m._p = p;
+  m.addTo(target);
+}
+const STATUS_MS = { CURRENT: "Terkini", DUE: "Hampir tamat tempoh", OVERDUE: "Lama tak diperiksa", NEVER: "Belum pernah diperiksa" };
+function tipHtml(p) {
+  return `<div style="font-size:11px;line-height:1.5"><b>${esc(p.premiseName)}</b><br>${esc(p.premiseId)} • ${esc(p.district)}, ${esc(p.state)}<br>${esc(p.category || "-")} • Status: ${esc(STATUS_MS[p.status] || p.status)}<br>Gred terakhir: ${esc(p.lastGrade || "-")}${p.lastScore != null ? " (" + p.lastScore + "%)" : ""} • Risiko ${p.riskScore || 0}<br>Pemeriksaan akhir: ${esc(p.lastInspectionDate || "-")} (${p.inspectionCount || 0} kali)${p.lq === 3 ? '<br><i style="color:#0da35a">Lokasi tepat (geocode alamat)</i>' : p.lq === 2 ? '<br><i style="color:#71839a">Lokasi anggaran (aras jalan)</i>' : p.lq === 1 ? '<br><i style="color:#71839a">Lokasi anggaran (ikut poskod)</i>' : ""}</div>`;
+}
+function detailHtml(d) {
+  if (!d || !d.inspections || !d.inspections.length) return "<small>Tiada butiran.</small>";
+  const rows = d.inspections.map((x) => `<tr><td>${esc(x.date)}</td><td>${esc(x.type)}</td><td>${x.score == null || x.score === "" ? "" : esc(x.score)}</td><td>${esc(x.grade || "-")}</td><td>${esc(x.closure || "")}${x.notice === "YA" ? " 32B" : ""}</td></tr>`).join("");
+  return `<div style="font-size:11px;line-height:1.5"><b>Alamat:</b> ${esc(d.address || "-")}<br>${d.company ? "<b>Syarikat:</b> " + esc(d.company) + "<br>" : ""}${d.owner ? "<b>Pemilik:</b> " + esc(d.owner) + "<br>" : ""}<b>Kategori:</b> ${esc(d.category || "-")} • ${esc(d.subcategory || "-")}</div><div class="pdscroll"><table class="pdtab"><tr><th>Tarikh</th><th>Jenis</th><th>Markah</th><th>Gred</th><th>Tutup/32B</th></tr>${rows}</table></div>`;
+}
+function attachPremiseEvents(group, mapRef) {
+  const tip = L.tooltip({ direction: "top", offset: [0, -6], opacity: 0.97 });
+  group.on("mouseover", (e) => {
+    const p = e.layer._p;
+    if (!p) return;
+    tip.setContent(tipHtml(p)).setLatLng(e.layer.getLatLng());
+    tip.addTo(mapRef);
+  });
+  group.on("mouseout", () => {
+    mapRef.removeLayer(tip);
+  });
+  group.on("click", async (e) => {
+    const p = e.layer._p;
+    if (!p) return;
+    mapRef.removeLayer(tip);
+    const pop = L.popup({ maxWidth: 420 }).setLatLng(e.latlng).setContent(tipHtml(p) + '<hr style="margin:6px 0"><small>Memuatkan alamat & sejarah pemeriksaan…</small>').openOn(mapRef);
+    try {
+      const r = await jsonp("premise", { id: p.premiseId });
+      pop.setContent(tipHtml(p) + '<hr style="margin:6px 0">' + detailHtml(r.data));
+    } catch (err) {
+      pop.setContent(tipHtml(p) + '<hr style="margin:6px 0"><small>Gagal memuat butiran: ' + esc(err.message) + "</small>");
+    }
+  });
+}
+function fitMap(target, rows) {
+  const pts = rows.filter(hasXY).map((p) => [+p.latitude, +p.longitude]);
+  if (pts.length) target.fitBounds(L.latLngBounds(pts).pad(0.08));
+}
+function filters() {
+  return { year: $("yearFilter").value, state: $("stateFilter").value, district: $("districtFilter").value, type: $("typeFilter").value, grade: $("gradeFilter").value, q: $("searchBox").value.trim().toLowerCase() };
+}
+function typeIndex(name) {
+  var _a;
+  return (((_a = DB.analytics) == null ? void 0 : _a.inspectionTypes) || []).findIndex((x) => x.name === name);
+}
+function filteredPremises() {
+  const f = filters(), yb = f.year === "ALL" ? -1 : Number(f.year) - 2015, tb = f.type === "ALL" ? -1 : typeIndex(f.type);
+  return (DB.premises || []).filter((p) => {
+    if (f.state !== "ALL" && p.state !== f.state) return false;
+    if (f.district !== "ALL" && p.district !== f.district) return false;
+    if (f.grade !== "ALL" && p.lastGrade !== f.grade) return false;
+    if (yb >= 0 && !(p.ym >> yb & 1)) return false;
+    if (tb >= 0 && !(p.tm >> tb & 1)) return false;
+    if (f.q && !`${p.premiseName} ${p.premiseId} ${p.address || ""}`.toLowerCase().includes(f.q)) return false;
+    return true;
+  });
+}
+function fillSelect(id, vals, label) {
+  const s = $(id), old = s.value;
+  s.innerHTML = `<option value="ALL">${label}</option>`;
+  [...new Set(vals.filter(Boolean))].sort().forEach((v) => {
+    const o = document.createElement("option");
+    o.value = v;
+    o.textContent = v;
+    s.appendChild(o);
+  });
+  if ([...s.options].some((o) => o.value === old)) s.value = old;
+}
+function refreshDistricts() {
+  const st = $("stateFilter").value;
+  fillSelect("districtFilter", (DB.premises || []).filter((p) => st === "ALL" || p.state === st).map((p) => p.district), "Semua Daerah");
+}
+function populateFilters() {
+  var _a, _b;
+  fillSelect("stateFilter", (DB.premises || []).map((x) => x.state), "Semua Negeri");
+  refreshDistricts();
+  fillSelect("yearFilter", ((_a = DB.analytics) == null ? void 0 : _a.years) || [], "Semua Tahun");
+  fillSelect("typeFilter", (((_b = DB.analytics) == null ? void 0 : _b.inspectionTypes) || []).map((x) => x.name), "Semua Jenis Pemeriksaan");
+}
+function addLegend(m) {
+  const c = L.control({ position: "bottomleft" });
+  c.onAdd = () => {
+    const d = L.DomUtil.create("div", "maplegend");
+    d.innerHTML = '<b>Status pemeriksaan</b><br><i style="background:#0da35a"></i>Terkini<i style="background:#e6a00a"></i>Hampir tamat<i style="background:#e93a4c"></i>Lama tak diperiksa<i style="background:#7259d6"></i>Belum diperiksa<hr><b>Ketepatan lokasi</b><br><i class="big"></i>Tepat (alamat)<i class="sm"></i>Anggaran (jalan / poskod)';
+    L.DomEvent.disableClickPropagation(d);
+    return d;
+  };
+  c.addTo(m);
+}
+const MAXPIN = 4e4;
+function capPins(rows) {
+  return rows.length > MAXPIN ? { list: [...rows].sort((a, b) => (b.riskScore || 0) - (a.riskScore || 0)).slice(0, MAXPIN), cut: true } : { list: rows, cut: false };
+}
+function renderMap() {
+  if (!map || !markerLayer) return;
+  markerLayer.clearLayers();
+  if (heatLayer) {
+    map.removeLayer(heatLayer);
+    heatLayer = null;
+  }
+  const all = filteredPremises(), rows = all.filter(hasXY), mc = $("mapCount");
+  if (mc) mc.textContent = rows.length ? " • " + fmt(rows.length) + " premis berkoordinat" + (() => {
+    const c = [0, 0, 0, 0];
+    rows.forEach((p) => c[p.lq || 0]++);
+    return " (tepat " + fmt(c[3]) + " • jalan " + fmt(c[2]) + " • poskod " + fmt(c[1]) + ")";
+  })() : all.length ? " • tiada koordinat — jalankan geocodePostcodes di Apps Script" : "";
+  if (currentMapMode === "heat" && L.heatLayer) heatLayer = L.heatLayer(rows.map((p) => [+p.latitude, +p.longitude, Math.max(0.15, (p.riskScore || 0) / 100)]), { radius: 32, blur: 27, minOpacity: 0.25, maxZoom: 12, gradient: { 0.15: "#24c56a", 0.45: "#ffd33d", 0.72: "#ff8234", 1: "#e92542" } }).addTo(map);
+  else {
+    const pins = capPins(rows.filter((p) => currentMapMode !== "high" || (p.riskScore || 0) >= 65));
+    pins.list.forEach((p) => addMarker(markerLayer, p));
+    if (mc && pins.cut) mc.textContent += " • dipaparkan " + fmt(pins.list.length) + " pin berisiko tertinggi (tapis negeri/daerah untuk lihat semua)";
+  }
+  fitMap(map, rows);
+}
+function renderDashboard() {
+  const s = DB.summary || {}, rows = filteredPremises(), total = rows.length || s.premises || 0, ins = rows.filter((p) => p.inspectionCount > 0).length, nev = rows.filter((p) => p.status === "NEVER").length, ov = rows.filter((p) => p.status === "OVERDUE").length;
+  $("kPremises").textContent = fmt(total);
+  $("kInspected").textContent = fmt(ins);
+  $("kInspectedPct").textContent = pct(ins, total) + "% coverage";
+  $("kNever").textContent = fmt(nev);
+  $("kNeverPct").textContent = pct(nev, total) + "% premis";
+  $("kOverdue").textContent = fmt(ov);
+  $("kClosure").textContent = fmt(s.closures || 0);
+  $("kNotice").textContent = fmt(s.notice32b || 0);
+  const pri = [...rows].sort((a, b) => (b.riskScore || 0) - (a.riskScore || 0)).slice(0, 12);
+  $("priorityCount").textContent = rows.filter((p) => (p.riskScore || 0) >= 65).length;
+  $("priorityList").innerHTML = pri.map((p) => {
+    var _a;
+    return `<div class="priority"><div class="risk" style="background:${statusColor(p.status)}">${p.riskScore || 0}</div><div><b>${esc(p.premiseName)}</b><small>${esc(p.premiseId)} • ${esc(p.district)}<br>${esc(p.status)} • ${(_a = p.inspectionAgeDays) != null ? _a : "-"} hari</small></div></div>`;
+  }).join("");
+  renderTypeBars();
+  renderGrade();
+  renderPremises();
+  renderAnalytics();
+  renderMap();
+  renderFullMap();
+}
+function renderTypeBars() {
+  var _a;
+  const a = ((_a = DB.analytics) == null ? void 0 : _a.inspectionTypes) || [], m = Math.max(1, ...a.map((x) => x.count));
+  $("typeBars").innerHTML = a.slice(0, 10).map((x) => `<div class="barrow"><div class="barlabel"><span>${esc(x.name)}</span><b>${fmt(x.count)}</b></div><div class="track"><div class="fill" style="width:${x.count / m * 100}%"></div></div></div>`).join("");
+}
+function renderGrade() {
+  var _a;
+  const g = ((_a = DB.analytics) == null ? void 0 : _a.grades) || { A: 0, B: 0, C: 0, U: 0 }, t = Math.max(1, g.A + g.B + g.C + g.U), a = [["A", g.A, "#0da35a"], ["B", g.B, "#e6a00a"], ["C", g.C, "#e93a4c"], ["Tiada", g.U, "#9aa8b8"]];
+  $("gradeBar").innerHTML = a.map((x) => `<span style="width:${x[1] / t * 100}%;background:${x[2]}">${x[1] ? pct(x[1], t) + "%" : ""}</span>`).join("");
+  $("gradeLegend").innerHTML = a.map((x) => `<div><b style="color:${x[2]}">${x[0]}</b><br>${fmt(x[1])}</div>`).join("");
+}
+function renderAnalytics() {
+  const a = DB.analytics || {}, b = a.ageBuckets || [];
+  $("ageBuckets").innerHTML = b.map((x) => `<div class="barrow"><div class="barlabel"><span>${esc(x.label)}</span><b>${fmt(x.count)}</b></div><div class="track"><div class="fill" style="width:${x.pct || 0}%"></div></div></div>`).join("");
+  $("districtTable").querySelector("tbody").innerHTML = (a.districts || []).map((x) => `<tr><td>${esc(x.district)}</td><td>${fmt(x.premises)}</td><td>${fmt(x.inspected)}</td><td>${x.coverage || 0}%</td><td>${fmt(x.overdue)}</td><td>${fmt(x.closures)}</td></tr>`).join("");
+}
+function renderPremises() {
+  const r = filteredPremises();
+  $("premiseCount").textContent = fmt(r.length) + " premis";
+  $("premiseTable").querySelector("tbody").innerHTML = r.slice(0, 500).map((p) => `<tr><td>${esc(p.premiseId)}</td><td>${esc(p.premiseName)}</td><td>${esc(p.district)}</td><td>${esc(p.category)}</td><td>${esc(p.lastInspectionDate || "-")}</td><td>${esc(p.lastGrade || "-")}</td><td>${esc(p.status || "-")}</td></tr>`).join("");
+}
+function renderImportHistory() {
+  $("importTable").querySelector("tbody").innerHTML = (DB.imports || []).map((x) => `<tr><td>${esc(x.timestamp)}</td><td>${esc(x.fileName)}</td><td>${fmt(x.rows)}</td><td>${fmt(x.accepted)}</td><td>${fmt(x.duplicates)}</td><td>${esc(x.status)}</td></tr>`).join("");
+}
+function expandDashboard(C) {
+  const th = CFG.DEFAULT_THRESHOLD_DAYS || C.th || 365, t0 = /* @__PURE__ */ new Date();
+  t0.setHours(0, 0, 0, 0);
+  const T0 = t0.getTime(), D = C.dict, dc = {}, ageOf = (ld) => {
+    if (!ld) return null;
+    let v = dc[ld];
+    if (v === void 0) {
+      v = Math.floor((T0 - (/* @__PURE__ */ new Date(ld + "T00:00:00")).getTime()) / 864e5);
+      dc[ld] = v;
+    }
+    return v;
+  };
+  const prem = C.P.map((a) => {
+    const ld = a[7], age = ageOf(ld), st = !a[8] ? "NEVER" : age > th ? "OVERDUE" : age >= Math.round(th * 0.8) ? "DUE" : "CURRENT", g = a[5] >= 0 ? D.g[a[5]] : "", fl = a[11];
+    let n = st === "NEVER" ? 78 : Math.min(42, (age || 0) / Math.max(1, th) * 42);
+    n += g === "C" ? 30 : g === "B" ? 16 : g === "A" ? 3 : 8;
+    if (fl & 2) n += 14;
+    if (fl & 4) n += 22;
+    return { premiseId: a[0], premiseName: a[1], state: D.s[a[2]], district: D.d[a[3]], category: D.c[a[4]], lastGrade: g, lastScore: a[6], lastInspectionDate: ld, inspectionCount: a[8], latitude: a[9], longitude: a[10], approx: fl & 1, lq: fl & 8 ? 3 : fl & 16 ? 2 : fl & 1 ? 1 : 0, ym: a[12], tm: a[13], inspectionAgeDays: age, status: st, riskScore: Math.max(0, Math.min(99, Math.round(n))) };
+  });
+  const bs = [["< 6 bulan", (p) => p.inspectionAgeDays != null && p.inspectionAgeDays < 183], ["6–12 bulan", (p) => p.inspectionAgeDays >= 183 && p.inspectionAgeDays < 365], ["1–2 tahun", (p) => p.inspectionAgeDays >= 365 && p.inspectionAgeDays < 730], ["2–3 tahun", (p) => p.inspectionAgeDays >= 730 && p.inspectionAgeDays < 1095], ["> 3 tahun", (p) => p.inspectionAgeDays >= 1095], ["Never inspected", (p) => p.status === "NEVER"]];
+  const cnt = bs.map((b) => prem.filter(b[1]).length), mx = Math.max(1, ...cnt), dm = {};
+  prem.forEach((p) => {
+    const k = p.district || "TIDAK DINYATAKAN", o = dm[k] || (dm[k] = { district: k, premises: 0, inspected: 0, overdue: 0, closures: C.closD[k] || 0 });
+    o.premises++;
+    if (p.inspectionCount) o.inspected++;
+    if (p.status === "OVERDUE") o.overdue++;
+  });
+  const districts = Object.values(dm).map((x) => Object.assign(x, { coverage: x.premises ? Math.round(x.inspected / x.premises * 100) : 0 })).sort((a, b) => b.premises - a.premises);
+  return { premises: prem, summary: C.summary, analytics: { years: C.years, inspectionTypes: C.types, grades: C.grades, districts, ageBuckets: bs.map((b, i) => ({ label: b[0], count: cnt[i], pct: Math.round(cnt[i] / mx * 100) })) }, imports: C.imports || [], generatedAt: C.generatedAt };
+}
+const IS_MOBILE = matchMedia("(max-width:820px)").matches;
+let fullLoaded = !IS_MOBILE;
+function ensureFull() {
+  if (fullLoaded) return;
+  fullLoaded = true;
+  toast("Memuat data penuh (besar). Guna Wi-Fi jika boleh…");
+  try {
+    initMap();
+  } catch (e) {
+    console.error(e);
+  }
+  loadDashboard();
+}
+function ensureXLSX() {
+  return window.XLSX ? Promise.resolve() : new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
+    s.onload = res;
+    s.onerror = () => rej(new Error("Pustaka Excel gagal dimuat. Semak sambungan internet."));
+    document.head.appendChild(s);
+  });
+}
+const BASE_DAY = Math.floor(Date.UTC(2015, 0, 1) / 864e5), todayDay = () => Math.floor(Date.now() / 864e5) - BASE_DAY;
+const LS = { get(k, d) {
+  try {
+    const v = localStorage.getItem(k);
+    return v == null ? d : JSON.parse(v);
+  } catch (e) {
+    return d;
+  }
+}, set(k, v) {
+  try {
+    localStorage.setItem(k, JSON.stringify(v));
+  } catch (e) {
+  }
+} };
+const idb = {
+  open() {
+    return new Promise((res, rej) => {
+      const r = indexedDB.open("si_cache", 1);
+      r.onupgradeneeded = () => r.result.createObjectStore("kv");
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  },
+  async get(k) {
+    try {
+      const db = await this.open();
+      return await new Promise((res, rej) => {
+        const q = db.transaction("kv").objectStore("kv").get(k);
+        q.onsuccess = () => res(q.result);
+        q.onerror = () => rej(q.error);
+      });
+    } catch (e) {
+      return null;
+    }
+  },
+  async set(k, v) {
+    try {
+      const db = await this.open();
+      await new Promise((res, rej) => {
+        const t = db.transaction("kv", "readwrite");
+        t.objectStore("kv").put(v, k);
+        t.oncomplete = res;
+        t.onerror = () => rej(t.error);
+      });
+    } catch (e) {
+    }
+  }
+};
+const F = { lite: null, idx: {}, area: null, areaKey: "", age: 365, gredC: false, flag: false, hideDone: true, gps: null, rand: null, shown: 20, booted: false }, DONE = LS.get("si_done", {});
+function diag() {
+  const e = $("fDiag");
+  if (e) e.textContent = ["Versi: v6.1", "Pelayar: " + navigator.userAgent, "Atas talian: " + navigator.onLine, "Skrin: " + innerWidth + "x" + innerHeight, "API: " + String(apiUrl() || "-").replace(/\/macros\/s\/[^/]+/, "/macros/s/..."), "Data lite: " + (F.lite ? "ada (" + String(F.lite.gen).slice(0, 10) + ")" : "tiada"), "Kawasan: " + (F.areaKey || "-"), "Ralat: " + ((window.__siErr || []).join(" | ") || "tiada")].join("\n");
+}
+function fStatus(m, err) {
+  diag();
+  const e = $("fStatus");
+  if (e) {
+    e.textContent = m || "";
+    e.className = "fstatus" + (err ? " err" : "");
+  }
+}
+function ageText(d) {
+  if (d == null) return "";
+  if (d < 31) return d + " hari lalu";
+  if (d < 730) return Math.round(d / 30.4) + " bulan lalu";
+  return (d / 365).toFixed(1) + " tahun lalu";
+}
+function distKm(a, b, c, d) {
+  const R = 6371, r = Math.PI / 180, x = (c - a) * r, y = (d - b) * r, h = Math.sin(x / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin(y / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+async function loadLite() {
+  const cached = await idb.get("lite");
+  if (cached && cached.data && !F.lite) setLite(cached.data);
+  try {
+    const r = await jsonp("lite"), d = r.data || r;
+    if (!cached || !cached.data || cached.data.gen !== d.gen) await idb.set("lite", { data: d });
+    if (!F.lite || F.lite.gen !== d.gen) setLite(d);
+    $("apiState").textContent = "online";
+    fStatus(F.areaKey ? "" : "Pilih negeri dan daerah.");
+  } catch (e) {
+    if (F.lite) {
+      $("apiState").textContent = "luar talian";
+      fStatus("Mod luar talian: guna data tersimpan (" + String(F.lite.gen).slice(0, 10) + ").");
+    } else {
+      $("apiState").textContent = "offline";
+      fStatus("Gagal memuat: " + e.message, true);
+    }
+  }
+}
+function setLite(d) {
+  F.lite = d;
+  F.idx = {};
+  d.areas.forEach((x) => {
+    (F.idx[x[0]] || (F.idx[x[0]] = {}))[x[1]] = x[2];
+  });
+  fillFieldSelects();
+  renderFieldSummary();
+  if ($("fDist").value) loadArea();
+}
+function fillFieldSelects() {
+  const cur = LS.get("si_area", {}), st = $("fState"), states = Object.keys(F.idx).sort();
+  st.innerHTML = '<option value="">— Pilih negeri —</option><option value="*">SELURUH NEGARA</option>' + states.map((s) => `<option>${esc(s)}</option>`).join("");
+  if (cur.s && (cur.s === "*" || F.idx[cur.s])) st.value = cur.s;
+  fillDistricts(cur.d);
+}
+function fillDistricts(sel) {
+  const s = $("fState").value, dd = $("fDist"), list = s && s !== "*" && F.idx[s] ? Object.keys(F.idx[s]).sort() : [];
+  dd.innerHTML = '<option value="">' + (list.length ? "— Semua daerah —" : "—") + "</option>" + list.map((x) => `<option>${esc(x)}</option>`).join("");
+  dd.disabled = !list.length;
+  if (sel && list.includes(sel)) dd.value = sel;
+}
+function valsOf(s, d) {
+  const out = [];
+  const add = (a) => {
+    for (let i = 0; i < a.length; i++) out.push(a[i]);
+  };
+  if (!s || s === "*") {
+    for (const st in F.idx) for (const dd in F.idx[st]) add(F.idx[st][dd]);
+  } else if (!d) {
+    for (const dd in F.idx[s]) add(F.idx[s][dd]);
+  } else if (F.idx[s] && F.idx[s][d]) add(F.idx[s][d]);
+  return out;
+}
+function statsOf(vals) {
+  const t = todayDay(), th = CFG.DEFAULT_THRESHOLD_DAYS || F.lite && F.lite.th || 365, o = { n: vals.length, over: 0, ok: 0, never: 0, nt: 0, clo: 0, gc: 0 };
+  vals.forEach((v) => {
+    const f = v & 15;
+    if (f & 8) {
+      o.never++;
+      return;
+    }
+    if (t - (v >> 4) > th) o.over++;
+    else o.ok++;
+    if (f & 1) o.nt++;
+    if (f & 2) o.clo++;
+    if (f & 4) o.gc++;
+  });
+  return o;
+}
+const pc = (a, b) => b ? Math.round(a / b * 100) + "%" : "-";
+function areaName() {
+  const s = $("fState").value, d = $("fDist").value;
+  return !s ? "" : s === "*" ? "SELURUH NEGARA" : d ? s + " › " + d : s;
+}
+function summaryText() {
+  const s = $("fState").value, d = $("fDist").value;
+  if (!F.lite || !s) return "";
+  const st = statsOf(valsOf(s, d)), th = CFG.DEFAULT_THRESHOLD_DAYS || F.lite.th || 365;
+  let t = `📍 ${areaName()}
+Data: ${String(F.lite.gen).slice(0, 10)} • Ambang: ${th} hari
+
+Premis: ${fmt(st.n)}
+Diperiksa ≤12 bulan: ${fmt(st.ok)} (${pc(st.ok, st.n)})
+Lama tak diperiksa (>12 bulan): ${fmt(st.over)} (${pc(st.over, st.n)})
+Belum pernah diperiksa: ${fmt(st.never)}
+Pernah arahan tutup: ${fmt(st.clo)} • Notis 32B: ${fmt(st.nt)} • Gred C: ${fmt(st.gc)}`;
+  if (s && !d) {
+    const rk = s === "*" ? Object.keys(F.idx).map((x) => [x, statsOf(valsOf(x, ""))]) : Object.keys(F.idx[s]).map((x) => [x, statsOf(F.idx[s][x])]);
+    const top = rk.filter((x) => x[1].n >= 20).sort((a, b) => b[1].over / b[1].n - a[1].over / a[1].n).slice(0, 5);
+    if (top.length) t += `
+
+Tertinggal (peratus lama tak diperiksa):
+` + top.map((x, i) => `${i + 1}. ${x[0]} – ${pc(x[1].over, x[1].n)} (${fmt(x[1].over)}/${fmt(x[1].n)})`).join("\n");
+  }
+  return t;
+}
+function renderFieldSummary() {
+  const s = $("fState").value, d = $("fDist").value, box = $("fSum");
+  if (!F.lite || !s) {
+    box.innerHTML = "";
+    $("fWA").removeAttribute("href");
+    return;
+  }
+  const st = statsOf(valsOf(s, d));
+  box.innerHTML = `<div class="fname">${esc(areaName())}</div>` + [["Premis", fmt(st.n), ""], ["Lama tak diperiksa", fmt(st.over), pc(st.over, st.n)], ["Diperiksa ≤12 bln", fmt(st.ok), pc(st.ok, st.n)], ["Arahan tutup", fmt(st.clo), "premis"], ["Notis 32B", fmt(st.nt), "premis"], ["Gred C", fmt(st.gc), "premis"]].map((x) => `<div><b>${x[1]}</b><small>${x[0]}${x[2] ? " • " + x[2] : ""}</small></div>`).join("");
+  $("fWA").href = "https://wa.me/?text=" + encodeURIComponent(summaryText());
+}
+async function loadArea() {
+  const s = $("fState").value, d = $("fDist").value;
+  if (!s || s === "*" || !d) {
+    F.area = null;
+    F.areaKey = "";
+    renderList();
+    return;
+  }
+  const key = s + "|" + d;
+  F.areaKey = key;
+  fStatus("Memuat senarai premis " + d + "…");
+  const rec = await idb.get("area:" + key);
+  let data = null;
+  if (rec && F.lite && rec.gen === F.lite.gen) data = rec.data;
+  else {
+    try {
+      const r = await jsonp("area", { k: key });
+      data = r.data || r;
+      await idb.set("area:" + key, { gen: F.lite && F.lite.gen, data });
+    } catch (e) {
+      if (rec) data = rec.data;
+      else {
+        fStatus("Gagal memuat kawasan: " + e.message, true);
+        return;
+      }
+    }
+  }
+  if (F.areaKey !== key) return;
+  F.area = data.map((a) => {
+    const ld = a[6];
+    return { id: a[0], name: a[1], addr: a[2], lat: a[3], lng: a[4], q: a[5], last: ld, n: a[7], grade: a[8], score: a[9], fl: a[10], never: !ld, age: ld ? Math.floor((Date.now() - (/* @__PURE__ */ new Date(ld + "T00:00:00")).getTime()) / 864e5) : null };
+  });
+  F.rand = null;
+  F.shown = 20;
+  renderList();
+}
+function visibleList() {
+  const q = ($("fSearch").value || "").trim().toLowerCase();
+  return (F.area || []).filter((p) => {
+    if (F.age && !(p.never || p.age > F.age)) return false;
+    if (F.gredC && p.grade !== "C") return false;
+    if (F.flag && !p.fl) return false;
+    if (F.hideDone && DONE[p.id]) return false;
+    if (q && !(p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q) || (p.addr || "").toLowerCase().includes(q))) return false;
+    return true;
+  });
+}
+function sortList(L2) {
+  const m = $("fSort").value, g = F.gps, dist = (p) => g && p.lat != null ? distKm(g.lat, g.lng, p.lat, p.lng) : 1e9, risk = (p) => (p.never ? 1500 : p.age) + (p.fl & 2 ? 400 : 0) + (p.fl & 1 ? 200 : 0) + (p.grade === "C" ? 300 : 0);
+  return [...L2].sort(m === "near" ? (a, b) => dist(a) - dist(b) : m === "risk" ? (a, b) => risk(b) - risk(a) : (a, b) => (b.never ? 99999 : b.age) - (a.never ? 99999 : a.age));
+}
+function navUrl(p) {
+  return "https://www.google.com/maps/search/?api=1&query=" + (p.q === 3 && p.lat != null ? p.lat + "," + p.lng : encodeURIComponent(p.name + ", " + (p.addr || "")));
+}
+function cardHtml(p) {
+  const done = DONE[p.id], col = p.never ? "#7259d6" : p.age > 730 ? "#e93a4c" : p.age > 365 ? "#e6a00a" : "#0da35a", g = F.gps && p.lat != null ? distKm(F.gps.lat, F.gps.lng, p.lat, p.lng) : null;
+  return `<div class="pcard" style="border-left-color:${col}" data-id="${esc(p.id)}"><div class="ptop"><b>${esc(p.name)}</b>${done ? '<span class="tick">✓ disemak</span>' : ""}</div><div class="paddr">${esc(p.addr || "-")}</div><div class="pmeta">${p.never ? "Belum pernah diperiksa" : "Terakhir " + esc(p.last) + " • " + ageText(p.age)}${p.grade ? " • Gred " + esc(p.grade) + (p.score != null ? " (" + p.score + "%)" : "") : ""} • ${p.n}×${p.fl & 2 ? ' • <b class="red">Arahan tutup</b>' : ""}${p.fl & 1 ? ' • <b class="red">Notis 32B</b>' : ""}${g != null ? " • ~" + g.toFixed(1) + " km" + (p.q < 3 ? " (anggaran)" : "") : ""}</div><div class="pact"><a data-act="nav" href="${navUrl(p)}" target="_blank" rel="noopener">🧭 Navigasi</a><button data-act="det">📄 Butiran</button><button data-act="done">${done ? "↩︎ Batal" : "✓ Disemak"}</button></div><div class="pdet"></div></div>`;
+}
+function renderList() {
+  const box = $("fList");
+  if (!F.areaKey || !F.area) {
+    box.innerHTML = $("fState").value && !$("fDist").value && $("fState").value !== "*" ? '<div class="fempty">Pilih <b>daerah</b> untuk melihat senarai premis.</div>' : "";
+    return;
+  }
+  const all = sortList(visibleList());
+  let L2, more = "";
+  if (F.rand) {
+    const set = new Set(F.rand);
+    L2 = sortList(F.area.filter((p) => set.has(p.id)));
+    fStatus("Pilihan rawak: " + L2.length + " premis daripada " + fmt(all.length) + " yang layak. Tekan 🎲 lagi untuk set baru.");
+  } else {
+    L2 = all.slice(0, F.shown);
+    fStatus(fmt(all.length) + " premis padan" + (F.gps && $("fSort").value === "near" ? " • disusun ikut jarak (anggaran)" : ""));
+    if (all.length > F.shown) more = `<button class="fmore" id="fMore">Papar lagi (${fmt(all.length - F.shown)})</button>`;
+  }
+  box.innerHTML = (L2.map(cardHtml).join("") || '<div class="fempty">Tiada premis padan penapis ini.</div>') + more;
+}
+function pickRandom() {
+  const pool = visibleList();
+  if (!pool.length) {
+    fStatus("Tiada premis layak untuk dipilih.", true);
+    return;
+  }
+  const a = [...pool];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  F.rand = a.slice(0, 10).map((p) => p.id);
+  renderList();
+}
+function getGPS() {
+  if (!navigator.geolocation) {
+    fStatus("Peranti tidak menyokong lokasi.", true);
+    return;
+  }
+  fStatus("Mendapatkan lokasi…");
+  navigator.geolocation.getCurrentPosition((p) => {
+    F.gps = { lat: p.coords.latitude, lng: p.coords.longitude };
+    $("fSort").value = "near";
+    F.rand = null;
+    renderList();
+  }, (e) => fStatus("Tidak dapat lokasi: " + e.message, true), { enableHighAccuracy: true, timeout: 15e3 });
+}
+function copyText(t) {
+  if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t);
+  const x = document.createElement("textarea");
+  x.value = t;
+  document.body.appendChild(x);
+  x.select();
+  document.execCommand("copy");
+  x.remove();
+  return Promise.resolve();
+}
+function initField() {
+  if (F.booted) return;
+  F.booted = true;
+  $("fState").onchange = () => {
+    LS.set("si_area", { s: $("fState").value, d: "" });
+    fillDistricts("");
+    F.area = null;
+    F.areaKey = "";
+    F.rand = null;
+    renderFieldSummary();
+    renderList();
+  };
+  $("fDist").onchange = () => {
+    LS.set("si_area", { s: $("fState").value, d: $("fDist").value });
+    F.rand = null;
+    renderFieldSummary();
+    loadArea();
+  };
+  document.querySelectorAll("#fAge .chip").forEach((c) => c.onclick = () => {
+    F.age = Number(c.dataset.age);
+    document.querySelectorAll("#fAge .chip").forEach((x) => x.classList.toggle("on", x === c));
+    F.rand = null;
+    F.shown = 20;
+    renderList();
+  });
+  [["fGC", "gredC"], ["fFlag", "flag"], ["fHide", "hideDone"]].forEach(([id, k]) => $(id).onclick = () => {
+    F[k] = !F[k];
+    $(id).classList.toggle("on", F[k]);
+    F.rand = null;
+    F.shown = 20;
+    renderList();
+  });
+  $("fSearch").oninput = () => {
+    F.rand = null;
+    F.shown = 20;
+    renderList();
+  };
+  $("fSort").onchange = () => {
+    if ($("fSort").value === "near" && !F.gps) getGPS();
+    else {
+      F.rand = null;
+      renderList();
+    }
+  };
+  $("fRandom").onclick = pickRandom;
+  $("fGPS").onclick = getGPS;
+  $("fCopy").onclick = () => copyText(summaryText()).then(() => toast("Ringkasan disalin. Tampal di WhatsApp/e-mel."));
+  $("fClear").onclick = () => {
+    Object.keys(DONE).forEach((k) => delete DONE[k]);
+    LS.set("si_done", DONE);
+    F.rand = null;
+    renderList();
+    toast('Tanda "disemak" dikosongkan.');
+  };
+  $("fList").onclick = async (e) => {
+    if (e.target.id === "fMore") {
+      F.shown += 20;
+      renderList();
+      return;
+    }
+    const b = e.target.closest("button[data-act]");
+    if (!b) return;
+    const card = b.closest(".pcard"), id = card.dataset.id, act = b.dataset.act;
+    if (act === "done") {
+      if (DONE[id]) delete DONE[id];
+      else DONE[id] = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+      LS.set("si_done", DONE);
+      const keep = F.rand;
+      renderList();
+      F.rand = keep;
+      return;
+    }
+    if (act === "det") {
+      const box = card.querySelector(".pdet");
+      if (box.dataset.open) {
+        box.innerHTML = "";
+        delete box.dataset.open;
+        return;
+      }
+      box.dataset.open = 1;
+      box.innerHTML = "<small>Memuat butiran…</small>";
+      try {
+        const r = await jsonp("premise", { id });
+        box.innerHTML = detailHtml(r.data);
+      } catch (err) {
+        box.innerHTML = "<small>Gagal: " + esc(err.message) + "</small>";
+      }
+    }
   };
   loadLite();
+  setTimeout(() => {
+    if (!F.lite) {
+      fStatus("Tiada respons daripada server selepas 15 saat. Semak internet, atau buka Diagnostik di bawah dan hantar kepada pentadbir.", true);
+    }
+  }, 15e3);
 }
-async function loadDashboard(){try{$('apiState').textContent='loading';const d=await jsonp('dashboard',{thresholdDays:CFG.DEFAULT_THRESHOLD_DAYS||365});const raw=d.data||d;DB=raw.P?expandDashboard(raw):raw;$('apiState').textContent='online';populateFilters();renderDashboard();renderImportHistory()}catch(e){$('apiState').textContent='offline';toast(e.message);console.error(e)}}
-/* ===== KMM101 parser (robust header detection) ===== */
-const squash=v=>String(v??"").toUpperCase().replace(/[^A-Z0-9]/g,"");
-const H={
-  NEGERI:"Nama Negeri",DAERAH:"Nama Daerah",
-  TARIKHPEMERIKSAAN:"Tarikh Pemeriksaan",JENISPEMERIKSAAN:"Jenis Pemeriksaan",
-  NAMAPREMIS:"Nama Premis",NOPENDAFTARANPREMISFOSIM:"No. Pendaftaran Premis-FoSIM",
-  NOPENDAFTARANPREMIS:"No. Pendaftaran Premis-FoSIM",
-  NAMANEGERI:"Nama Negeri",NAMADAERAH:"Nama Daerah",
-  NAMAPEGAWAIYANGMENJALANKANPEMERIKSAAN:"Nama Pegawai yang Menjalankan Pemeriksaan",
-  JAWATANPKPPPKPPTM:"Jawatan (PKP/PPKP/PTM)",NAMASYARIKAT:"Nama Syarikat",ALAMATSYARIKAT:"Alamat Syarikat",
-  NAMAPEMILIKPREMIS:"Nama Pemilik Premis",ALAMATPREMIS:"Alamat Premis",
-  KATEGORIPREMISP0P4:"Kategori Premis (P0-P4)",KATEGORIPREMIS:"Kategori Premis (P0-P4)",
-  SUBKATEGORIPREMIS:"Sub Kategori Premis",JENISBORANGPEMERIKSAAN:"Jenis Borang Pemeriksaan",
-  STATUSPENDAFTARANMENGIKUTPPKM2009:"Status Pendaftaran Mengikut PPKM 2009",
-  MARKAHPENILAIANTAHAPKEBERSIHANPREMIS:"Markah Penilaian tahap kebersihan premis (%)",
-  GRED:"Gred",ARAHANPENUTUPAN:"Arahan Penutupan",SEBABPENUTUPAN:"Sebab Penutupan",
-  PENGELUARANNOTISSEKSYEN32B:"Pengeluaran Notis Seksyen 32B",BULAN:"Bulan"
+async function loadDashboard() {
+  try {
+    $("apiState").textContent = "loading";
+    const d = await jsonp("dashboard", { thresholdDays: CFG.DEFAULT_THRESHOLD_DAYS || 365 });
+    const raw = d.data || d;
+    DB = raw.P ? expandDashboard(raw) : raw;
+    $("apiState").textContent = "online";
+    populateFilters();
+    renderDashboard();
+    renderImportHistory();
+  } catch (e) {
+    $("apiState").textContent = "offline";
+    toast(e.message);
+    console.error(e);
+  }
+}
+const squash = (v) => String(v != null ? v : "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+const H = {
+  NEGERI: "Nama Negeri",
+  DAERAH: "Nama Daerah",
+  TARIKHPEMERIKSAAN: "Tarikh Pemeriksaan",
+  JENISPEMERIKSAAN: "Jenis Pemeriksaan",
+  NAMAPREMIS: "Nama Premis",
+  NOPENDAFTARANPREMISFOSIM: "No. Pendaftaran Premis-FoSIM",
+  NOPENDAFTARANPREMIS: "No. Pendaftaran Premis-FoSIM",
+  NAMANEGERI: "Nama Negeri",
+  NAMADAERAH: "Nama Daerah",
+  NAMAPEGAWAIYANGMENJALANKANPEMERIKSAAN: "Nama Pegawai yang Menjalankan Pemeriksaan",
+  JAWATANPKPPPKPPTM: "Jawatan (PKP/PPKP/PTM)",
+  NAMASYARIKAT: "Nama Syarikat",
+  ALAMATSYARIKAT: "Alamat Syarikat",
+  NAMAPEMILIKPREMIS: "Nama Pemilik Premis",
+  ALAMATPREMIS: "Alamat Premis",
+  KATEGORIPREMISP0P4: "Kategori Premis (P0-P4)",
+  KATEGORIPREMIS: "Kategori Premis (P0-P4)",
+  SUBKATEGORIPREMIS: "Sub Kategori Premis",
+  JENISBORANGPEMERIKSAAN: "Jenis Borang Pemeriksaan",
+  STATUSPENDAFTARANMENGIKUTPPKM2009: "Status Pendaftaran Mengikut PPKM 2009",
+  MARKAHPENILAIANTAHAPKEBERSIHANPREMIS: "Markah Penilaian tahap kebersihan premis (%)",
+  GRED: "Gred",
+  ARAHANPENUTUPAN: "Arahan Penutupan",
+  SEBABPENUTUPAN: "Sebab Penutupan",
+  PENGELUARANNOTISSEKSYEN32B: "Pengeluaran Notis Seksyen 32B",
+  BULAN: "Bulan"
 };
-const HKEYS=Object.keys(H).sort((a,b)=>b.length-a.length);
-const ANCHORS=["Nama Negeri","Nama Daerah","Tarikh Pemeriksaan","Jenis Pemeriksaan","Nama Premis","No. Pendaftaran Premis-FoSIM","Markah Penilaian tahap kebersihan premis (%)","Gred"];
-const REQUIRED_DISPLAY=["Nama Negeri","Nama Daerah","Tarikh Pemeriksaan","Jenis Pemeriksaan","Nama Premis","No. Pendaftaran Premis-FoSIM"];
-
-// Padan tepat dahulu; jika tiada, padan "mengandungi" (cth. "Nama Premis *", "1. Nama Negeri")
-function canonicalHeaderName(h){
-  const s=squash(h);
-  if(!s) return "";
-  if(H[s]) return H[s];
-  for(const k of HKEYS){ if(k.length>=8 && s.length<=k.length+20 && s.includes(k)) return H[k]; }
-  return String(h??"").replace(/\s+/g," ").trim();
-}
-function headerScore(row){
-  const found=new Set((row||[]).map(canonicalHeaderName));
-  return ANCHORS.filter(a=>found.has(a)).length;
-}
-function detectHeader(matrix){
-  let best={row:-1,score:0};
-  const limit=Math.min(100,matrix.length);
-  for(let r=0;r<limit;r++){
-    const sc=headerScore(matrix[r]||[]);
-    if(sc>best.score) best={row:r,score:sc};
+const HKEYS = Object.keys(H).sort((a, b) => b.length - a.length);
+const ANCHORS = ["Nama Negeri", "Nama Daerah", "Tarikh Pemeriksaan", "Jenis Pemeriksaan", "Nama Premis", "No. Pendaftaran Premis-FoSIM", "Markah Penilaian tahap kebersihan premis (%)", "Gred"];
+const REQUIRED_DISPLAY = ["Nama Negeri", "Nama Daerah", "Tarikh Pemeriksaan", "Jenis Pemeriksaan", "Nama Premis", "No. Pendaftaran Premis-FoSIM"];
+function canonicalHeaderName(h) {
+  const s = squash(h);
+  if (!s) return "";
+  if (H[s]) return H[s];
+  for (const k of HKEYS) {
+    if (k.length >= 8 && s.length <= k.length + 20 && s.includes(k)) return H[k];
   }
-  return best.score>=3?best:{row:-1,score:best.score,nearest:best.row};
+  return String(h != null ? h : "").replace(/\s+/g, " ").trim();
 }
-function cellToValue(v){
-  if(v instanceof Date && !isNaN(v)){
-    // +12 jam supaya ralat saat/zon masa SheetJS tidak menukar hari
-    const d=new Date(v.getTime()+12*3600*1000);
-    return d.getUTCFullYear()+"-"+String(d.getUTCMonth()+1).padStart(2,"0")+"-"+String(d.getUTCDate()).padStart(2,"0");
+function headerScore(row) {
+  const found = new Set((row || []).map(canonicalHeaderName));
+  return ANCHORS.filter((a) => found.has(a)).length;
+}
+function detectHeader(matrix) {
+  let best = { row: -1, score: 0 };
+  const limit = Math.min(100, matrix.length);
+  for (let r = 0; r < limit; r++) {
+    const sc = headerScore(matrix[r] || []);
+    if (sc > best.score) best = { row: r, score: sc };
   }
-  return v==null?"":String(v).replace(/ /g," ").trim();
+  return best.score >= 3 ? best : { row: -1, score: best.score, nearest: best.row };
 }
-
-function readWorkbook(file){
-  return new Promise((resolve,reject)=>{
-    const fr=new FileReader();
-    fr.onload=e=>{
-      try{
-        const wb=XLSX.read(e.target.result,{type:"array",cellDates:true,cellText:true,dateNF:"yyyy-mm-dd"});
-        let best=null; const seen=[];
-        wb.SheetNames.forEach(sheetName=>{
-          const ws=wb.Sheets[sheetName];
-          if(!ws||!ws["!ref"]) return;
-          const matrix=XLSX.utils.sheet_to_json(ws,{header:1,raw:false,dateNF:"yyyy-mm-dd",defval:"",blankrows:false});
-          const d=detectHeader(matrix);
-          const first=(matrix[d.row>=0?d.row:Math.max(0,d.nearest??0)]||[]).map(cellToValue).filter(Boolean).slice(0,8);
-          seen.push(`[${sheetName}] ${matrix.length} baris, padanan ${d.score}/8${first.length?" -> "+first.join(" | "):""}`);
-          if(d.row<0) return;
-          if(!best||d.score>best.score) best={sheetName,matrix,hr:d.row,score:d.score};
+function cellToValue(v) {
+  if (v instanceof Date && !isNaN(v)) {
+    const d = new Date(v.getTime() + 12 * 3600 * 1e3);
+    return d.getUTCFullYear() + "-" + String(d.getUTCMonth() + 1).padStart(2, "0") + "-" + String(d.getUTCDate()).padStart(2, "0");
+  }
+  return v == null ? "" : String(v).replace(/ /g, " ").trim();
+}
+function readWorkbook(file) {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = (e) => {
+      try {
+        const wb = XLSX.read(e.target.result, { type: "array", cellDates: true, cellText: true, dateNF: "yyyy-mm-dd" });
+        let best = null;
+        const seen = [];
+        wb.SheetNames.forEach((sheetName) => {
+          var _a;
+          const ws = wb.Sheets[sheetName];
+          if (!ws || !ws["!ref"]) return;
+          const matrix = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, dateNF: "yyyy-mm-dd", defval: "", blankrows: false });
+          const d = detectHeader(matrix);
+          const first = (matrix[d.row >= 0 ? d.row : Math.max(0, (_a = d.nearest) != null ? _a : 0)] || []).map(cellToValue).filter(Boolean).slice(0, 8);
+          seen.push(`[${sheetName}] ${matrix.length} baris, padanan ${d.score}/8${first.length ? " -> " + first.join(" | ") : ""}`);
+          if (d.row < 0) return;
+          if (!best || d.score > best.score) best = { sheetName, matrix, hr: d.row, score: d.score };
         });
-        if(!best){
-          throw new Error("Format KMM101 tidak dikenali. Header tidak dijumpai.\n"+(seen.join("\n")||"Fail kosong.")+"\nPastikan fail ialah laporan KMM101 FoSIM asal (ada lajur Nama Negeri, Nama Daerah, Tarikh Pemeriksaan, ...).");
+        if (!best) {
+          throw new Error("Format KMM101 tidak dikenali. Header tidak dijumpai.\n" + (seen.join("\n") || "Fail kosong.") + "\nPastikan fail ialah laporan KMM101 FoSIM asal (ada lajur Nama Negeri, Nama Daerah, Tarikh Pemeriksaan, ...).");
         }
-        // Hanya simpan lajur yang dikenali (KMM101 ada ~56 lajur; backend cuma guna ~22)
-        const KEEP=new Set(Object.values(H)),seenH=new Set();
-        const headers=(best.matrix[best.hr]||[]).map(h=>{const c=canonicalHeaderName(h);if(!KEEP.has(c)||seenH.has(c))return "";seenH.add(c);return c});
-        const live=headers.filter(Boolean);
-        const all=best.matrix.slice(best.hr+1).filter(r=>(r||[]).some(v=>cellToValue(v)!==""))
-          .map(r=>{const o={};headers.forEach((h,i)=>{if(h)o[h]=cellToValue(r[i])});return o});
-        // Baris tanpa tarikh / No. FoSIM (baris sambungan atau footer) akan ditolak backend; langkau di sini
-        const rows=all.filter(o=>o["Tarikh Pemeriksaan"]&&o["No. Pendaftaran Premis-FoSIM"]);
-        const missing=REQUIRED_DISPLAY.filter(h=>!live.includes(h));
-        resolve({sheet:best.sheetName,headers:live,rows,skipped:all.length-rows.length,headerRow:best.hr+1,score:best.score,missing});
-      }catch(err){reject(err)}
+        const KEEP = new Set(Object.values(H)), seenH = /* @__PURE__ */ new Set();
+        const headers = (best.matrix[best.hr] || []).map((h) => {
+          const c = canonicalHeaderName(h);
+          if (!KEEP.has(c) || seenH.has(c)) return "";
+          seenH.add(c);
+          return c;
+        });
+        const live = headers.filter(Boolean);
+        const all = best.matrix.slice(best.hr + 1).filter((r) => (r || []).some((v) => cellToValue(v) !== "")).map((r) => {
+          const o = {};
+          headers.forEach((h, i) => {
+            if (h) o[h] = cellToValue(r[i]);
+          });
+          return o;
+        });
+        const rows = all.filter((o) => o["Tarikh Pemeriksaan"] && o["No. Pendaftaran Premis-FoSIM"]);
+        const missing = REQUIRED_DISPLAY.filter((h) => !live.includes(h));
+        resolve({ sheet: best.sheetName, headers: live, rows, skipped: all.length - rows.length, headerRow: best.hr + 1, score: best.score, missing });
+      } catch (err) {
+        reject(err);
+      }
     };
-    fr.onerror=()=>reject(new Error("Fail Excel tidak dapat dibaca."));
+    fr.onerror = () => reject(new Error("Fail Excel tidak dapat dibaca."));
     fr.readAsArrayBuffer(file);
   });
 }
-
-
-/* ===== Progress tracker ===== */
-const STEPS=[['read','Baca fail Excel'],['header','Kesan header KMM101'],['clean','Bersih & pilih lajur'],['begin','Sambung ke Google Sheets'],['upload','Upload data ke staging'],['final','Deduplicate & simpan ke History'],['cache','Bina cache dashboard'],['refresh','Refresh dashboard']];
-let stepState={},runTimer=null,runStart=0;
-function pipeInit(){stepState={};STEPS.forEach(([k])=>stepState[k]={s:'pending',d:'',pct:null});pipeRender();$('importLog').innerHTML='';$('pipeTimer').textContent=''}
-function setStep(k,s,d,pct){const o=stepState[k]||{};stepState[k]={s,d:d===undefined?(o.d||''):d,pct:pct===undefined?(s==='active'?o.pct:null):pct};pipeRender()}
-function pipeRender(){const ic={pending:'○',active:'◔',done:'✓',error:'✗'};$('pipeline').innerHTML=STEPS.map(([k,l],i)=>{const x=stepState[k]||{s:'pending',d:'',pct:null};return`<div class="pstep ${x.s}"><span class="pic">${ic[x.s]}</span><div><b>${i+1}. ${l}</b>${x.d?`<small>${esc(x.d)}</small>`:''}${x.pct!=null?`<div class="pbar"><i style="width:${x.pct}%"></i></div>`:''}</div></div>`}).join('')}
-function logLine(m,cls){const L=$('importLog'),t=new Date().toLocaleTimeString('en-GB');L.insertAdjacentHTML('beforeend',`<div class="${cls||''}">[${t}] ${esc(m)}</div>`);L.scrollTop=L.scrollHeight}
-function startClock(){runStart=Date.now();clearInterval(runTimer);runTimer=setInterval(()=>{$('pipeTimer').textContent='⏱ '+fmtSec((Date.now()-runStart)/1000)},500)}
-function stopClock(){clearInterval(runTimer)}
-function fmtSec(s){s=Math.round(s);return s>=60?Math.floor(s/60)+'m '+String(s%60).padStart(2,'0')+'s':s+'s'}
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-
-/* ===== Hantar data ke Apps Script ===== */
-function postForm(action,payload,ms){ms=ms||60000;return new Promise((res,rej)=>{const token='si_'+Date.now()+'_'+Math.random().toString(36).slice(2);payload._token=token;const h=e=>{if(e.data?.source!=='SmartInspectionAPI'||e.data?.token!==token)return;clearTimeout(tm);window.removeEventListener('message',h);e.data.ok?res(e.data):rej(new Error(e.data.error||'Import gagal'))};window.addEventListener('message',h);const tm=setTimeout(()=>{window.removeEventListener('message',h);rej(new Error('Tiada respons daripada Apps Script dalam '+Math.round(ms/1000)+' saat. Semak: API_URL (hujung /exec), deployment "Anyone", dan Code.gs versi terbaru sudah di-deploy.'))},ms);$('siUploadForm').action=apiUrl();$('formAction').value=action;$('formPayload').value=JSON.stringify(payload);$('siUploadForm').submit()})}
-async function postRetry(action,payload,ms,label){let last;for(let a=1;a<=3;a++){try{return await postForm(action,Object.assign({},payload),ms)}catch(e){last=e;logLine(`${label} gagal (percubaan ${a}/3): ${e.message}`,'err');if(a<3)await sleep(1500*a)}}throw last}
-
-async function processImport(){
-  if(!pendingImport)return;
-  if(!apiUrl()||apiUrl().includes('PASTE_')){toast('API_URL belum ditetapkan dalam config.js');return}
-  const{file,parsed}=pendingImport,chunk=CFG.IMPORT_CHUNK_SIZE||750,R=pendingImport.resume,id=R?R.id:'IMP-'+Date.now(),startI=R?R.next:0,total=parsed.rows.length,n=Math.ceil(total/chunk),btn=$('processImportBtn');
-  btn.disabled=true;btn.textContent='Sedang proses…';$('importResult').classList.add('hidden');
-  ['begin','upload','final','cache','refresh'].forEach(k=>setStep(k,'pending',''));startClock();
-  let cur='begin',done=null;const cacheOnly=!!(R&&R.stage==='cache');
-  try{
-    if(cacheOnly){done=R.done;['begin','upload','final'].forEach(k=>setStep(k,'done','Sudah siap'));logLine('Import '+id+' sudah disimpan. Meneruskan pembinaan cache…','ok')}
-    else if(R){setStep('begin','done','Sambung semula ID '+id);logLine('SAMBUNG SEMULA import '+id+' dari baris '+fmt(startI)+' / '+fmt(total),'ok')}
-    else{
-      setStep('begin','active','Menghubungi Apps Script…');logLine('Mula import '+id+' • '+fmt(total)+' baris • '+n+' chunk');
-      await postRetry('beginImport',{importId:id,fileName:file.name,totalRows:total,headers:parsed.headers},120000,'Sambungan');
-      setStep('begin','done','ID '+id);logLine('Sambungan OK, sheet staging sedia','ok');
-      pendingImport.resume={id,next:0};
+const STEPS = [["read", "Baca fail Excel"], ["header", "Kesan header KMM101"], ["clean", "Bersih & pilih lajur"], ["begin", "Sambung ke Google Sheets"], ["upload", "Upload data ke staging"], ["final", "Deduplicate & simpan ke History"], ["cache", "Bina cache dashboard"], ["refresh", "Refresh dashboard"]];
+let stepState = {}, runTimer = null, runStart = 0;
+function pipeInit() {
+  stepState = {};
+  STEPS.forEach(([k]) => stepState[k] = { s: "pending", d: "", pct: null });
+  pipeRender();
+  $("importLog").innerHTML = "";
+  $("pipeTimer").textContent = "";
+}
+function setStep(k, s, d, pct2) {
+  const o = stepState[k] || {};
+  stepState[k] = { s, d: d === void 0 ? o.d || "" : d, pct: pct2 === void 0 ? s === "active" ? o.pct : null : pct2 };
+  pipeRender();
+}
+function pipeRender() {
+  const ic = { pending: "○", active: "◔", done: "✓", error: "✗" };
+  $("pipeline").innerHTML = STEPS.map(([k, l], i) => {
+    const x = stepState[k] || { s: "pending", d: "", pct: null };
+    return `<div class="pstep ${x.s}"><span class="pic">${ic[x.s]}</span><div><b>${i + 1}. ${l}</b>${x.d ? `<small>${esc(x.d)}</small>` : ""}${x.pct != null ? `<div class="pbar"><i style="width:${x.pct}%"></i></div>` : ""}</div></div>`;
+  }).join("");
+}
+function logLine(m, cls) {
+  const L2 = $("importLog"), t = (/* @__PURE__ */ new Date()).toLocaleTimeString("en-GB");
+  L2.insertAdjacentHTML("beforeend", `<div class="${cls || ""}">[${t}] ${esc(m)}</div>`);
+  L2.scrollTop = L2.scrollHeight;
+}
+function startClock() {
+  runStart = Date.now();
+  clearInterval(runTimer);
+  runTimer = setInterval(() => {
+    $("pipeTimer").textContent = "⏱ " + fmtSec((Date.now() - runStart) / 1e3);
+  }, 500);
+}
+function stopClock() {
+  clearInterval(runTimer);
+}
+function fmtSec(s) {
+  s = Math.round(s);
+  return s >= 60 ? Math.floor(s / 60) + "m " + String(s % 60).padStart(2, "0") + "s" : s + "s";
+}
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+function postForm(action, payload, ms) {
+  ms = ms || 6e4;
+  return new Promise((res, rej) => {
+    const token = "si_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+    payload._token = token;
+    const h = (e) => {
+      var _a, _b;
+      if (((_a = e.data) == null ? void 0 : _a.source) !== "SmartInspectionAPI" || ((_b = e.data) == null ? void 0 : _b.token) !== token) return;
+      clearTimeout(tm);
+      window.removeEventListener("message", h);
+      e.data.ok ? res(e.data) : rej(new Error(e.data.error || "Import gagal"));
+    };
+    window.addEventListener("message", h);
+    const tm = setTimeout(() => {
+      window.removeEventListener("message", h);
+      rej(new Error("Tiada respons daripada Apps Script dalam " + Math.round(ms / 1e3) + ' saat. Semak: API_URL (hujung /exec), deployment "Anyone", dan Code.gs versi terbaru sudah di-deploy.'));
+    }, ms);
+    $("siUploadForm").action = apiUrl();
+    $("formAction").value = action;
+    $("formPayload").value = JSON.stringify(payload);
+    $("siUploadForm").submit();
+  });
+}
+async function postRetry(action, payload, ms, label) {
+  let last;
+  for (let a = 1; a <= 3; a++) {
+    try {
+      return await postForm(action, Object.assign({}, payload), ms);
+    } catch (e) {
+      last = e;
+      logLine(`${label} gagal (percubaan ${a}/3): ${e.message}`, "err");
+      if (a < 3) await sleep(1500 * a);
     }
-    if(!cacheOnly){
-    cur='upload';const tu=Date.now(),c0=Math.floor(startI/chunk)+1;
-    for(let i=startI,c=c0;i<total;i+=chunk,c++){
-      const end=Math.min(i+chunk,total),pct=Math.round(i/total*100);
-      let eta='';if(c>c0){const per=(Date.now()-tu)/(c-c0);eta=' • baki ≈ '+fmtSec(per*(n-c+1)/1000)}
-      setStep('upload','active',`Chunk ${c}/${n} • ${fmt(i)} → ${fmt(end)} / ${fmt(total)} baris (${pct}%)${eta}`,pct);
-      const r=await postRetry('importChunk',{importId:id,offset:i,rows:parsed.rows.slice(i,end)},90000,'Chunk '+c);
-      pendingImport.resume={id,next:end};logLine(`Chunk ${c}/${n} diterima: ${fmt(r.accepted)} baris diterima`);if(end<total)await sleep(150);
+  }
+  throw last;
+}
+async function processImport() {
+  if (!pendingImport) return;
+  if (!apiUrl() || apiUrl().includes("PASTE_")) {
+    toast("API_URL belum ditetapkan dalam config.js");
+    return;
+  }
+  const { file, parsed } = pendingImport, chunk = CFG.IMPORT_CHUNK_SIZE || 750, R = pendingImport.resume, id = R ? R.id : "IMP-" + Date.now(), startI = R ? R.next : 0, total = parsed.rows.length, n = Math.ceil(total / chunk), btn = $("processImportBtn");
+  btn.disabled = true;
+  btn.textContent = "Sedang proses…";
+  $("importResult").classList.add("hidden");
+  ["begin", "upload", "final", "cache", "refresh"].forEach((k) => setStep(k, "pending", ""));
+  startClock();
+  let cur = "begin", done = null;
+  const cacheOnly = !!(R && R.stage === "cache");
+  try {
+    if (cacheOnly) {
+      done = R.done;
+      ["begin", "upload", "final"].forEach((k) => setStep(k, "done", "Sudah siap"));
+      logLine("Import " + id + " sudah disimpan. Meneruskan pembinaan cache…", "ok");
+    } else if (R) {
+      setStep("begin", "done", "Sambung semula ID " + id);
+      logLine("SAMBUNG SEMULA import " + id + " dari baris " + fmt(startI) + " / " + fmt(total), "ok");
+    } else {
+      setStep("begin", "active", "Menghubungi Apps Script…");
+      logLine("Mula import " + id + " • " + fmt(total) + " baris • " + n + " chunk");
+      await postRetry("beginImport", { importId: id, fileName: file.name, totalRows: total, headers: parsed.headers }, 12e4, "Sambungan");
+      setStep("begin", "done", "ID " + id);
+      logLine("Sambungan OK, sheet staging sedia", "ok");
+      pendingImport.resume = { id, next: 0 };
     }
-    setStep('upload','done',`${fmt(total)} baris dalam ${n} chunk (${fmtSec((Date.now()-tu)/1000)})`,100);pendingImport.resume={id,next:total};
-    cur='final';const tf=Date.now();
-    logLine('Semua chunk dihantar. Menjalankan dedup & simpan (boleh ambil 1–5 minit; JANGAN tutup tab)…');
-    const tick=setInterval(()=>setStep('final','active','Menyemak duplicate & menulis ke INSPECTION_HISTORY… '+fmtSec((Date.now()-tf)/1000)+' berlalu (jangan tutup tab)'),1000);
-    try{done=await postForm('finalizeImport',{importId:id},600000)}finally{clearInterval(tick)}
-    pendingImport.resume={id,next:total,stage:'cache',done};setStep('final','done',`Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Rejected ${fmt(done.rejected)} (${fmtSec((Date.now()-tf)/1000)})`);
-    logLine(`Siap simpan: ${fmt(done.accepted)} baru, ${fmt(done.duplicates)} duplicate, ${fmt(done.rejected)} ditolak`,'ok');
+    if (!cacheOnly) {
+      cur = "upload";
+      const tu = Date.now(), c0 = Math.floor(startI / chunk) + 1;
+      for (let i = startI, c = c0; i < total; i += chunk, c++) {
+        const end = Math.min(i + chunk, total), pct2 = Math.round(i / total * 100);
+        let eta = "";
+        if (c > c0) {
+          const per = (Date.now() - tu) / (c - c0);
+          eta = " • baki ≈ " + fmtSec(per * (n - c + 1) / 1e3);
+        }
+        setStep("upload", "active", `Chunk ${c}/${n} • ${fmt(i)} → ${fmt(end)} / ${fmt(total)} baris (${pct2}%)${eta}`, pct2);
+        const r = await postRetry("importChunk", { importId: id, offset: i, rows: parsed.rows.slice(i, end) }, 9e4, "Chunk " + c);
+        pendingImport.resume = { id, next: end };
+        logLine(`Chunk ${c}/${n} diterima: ${fmt(r.accepted)} baris diterima`);
+        if (end < total) await sleep(150);
+      }
+      setStep("upload", "done", `${fmt(total)} baris dalam ${n} chunk (${fmtSec((Date.now() - tu) / 1e3)})`, 100);
+      pendingImport.resume = { id, next: total };
+      cur = "final";
+      const tf = Date.now();
+      logLine("Semua chunk dihantar. Menjalankan dedup & simpan (boleh ambil 1–5 minit; JANGAN tutup tab)…");
+      const tick = setInterval(() => setStep("final", "active", "Menyemak duplicate & menulis ke INSPECTION_HISTORY… " + fmtSec((Date.now() - tf) / 1e3) + " berlalu (jangan tutup tab)"), 1e3);
+      try {
+        done = await postForm("finalizeImport", { importId: id }, 6e5);
+      } finally {
+        clearInterval(tick);
+      }
+      pendingImport.resume = { id, next: total, stage: "cache", done };
+      setStep("final", "done", `Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Rejected ${fmt(done.rejected)} (${fmtSec((Date.now() - tf) / 1e3)})`);
+      logLine(`Siap simpan: ${fmt(done.accepted)} baru, ${fmt(done.duplicates)} duplicate, ${fmt(done.rejected)} ditolak`, "ok");
     }
-    cur='cache';const tcache=Date.now();setStep('cache','active','Mengira premis, analitik & peta…');logLine('Membina cache dashboard (sekali sahaja; boleh ambil 1–5 minit)…');
-    const tk2=setInterval(()=>setStep('cache','active','Mengira premis, analitik & peta… '+fmtSec((Date.now()-tcache)/1000)+' berlalu (jangan tutup tab)'),1000);
-    let cr;try{cr=await postForm('rebuildCache',{},540000)}finally{clearInterval(tk2)}
-    pendingImport.resume=null;setStep('cache','done',`${fmt(cr.premises)} premis • ${(cr.bytes/1e6).toFixed(1)} MB • ${fmtSec((Date.now()-tcache)/1000)}`);logLine('Cache siap: '+fmt(cr.premises)+' premis','ok');
-    cur='refresh';setStep('refresh','active','Memuat semula data dashboard…');
-    $('importResult').classList.remove('hidden');
-    $('importResult').innerHTML=`<div class="cardhead"><h3>✅ Import selesai: ${esc(file.name)}</h3></div><div style="padding:14px">Processed ${fmt(done.rows)} • Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Rejected ${fmt(done.rejected)} • Masa ${fmtSec((Date.now()-runStart)/1000)}</div>`;
+    cur = "cache";
+    const tcache = Date.now();
+    setStep("cache", "active", "Mengira premis, analitik & peta…");
+    logLine("Membina cache dashboard (sekali sahaja; boleh ambil 1–5 minit)…");
+    const tk2 = setInterval(() => setStep("cache", "active", "Mengira premis, analitik & peta… " + fmtSec((Date.now() - tcache) / 1e3) + " berlalu (jangan tutup tab)"), 1e3);
+    let cr;
+    try {
+      cr = await postForm("rebuildCache", {}, 54e4);
+    } finally {
+      clearInterval(tk2);
+    }
+    pendingImport.resume = null;
+    setStep("cache", "done", `${fmt(cr.premises)} premis • ${(cr.bytes / 1e6).toFixed(1)} MB • ${fmtSec((Date.now() - tcache) / 1e3)}`);
+    logLine("Cache siap: " + fmt(cr.premises) + " premis", "ok");
+    cur = "refresh";
+    setStep("refresh", "active", "Memuat semula data dashboard…");
+    $("importResult").classList.remove("hidden");
+    $("importResult").innerHTML = `<div class="cardhead"><h3>✅ Import selesai: ${esc(file.name)}</h3></div><div style="padding:14px">Processed ${fmt(done.rows)} • Accepted ${fmt(done.accepted)} • Duplicate ${fmt(done.duplicates)} • Rejected ${fmt(done.rejected)} • Masa ${fmtSec((Date.now() - runStart) / 1e3)}</div>`;
     await loadDashboard();
-    if($('apiState').textContent==='online'){setStep('refresh','done',`${fmt((DB.premises||[]).length)} premis dalam dashboard`);logLine('Dashboard dikemas kini. SELESAI.','ok')}
-    else{setStep('refresh','error','Import berjaya, tetapi dashboard gagal dimuat semula. Tekan ↻ Refresh.');logLine('Dashboard gagal dimuat semula (data import sudah selamat disimpan).','err')}
-  }catch(e){
-    setStep(cur,'error',e.message);logLine('GAGAL pada langkah "'+(STEPS.find(x=>x[0]===cur)||[])[1]+'": '+e.message,'err');toast(e.message);
-    if(cur==='cache')logLine('Import SUDAH selamat disimpan. Tekan "Sambung Semula Import" (atau butang ⚙ Bina Cache) untuk cuba bina cache sekali lagi.','err');
-    if(cur==='upload'||cur==='final')logLine('Data yang sudah dihantar kekal selamat dalam staging. Tekan butang "Sambung Semula Import" untuk teruskan dari tempat terhenti.','err');
-  }finally{stopClock();$('pipeTimer').textContent='⏱ '+fmtSec((Date.now()-runStart)/1000);btn.disabled=false;btn.textContent=pendingImport&&pendingImport.resume?'Sambung Semula Import':'Process Import'}
+    if ($("apiState").textContent === "online") {
+      setStep("refresh", "done", `${fmt((DB.premises || []).length)} premis dalam dashboard`);
+      logLine("Dashboard dikemas kini. SELESAI.", "ok");
+    } else {
+      setStep("refresh", "error", "Import berjaya, tetapi dashboard gagal dimuat semula. Tekan ↻ Refresh.");
+      logLine("Dashboard gagal dimuat semula (data import sudah selamat disimpan).", "err");
+    }
+  } catch (e) {
+    setStep(cur, "error", e.message);
+    logLine('GAGAL pada langkah "' + (STEPS.find((x) => x[0] === cur) || [])[1] + '": ' + e.message, "err");
+    toast(e.message);
+    if (cur === "cache") logLine('Import SUDAH selamat disimpan. Tekan "Sambung Semula Import" (atau butang ⚙ Bina Cache) untuk cuba bina cache sekali lagi.', "err");
+    if (cur === "upload" || cur === "final") logLine('Data yang sudah dihantar kekal selamat dalam staging. Tekan butang "Sambung Semula Import" untuk teruskan dari tempat terhenti.', "err");
+  } finally {
+    stopClock();
+    $("pipeTimer").textContent = "⏱ " + fmtSec((Date.now() - runStart) / 1e3);
+    btn.disabled = false;
+    btn.textContent = pendingImport && pendingImport.resume ? "Sambung Semula Import" : "Process Import";
+  }
 }
-function initImport(){const i=$('fileInput'),d=$('dropzone');pipeInit();$('selectFileBtn').onclick=()=>i.click();i.onchange=()=>handleFile(i.files[0]);['dragenter','dragover'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.add('drag')}));['dragleave','drop'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.remove('drag')}));d.addEventListener('drop',e=>handleFile(e.dataTransfer.files[0]));$('processImportBtn').onclick=processImport}
-async function handleFile(file){
-  if(!file)return;pendingImport=null;pipeInit();$('processImportBtn').classList.add('hidden');$('importResult').classList.add('hidden');
-  const mb=(file.size/1048576).toFixed(1);startClock();
-  setStep('read','active',`Membaca ${file.name} (${mb} MB)… fail besar boleh ambil 15–60 saat, halaman mungkin kelihatan beku seketika`);logLine('Membaca '+file.name+' ('+mb+' MB)');await sleep(80);
-  try{
-    await ensureXLSX();const p=await readWorkbook(file),missing=p.missing;
-    setStep('read','done',`${p.sheet} • ${fmtSec((Date.now()-runStart)/1000)}`);
-    setStep('header','done',`Header di baris ${p.headerRow} • padanan ${p.score}/8`+(missing.length?' • TIADA: '+missing.join(', '):''));
-    if(missing.length){setStep('header','error','Lajur wajib tiada: '+missing.join(', '));logLine('Lajur wajib tiada: '+missing.join(', '),'err')}
-    else{setStep('clean','done',`${fmt(p.rows.length)} baris sah • ${fmt(p.skipped)} dilangkau (tiada tarikh/No. FoSIM) • ${p.headers.length} lajur digunakan`);logLine(`Fail sedia: ${fmt(p.rows.length)} baris sah. Tekan "Process Import".`,'ok')}
-    pendingImport={file,parsed:p};
-    $('filePreview').classList.remove('hidden');
-    $('filePreview').innerHTML=`<b>${esc(file.name)}</b><br>Sheet: ${esc(p.sheet)} • header baris ${p.headerRow}<br>${fmt(p.rows.length)} rows sah${p.skipped?' ('+fmt(p.skipped)+' baris dilangkau: tiada tarikh/No. FoSIM)':''} • ${p.headers.length} lajur digunakan • ${missing.length?'Lajur wajib tiada: '+esc(missing.join(', ')):'✓ KMM101 recognised'}`;
-    $('processImportBtn').classList.toggle('hidden',!!missing.length);
-  }catch(e){
-    const hdr=String(e.message).startsWith('Format KMM101');
-    if(hdr){setStep('read','done','Fail berjaya dibaca');setStep('header','error','Header KMM101 tidak dijumpai')}else setStep('read','error',e.message);
-    logLine(e.message,'err');toast(e.message);
-  }finally{stopClock()}
+function initImport() {
+  const i = $("fileInput"), d = $("dropzone");
+  pipeInit();
+  $("selectFileBtn").onclick = () => i.click();
+  i.onchange = () => handleFile(i.files[0]);
+  ["dragenter", "dragover"].forEach((ev) => d.addEventListener(ev, (e) => {
+    e.preventDefault();
+    d.classList.add("drag");
+  }));
+  ["dragleave", "drop"].forEach((ev) => d.addEventListener(ev, (e) => {
+    e.preventDefault();
+    d.classList.remove("drag");
+  }));
+  d.addEventListener("drop", (e) => handleFile(e.dataTransfer.files[0]));
+  $("processImportBtn").onclick = processImport;
 }
-async function rebuildCacheManual(){const b=$('rebuildBtn');if(b.disabled)return;if(!apiUrl()||apiUrl().includes('PASTE_')){toast('API_URL belum ditetapkan dalam config.js');return}const t=b.textContent,t0=Date.now();b.disabled=true;const tk=setInterval(()=>b.textContent='⚙ Membina… '+fmtSec((Date.now()-t0)/1000),1000);toast('Membina cache dashboard… boleh ambil 1–5 minit, jangan tutup tab');try{const c=await postForm('rebuildCache',{},540000);toast('Cache siap: '+fmt(c.premises)+' premis ('+fmtSec((Date.now()-t0)/1000)+')');await loadDashboard()}catch(e){toast(e.message)}finally{clearInterval(tk);b.disabled=false;b.textContent=t}}
-function initEvents(){initNav();initImport();$('refreshBtn').onclick=loadDashboard;$('rebuildBtn').onclick=rebuildCacheManual;['districtFilter','gradeFilter','yearFilter','typeFilter'].forEach(id=>$(id).onchange=renderDashboard);$('stateFilter').onchange=()=>{refreshDistricts();renderDashboard()};$('searchBox').oninput=renderDashboard;document.querySelectorAll('[data-mapmode]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mapmode]').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentMapMode=b.dataset.mapmode;renderMap()})}window.addEventListener('load',()=>{initEvents();if(IS_MOBILE){document.querySelector('nav button[data-view=field]').click()}else{loadDashboard();try{initMap()}catch(e){console.error('Peta tidak dapat dimuat (Leaflet disekat?):',e);toast('Peta tidak dapat dimuat, tetapi data masih berfungsi')}}});
-console.info('SmartInspection app.js PATCH v6.0 (lapangan) (progress tracker)');
+async function handleFile(file) {
+  if (!file) return;
+  pendingImport = null;
+  pipeInit();
+  $("processImportBtn").classList.add("hidden");
+  $("importResult").classList.add("hidden");
+  const mb = (file.size / 1048576).toFixed(1);
+  startClock();
+  setStep("read", "active", `Membaca ${file.name} (${mb} MB)… fail besar boleh ambil 15–60 saat, halaman mungkin kelihatan beku seketika`);
+  logLine("Membaca " + file.name + " (" + mb + " MB)");
+  await sleep(80);
+  try {
+    await ensureXLSX();
+    const p = await readWorkbook(file), missing = p.missing;
+    setStep("read", "done", `${p.sheet} • ${fmtSec((Date.now() - runStart) / 1e3)}`);
+    setStep("header", "done", `Header di baris ${p.headerRow} • padanan ${p.score}/8` + (missing.length ? " • TIADA: " + missing.join(", ") : ""));
+    if (missing.length) {
+      setStep("header", "error", "Lajur wajib tiada: " + missing.join(", "));
+      logLine("Lajur wajib tiada: " + missing.join(", "), "err");
+    } else {
+      setStep("clean", "done", `${fmt(p.rows.length)} baris sah • ${fmt(p.skipped)} dilangkau (tiada tarikh/No. FoSIM) • ${p.headers.length} lajur digunakan`);
+      logLine(`Fail sedia: ${fmt(p.rows.length)} baris sah. Tekan "Process Import".`, "ok");
+    }
+    pendingImport = { file, parsed: p };
+    $("filePreview").classList.remove("hidden");
+    $("filePreview").innerHTML = `<b>${esc(file.name)}</b><br>Sheet: ${esc(p.sheet)} • header baris ${p.headerRow}<br>${fmt(p.rows.length)} rows sah${p.skipped ? " (" + fmt(p.skipped) + " baris dilangkau: tiada tarikh/No. FoSIM)" : ""} • ${p.headers.length} lajur digunakan • ${missing.length ? "Lajur wajib tiada: " + esc(missing.join(", ")) : "✓ KMM101 recognised"}`;
+    $("processImportBtn").classList.toggle("hidden", !!missing.length);
+  } catch (e) {
+    const hdr = String(e.message).startsWith("Format KMM101");
+    if (hdr) {
+      setStep("read", "done", "Fail berjaya dibaca");
+      setStep("header", "error", "Header KMM101 tidak dijumpai");
+    } else setStep("read", "error", e.message);
+    logLine(e.message, "err");
+    toast(e.message);
+  } finally {
+    stopClock();
+  }
+}
+async function rebuildCacheManual() {
+  const b = $("rebuildBtn");
+  if (b.disabled) return;
+  if (!apiUrl() || apiUrl().includes("PASTE_")) {
+    toast("API_URL belum ditetapkan dalam config.js");
+    return;
+  }
+  const t = b.textContent, t0 = Date.now();
+  b.disabled = true;
+  const tk = setInterval(() => b.textContent = "⚙ Membina… " + fmtSec((Date.now() - t0) / 1e3), 1e3);
+  toast("Membina cache dashboard… boleh ambil 1–5 minit, jangan tutup tab");
+  try {
+    const c = await postForm("rebuildCache", {}, 54e4);
+    toast("Cache siap: " + fmt(c.premises) + " premis (" + fmtSec((Date.now() - t0) / 1e3) + ")");
+    await loadDashboard();
+  } catch (e) {
+    toast(e.message);
+  } finally {
+    clearInterval(tk);
+    b.disabled = false;
+    b.textContent = t;
+  }
+}
+function initEvents() {
+  initNav();
+  initImport();
+  $("refreshBtn").onclick = loadDashboard;
+  $("rebuildBtn").onclick = rebuildCacheManual;
+  ["districtFilter", "gradeFilter", "yearFilter", "typeFilter"].forEach((id) => $(id).onchange = renderDashboard);
+  $("stateFilter").onchange = () => {
+    refreshDistricts();
+    renderDashboard();
+  };
+  $("searchBox").oninput = renderDashboard;
+  document.querySelectorAll("[data-mapmode]").forEach((b) => b.onclick = () => {
+    document.querySelectorAll("[data-mapmode]").forEach((x) => x.classList.remove("active"));
+    b.classList.add("active");
+    currentMapMode = b.dataset.mapmode;
+    renderMap();
+  });
+}
+window.addEventListener("load", () => {
+  initEvents();
+  if (IS_MOBILE) {
+    document.querySelector("nav button[data-view=field]").click();
+  } else {
+    loadDashboard();
+    try {
+      initMap();
+    } catch (e) {
+      console.error("Peta tidak dapat dimuat (Leaflet disekat?):", e);
+      toast("Peta tidak dapat dimuat, tetapi data masih berfungsi");
+    }
+  }
+});
+console.info("SmartInspection app.js PATCH v6.2 (lapangan) (progress tracker)");
 
 </script>
 </body></html>
